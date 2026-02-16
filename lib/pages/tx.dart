@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:math';
 
 import 'package:flutter/material.dart';
@@ -5,6 +6,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
+import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:warp_api/warp_api.dart';
@@ -15,6 +17,38 @@ import '../generated/intl/messages.dart';
 import '../store2.dart';
 import '../tablelist.dart';
 import 'utils.dart';
+
+// ─── CipherScan tx cache (for shielding amounts) ────────────
+
+const _csApi = 'https://api.mainnet.cipherscan.app/api';
+
+/// Cached shielding amounts: txId → totalInput (in ZEC as double).
+/// Populated lazily from CipherScan API.
+final Map<String, double> _shieldAmountCache = {};
+
+/// Fetch the totalInput for a shielding tx from CipherScan.
+/// Returns cached value immediately if available, otherwise fetches
+/// and calls [onLoaded] when done.
+double? getShieldAmount(String txId, {VoidCallback? onLoaded}) {
+  if (_shieldAmountCache.containsKey(txId)) return _shieldAmountCache[txId];
+  // Fire async fetch
+  _fetchShieldAmount(txId, onLoaded);
+  return null;
+}
+
+Future<void> _fetchShieldAmount(String txId, VoidCallback? onLoaded) async {
+  try {
+    final resp = await http.get(Uri.parse('$_csApi/tx/$txId'));
+    if (resp.statusCode == 200) {
+      final json = jsonDecode(resp.body);
+      final totalInput = (json['totalInput'] as num?)?.toDouble();
+      if (totalInput != null) {
+        _shieldAmountCache[txId] = totalInput;
+        onLoaded?.call();
+      }
+    }
+  } catch (_) {}
+}
 
 // ─── Helpers ────────────────────────────────────────────────
 
@@ -134,15 +168,17 @@ _InvoiceData? _parseInvoice(String? memo) {
   );
 }
 
-/// Detect shielding: self-transfer with no destination address
+/// Detect shielding: self-transfer with no destination address,
+/// or our auto-shield memo pattern
 bool _isShielding(Tx tx) =>
-    tx.value <= 0 && (tx.address == null || tx.address!.isEmpty);
+    (tx.value <= 0 && (tx.address == null || tx.address!.isEmpty)) ||
+    (tx.memo?.contains('Auto-shield') ?? false);
 
 /// Subtitle parts for activity row: (prefix, value, shouldColorValue)
 ({String prefix, String value, bool colorValue}) _txSubtitleParts(
     Tx tx, bool isReceive, _TxPrivacy privacy) {
   if (_isShielding(tx)) {
-    return (prefix: '', value: 'Shielding', colorValue: true);
+    return (prefix: '', value: 'Transparent → Private', colorValue: true);
   }
   final addr = tx.address ?? '';
   if (isReceive) {
@@ -340,13 +376,21 @@ class _EmptyActivity extends StatelessWidget {
 
 // ─── Transaction row (Zashi-inspired) ───────────────────────
 
-class _TxRow extends StatelessWidget {
+class _TxRow extends StatefulWidget {
   final Tx tx;
   final ZMessage? message;
   final int index;
 
   const _TxRow(
       {required this.tx, required this.message, required this.index});
+
+  @override
+  State<_TxRow> createState() => _TxRowState();
+}
+
+class _TxRowState extends State<_TxRow> {
+  Tx get tx => widget.tx;
+  int get index => widget.index;
 
   @override
   Widget build(BuildContext context) {
@@ -365,15 +409,38 @@ class _TxRow extends StatelessWidget {
     }
 
     final dateStr = _humanDate(tx.timestamp);
-    final amountStr = isShielding
-        ? '${decimalToString(tx.value.abs())} ZEC'
-        : '${isReceive ? '+' : ''}${decimalToString(tx.value)} ZEC';
+
+    // For shielding, try memo first, then CipherScan as fallback
+    final memo = tx.memo ?? '';
+    double? shieldedAmount;
+    if (isShielding) {
+      final match = RegExp(r'Auto-shield ([\d.,]+) ZEC').firstMatch(memo);
+      if (match != null) {
+        shieldedAmount = double.tryParse(match.group(1)!.replaceAll(',', '.'));
+      }
+      shieldedAmount ??= getShieldAmount(tx.fullTxId,
+          onLoaded: () { if (mounted) setState(() {}); });
+    }
+
+    final String amountStr;
+    if (isShielding && shieldedAmount != null) {
+      amountStr = '${decimalToString(shieldedAmount)} ZEC';
+    } else if (isShielding) {
+      amountStr = '···';
+    } else {
+      amountStr = '${isReceive ? '+' : ''}${decimalToString(tx.value)} ZEC';
+    }
+
     final amountColor = isReceive
         ? ZipherColors.green
         : isShielding
-            ? ZipherColors.purple.withValues(alpha: 0.6)
+            ? ZipherColors.purple.withValues(alpha: 0.7)
             : ZipherColors.red;
-    final fiat = _fiatStr(tx.value);
+
+    final fiatValue = isShielding && shieldedAmount != null
+        ? shieldedAmount
+        : tx.value.abs();
+    final fiat = _fiatStr(fiatValue);
 
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 3),
@@ -398,7 +465,9 @@ class _TxRow extends StatelessWidget {
                     padding: const EdgeInsets.symmetric(
                         horizontal: 7, vertical: 2),
                     decoration: BoxDecoration(
-                      color: Colors.white.withValues(alpha: 0.06),
+                      color: isShielding
+                          ? ZipherColors.purple.withValues(alpha: 0.10)
+                          : Colors.white.withValues(alpha: 0.06),
                       borderRadius: BorderRadius.circular(6),
                     ),
                     child: Row(
@@ -411,7 +480,9 @@ class _TxRow extends StatelessWidget {
                                   ? Icons.south_west_rounded
                                   : Icons.north_east_rounded,
                           size: 10,
-                          color: Colors.white.withValues(alpha: 0.5),
+                          color: isShielding
+                              ? ZipherColors.purple.withValues(alpha: 0.7)
+                              : Colors.white.withValues(alpha: 0.5),
                         ),
                         const Gap(3),
                         Text(
@@ -419,7 +490,9 @@ class _TxRow extends StatelessWidget {
                           style: TextStyle(
                             fontSize: 11,
                             fontWeight: FontWeight.w600,
-                            color: Colors.white.withValues(alpha: 0.5),
+                            color: isShielding
+                                ? ZipherColors.purple.withValues(alpha: 0.7)
+                                : Colors.white.withValues(alpha: 0.5),
                           ),
                         ),
                       ],
@@ -514,7 +587,7 @@ class _TxRow extends StatelessWidget {
                           color: amountColor,
                         ),
                       ),
-                      if (fiat.isNotEmpty && !isShielding) ...[
+                      if (fiat.isNotEmpty) ...[
                         const Gap(2),
                         Text(
                           fiat,
@@ -638,7 +711,22 @@ class TransactionState extends State<TransactionPage> {
     final privacy = _classifyTx(tx);
     final pColor = _privacyColor(privacy);
     final invoice = _parseInvoice(tx.memo);
-    final fiat = _fiatStr(tx.value);
+
+    // For shielding, try memo first, then CipherScan as fallback
+    final memo = tx.memo ?? '';
+    double? shieldedAmount;
+    if (isSelfTransfer) {
+      final match = RegExp(r'Auto-shield ([\d.,]+) ZEC').firstMatch(memo);
+      if (match != null) {
+        shieldedAmount = double.tryParse(match.group(1)!.replaceAll(',', '.'));
+      }
+      shieldedAmount ??= getShieldAmount(tx.fullTxId,
+          onLoaded: () { if (mounted) setState(() {}); });
+    }
+    final displayValue = isSelfTransfer && shieldedAmount != null
+        ? shieldedAmount
+        : tx.value.abs();
+    final fiat = _fiatStr(displayValue);
 
     return Scaffold(
       backgroundColor: ZipherColors.bg,
@@ -738,7 +826,7 @@ class TransactionState extends State<TransactionPage> {
 
                     // Amount — always white on detail page
                     Text(
-                      '${decimalToString(tx.value.abs())} ZEC',
+                      '${decimalToString(displayValue)} ZEC',
                       style: const TextStyle(
                         fontSize: 32,
                         fontWeight: FontWeight.w700,
@@ -747,8 +835,8 @@ class TransactionState extends State<TransactionPage> {
                       ),
                     ),
 
-                    // USD equivalent — subtle pill (hide for 0-value shielding)
-                    if (fiat.isNotEmpty && !isSelfTransfer) ...[
+                    // USD equivalent — subtle pill
+                    if (fiat.isNotEmpty) ...[
                       const Gap(8),
                       Container(
                         padding: const EdgeInsets.symmetric(
@@ -779,7 +867,8 @@ class TransactionState extends State<TransactionPage> {
                 const Gap(8),
                 _InvoiceCard(invoice: invoice),
                 const Gap(20),
-              ] else if (tx.memo?.isNotEmpty ?? false) ...[
+              ] else if ((tx.memo?.isNotEmpty ?? false) &&
+                  !(tx.memo!.contains('Auto-shield'))) ...[
                 _SectionHeader(label: 'Message'),
                 const Gap(8),
                 Container(

@@ -12,6 +12,7 @@ import 'package:warp_api/warp_api.dart';
 import '../../accounts.dart';
 import '../../zipher_theme.dart';
 import '../../generated/intl/messages.dart';
+import '../main/home.dart' show lastShieldSubmit, shieldPending;
 import '../utils.dart';
 import '../widgets.dart';
 
@@ -39,6 +40,11 @@ class _SubmitTxState extends State<SubmitTxPage> {
         if (widget.txBin != null)
           txIdJs = WarpApi.broadcast(aa.coin, widget.txBin!);
         txId = jsonDecode(txIdJs!);
+        // Mark shield-in-progress if this was a shielding transaction
+        if (shieldPending) {
+          lastShieldSubmit = DateTime.now();
+          shieldPending = false;
+        }
       } on String catch (e) {
         error = e;
       }

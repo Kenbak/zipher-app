@@ -14,6 +14,7 @@ import '../../accounts.dart';
 import '../../zipher_theme.dart';
 import '../accounts/send.dart';
 import '../scan.dart';
+import '../tx.dart' show getShieldAmount;
 import '../utils.dart';
 import 'sync_status.dart';
 
@@ -33,11 +34,15 @@ class HomePageInner extends StatefulWidget {
   State<StatefulWidget> createState() => _HomeState();
 }
 
+/// Set by submit page when a shield transaction is successfully broadcast.
+/// Cleared when transparent balance reaches 0 (shield confirmed).
+DateTime? lastShieldSubmit;
+
+/// Set to true when a shield flow is started, so submit page knows to mark it.
+bool shieldPending = false;
+
 class _HomeState extends State<HomePageInner> {
   bool _balanceHidden = false;
-
-  // Track when a shield was last submitted (persists across rebuilds)
-  static DateTime? _lastShieldSubmit;
 
   @override
   void initState() {
@@ -103,21 +108,21 @@ class _HomeState extends State<HomePageInner> {
               children: [
                 // Radial gradient glow behind balance (Jupiter-style)
                 Positioned(
-                  top: -80,
+                  top: 0,
                   left: 0,
                   right: 0,
-                  height: 380,
+                  height: 420,
                   child: Container(
                     decoration: BoxDecoration(
                       gradient: RadialGradient(
-                        center: const Alignment(0.0, -0.3),
-                        radius: 1.2,
+                        center: const Alignment(0.0, -1.0),
+                        radius: 1.3,
                         colors: [
-                          ZipherColors.cyan.withValues(alpha: 0.08),
-                          ZipherColors.purple.withValues(alpha: 0.03),
+                          ZipherColors.purple.withValues(alpha: 0.12),
+                          ZipherColors.cyan.withValues(alpha: 0.05),
                           Colors.transparent,
                         ],
-                        stops: const [0.0, 0.5, 1.0],
+                        stops: const [0.0, 0.45, 1.0],
                       ),
                     ),
                   ),
@@ -304,18 +309,41 @@ class _HomeState extends State<HomePageInner> {
                               ),
                             ),
                           ],
-
-                          // (privacy info moved to shield banner below)
                         ],
                       ),
                     ),
                   ),
                 ),
 
+                // Balance breakdown — shielded / transparent split
+                if (totalBal > 0 && !_balanceHidden)
+                  SliverToBoxAdapter(
+                    child: Padding(
+                      padding: const EdgeInsets.fromLTRB(20, 16, 20, 0),
+                      child: Builder(builder: (_) {
+                        // Clear shield flag when transparent reaches 0
+                        if (transparentBal == 0 && lastShieldSubmit != null) {
+                          lastShieldSubmit = null;
+                        }
+                        final shieldingInProgress = lastShieldSubmit != null &&
+                            DateTime.now()
+                                    .difference(lastShieldSubmit!)
+                                    .inMinutes <
+                                10;
+                        return _BalanceBreakdown(
+                          shieldedBal: shieldedBal,
+                          transparentBal: transparentBal,
+                          shieldingInProgress: shieldingInProgress,
+                          onShield: () => _shield(transparentBal),
+                        );
+                      }),
+                    ),
+                  ),
+
                 // Action buttons
                 SliverToBoxAdapter(
                   child: Padding(
-                    padding: const EdgeInsets.fromLTRB(20, 28, 20, 0),
+                    padding: const EdgeInsets.fromLTRB(20, 20, 20, 0),
                     child: Row(
                       children: [
                         Expanded(
@@ -338,44 +366,6 @@ class _HomeState extends State<HomePageInner> {
                     ),
                   ),
                 ),
-
-                // Privacy banner — contextual
-                if (totalBal > 0 && transparentBal > 0) ...[
-                  // Check if a shield was recently submitted (< 10 min)
-                  if (_lastShieldSubmit != null &&
-                      DateTime.now().difference(_lastShieldSubmit!).inMinutes < 10)
-                    SliverToBoxAdapter(
-                      child: Padding(
-                        padding: const EdgeInsets.fromLTRB(20, 14, 20, 0),
-                        child: _ShieldingInProgress(),
-                      ),
-                    )
-                  else
-                    SliverToBoxAdapter(
-                      child: Padding(
-                        padding: const EdgeInsets.fromLTRB(20, 14, 20, 0),
-                        child: _ShieldNudge(
-                          transparentBal: transparentBal,
-                          shieldedBal: shieldedBal,
-                          totalBal: totalBal,
-                          onShield: () => _shield(transparentBal),
-                        ),
-                      ),
-                    ),
-                ] else if (totalBal > 0 && transparentBal == 0) ...[
-                  // Transparent is zero — clear any pending shield flag
-                  if (_lastShieldSubmit != null)
-                    SliverToBoxAdapter(child: Builder(builder: (_) {
-                      _lastShieldSubmit = null;
-                      return const SizedBox.shrink();
-                    })),
-                  SliverToBoxAdapter(
-                    child: Padding(
-                      padding: const EdgeInsets.fromLTRB(20, 14, 20, 0),
-                      child: _FullyPrivateBadge(),
-                    ),
-                  ),
-                ],
 
                 // Backup warning
                 if (!aa.saved)
@@ -532,15 +522,8 @@ class _HomeState extends State<HomePageInner> {
       if (!authed) return;
     }
 
-    // Deduct a generous fee buffer (20000 zatoshi = 0.0002 ZEC) so we
-    // don't try to shield more than we can afford after ZIP-317 fees.
-    const feeBuf = 20000;
-    final amountToShield = transparentBal > feeBuf
-        ? transparentBal - feeBuf
-        : transparentBal;
-
-    logger.i('[Shield] transparent=$transparentBal, '
-        'amountToShield=$amountToShield, fee=${coinSettings.feeT.fee}');
+    final amtStr = amountToString2(transparentBal);
+    logger.i('[Shield] transparent=$transparentBal ($amtStr ZEC), fee=${coinSettings.feeT.fee}');
 
     try {
       final plan = await WarpApi.transferPools(
@@ -548,19 +531,17 @@ class _HomeState extends State<HomePageInner> {
         aa.id,
         1, // from: transparent (bitmask: 1=t, 2=sapling, 4=orchard)
         4, // to: orchard (most private pool)
-        amountToShield,
-        false,
-        'Auto-shield via Zipher',
+        transparentBal,
+        true, // includeFee: deduct fee from amount so everything is swept
+        'Auto-shield $amtStr ZEC',
         0,
         appSettings.anchorOffset,
         coinSettings.feeT,
       );
       if (!mounted) return;
-      await GoRouter.of(context)
+      shieldPending = true;
+      GoRouter.of(context)
           .push('/account/txplan?tab=account&shield=1', extra: plan);
-      // User returned from shield flow — mark as submitted
-      _lastShieldSubmit = DateTime.now();
-      if (mounted) setState(() {});
     } on String catch (e) {
       logger.e('[Shield] Error: $e');
       if (!mounted) return;
@@ -571,239 +552,228 @@ class _HomeState extends State<HomePageInner> {
   }
 }
 
-// ─── Privacy meter ──────────────────────────────────────────
+// ─── Balance breakdown (Hybrid: Actionable + Health Meter) ───
 
-// ─── Shield nudge banner ────────────────────────────────────
-
-class _ShieldNudge extends StatelessWidget {
-  final int transparentBal;
+class _BalanceBreakdown extends StatelessWidget {
   final int shieldedBal;
-  final int totalBal;
+  final int transparentBal;
+  final bool shieldingInProgress;
   final VoidCallback onShield;
 
-  const _ShieldNudge({
-    required this.transparentBal,
+  const _BalanceBreakdown({
     required this.shieldedBal,
-    required this.totalBal,
+    required this.transparentBal,
+    required this.shieldingInProgress,
     required this.onShield,
   });
 
   @override
   Widget build(BuildContext context) {
-    final pct = totalBal > 0 ? (shieldedBal / totalBal).clamp(0.0, 1.0) : 1.0;
-    final pctInt = (pct * 100).round();
+    final totalBal = shieldedBal + transparentBal;
+    final isFullyShielded = transparentBal == 0;
+    final pct =
+        totalBal > 0 ? (shieldedBal / totalBal).clamp(0.0, 1.0) : 1.0;
 
-    // Accent color shifts from red (0%) → orange (50%) → purple (near 100%)
-    final Color accentColor;
-    if (pct >= 0.8) {
-      accentColor = ZipherColors.purple;
-    } else if (pct >= 0.5) {
-      accentColor = Color.lerp(
-          ZipherColors.orange, ZipherColors.purple, (pct - 0.5) / 0.3)!;
-    } else {
-      accentColor =
-          Color.lerp(const Color(0xFFEF4444), ZipherColors.orange, pct / 0.5)!;
-    }
+    // Consistent purple for bar, button, and shield icons
+    const barColor = ZipherColors.purple;
 
-    return Material(
-      color: Colors.transparent,
-      child: InkWell(
-        onTap: onShield,
+    return Container(
+      clipBehavior: Clip.antiAlias,
+      decoration: BoxDecoration(
+        color: Colors.white.withValues(alpha: 0.03),
         borderRadius: BorderRadius.circular(14),
-        child: Container(
-          padding: const EdgeInsets.fromLTRB(14, 12, 14, 10),
-          decoration: BoxDecoration(
-            color: accentColor.withValues(alpha: 0.05),
-            borderRadius: BorderRadius.circular(14),
-            border: Border.all(
-              color: accentColor.withValues(alpha: 0.10),
-            ),
-          ),
-          child: Column(
-            children: [
-              Row(
-                children: [
-                  // Shield icon
-                  Container(
-                    width: 34,
-                    height: 34,
-                    decoration: BoxDecoration(
-                      color: accentColor.withValues(alpha: 0.10),
-                      shape: BoxShape.circle,
+        border: Border.all(
+          color: Colors.white.withValues(alpha: 0.04),
+        ),
+      ),
+      child: Column(
+        children: [
+          Padding(
+            padding: const EdgeInsets.fromLTRB(14, 14, 14, 0),
+            child: Column(
+              children: [
+                // Shielded row
+                Row(
+                  children: [
+                    Icon(
+                      Icons.shield_rounded,
+                      size: 15,
+                      color: isFullyShielded
+                          ? ZipherColors.purple.withValues(alpha: 0.7)
+                          : ZipherColors.purple.withValues(alpha: 0.5),
                     ),
-                    child: Icon(
-                      Icons.shield_outlined,
-                      size: 17,
-                      color: accentColor.withValues(alpha: 0.85),
+                    const Gap(8),
+                    Text(
+                      'Shielded',
+                      style: TextStyle(
+                        fontSize: 13,
+                        color: Colors.white.withValues(alpha: 0.45),
+                      ),
+                    ),
+                    const Spacer(),
+                    Text(
+                      '${amountToString2(shieldedBal)} ZEC',
+                      style: TextStyle(
+                        fontSize: 13,
+                        fontWeight: FontWeight.w600,
+                        color: isFullyShielded
+                            ? ZipherColors.purple.withValues(alpha: 0.7)
+                            : Colors.white.withValues(alpha: 0.6),
+                      ),
+                    ),
+                  ],
+                ),
+
+                if (!isFullyShielded) ...[
+                  Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 10),
+                    child: Divider(
+                      height: 1,
+                      color: Colors.white.withValues(alpha: 0.04),
                     ),
                   ),
-                  const Gap(12),
-                  // Text
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
+
+                  // Transparent row with shield action
+                  Row(
+                    children: [
+                      Icon(
+                        Icons.visibility_outlined,
+                        size: 15,
+                        color: ZipherColors.orange.withValues(alpha: 0.6),
+                      ),
+                      const Gap(8),
+                      Text(
+                        'Transparent',
+                        style: TextStyle(
+                          fontSize: 13,
+                          color: Colors.white.withValues(alpha: 0.45),
+                        ),
+                      ),
+                      const Spacer(),
+                      if (shieldingInProgress) ...[
+                        SizedBox(
+                          width: 12,
+                          height: 12,
+                          child: CircularProgressIndicator(
+                            strokeWidth: 1.5,
+                            color:
+                                ZipherColors.purple.withValues(alpha: 0.5),
+                          ),
+                        ),
+                        const Gap(8),
                         Text(
-                          'Shield your funds',
+                          'Shielding...',
+                          style: TextStyle(
+                            fontSize: 12,
+                            fontWeight: FontWeight.w500,
+                            color: ZipherColors.purple
+                                .withValues(alpha: 0.6),
+                          ),
+                        ),
+                      ] else ...[
+                        Text(
+                          '${amountToString2(transparentBal)} ZEC',
                           style: TextStyle(
                             fontSize: 13,
                             fontWeight: FontWeight.w600,
-                            color: Colors.white.withValues(alpha: 0.85),
+                            color:
+                                ZipherColors.orange.withValues(alpha: 0.7),
                           ),
                         ),
-                        const Gap(2),
+                        const Gap(10),
+                        // Premium Shield button
+                        GestureDetector(
+                          onTap: onShield,
+                          child: Container(
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 14, vertical: 6),
+                            decoration: BoxDecoration(
+                              color: ZipherColors.purple
+                                  .withValues(alpha: 0.18),
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                            child: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Icon(
+                                  Icons.shield_rounded,
+                                  size: 12,
+                                  color: ZipherColors.purple
+                                      .withValues(alpha: 0.85),
+                                ),
+                                const Gap(5),
+                                Text(
+                                  'Shield',
+                                  style: TextStyle(
+                                    fontSize: 12,
+                                    fontWeight: FontWeight.w700,
+                                    color: ZipherColors.purple
+                                        .withValues(alpha: 0.85),
+                                    letterSpacing: 0.3,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ],
+                    ],
+                  ),
+                ] else ...[
+                  // Fully shielded — subtle positive note
+                  Padding(
+                    padding: const EdgeInsets.only(top: 8),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Icon(
+                          Icons.check_circle_outline_rounded,
+                          size: 13,
+                          color:
+                              ZipherColors.purple.withValues(alpha: 0.45),
+                        ),
+                        const Gap(6),
                         Text(
-                          '${amountToString2(transparentBal)} ZEC exposed  ·  $pctInt% shielded',
+                          'Fully private',
                           style: TextStyle(
                             fontSize: 11,
-                            color: Colors.white.withValues(alpha: 0.35),
+                            fontWeight: FontWeight.w500,
+                            color: ZipherColors.purple
+                                .withValues(alpha: 0.45),
                           ),
                         ),
                       ],
                     ),
                   ),
-                  // Shield action
-                  Container(
-                    padding:
-                        const EdgeInsets.symmetric(horizontal: 14, vertical: 7),
-                    decoration: BoxDecoration(
-                      color: accentColor.withValues(alpha: 0.14),
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                    child: Text(
-                      'Shield',
-                      style: TextStyle(
-                        fontSize: 12,
-                        fontWeight: FontWeight.w600,
-                        color: accentColor,
-                      ),
-                    ),
-                  ),
                 ],
-              ),
-              // Mini progress bar
-              const Gap(10),
-              ClipRRect(
-                borderRadius: BorderRadius.circular(2.5),
-                child: SizedBox(
-                  height: 4,
-                  child: Stack(
-                    children: [
-                      Positioned.fill(
-                        child: Container(
-                            color: accentColor.withValues(alpha: 0.20)),
-                      ),
-                      if (pct > 0)
-                        FractionallySizedBox(
-                          alignment: Alignment.centerLeft,
-                          widthFactor: pct,
-                          child: Container(
-                            decoration: BoxDecoration(
-                              color: accentColor,
-                              borderRadius: BorderRadius.circular(2.5),
-                            ),
-                          ),
-                        ),
-                    ],
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-// ─── Fully Private badge (positive reinforcement) ───────────
-
-class _FullyPrivateBadge extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
-      decoration: BoxDecoration(
-        color: ZipherColors.purple.withValues(alpha: 0.06),
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(
-          color: ZipherColors.purple.withValues(alpha: 0.10),
-        ),
-      ),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Icon(
-            Icons.shield_rounded,
-            size: 15,
-            color: ZipherColors.purple.withValues(alpha: 0.7),
-          ),
-          const Gap(8),
-          Text(
-            'Fully private',
-            style: TextStyle(
-              fontSize: 12,
-              fontWeight: FontWeight.w600,
-              color: ZipherColors.purple.withValues(alpha: 0.7),
+              ],
             ),
           ),
-          const Gap(6),
-          Text(
-            '·  100% shielded',
-            style: TextStyle(
-              fontSize: 11,
-              color: Colors.white.withValues(alpha: 0.25),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
 
-// ─── Shielding in progress banner ────────────────────────────
-
-class _ShieldingInProgress extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
-      decoration: BoxDecoration(
-        color: ZipherColors.purple.withValues(alpha: 0.06),
-        borderRadius: BorderRadius.circular(14),
-        border: Border.all(
-          color: ZipherColors.purple.withValues(alpha: 0.10),
-        ),
-      ),
-      child: Row(
-        children: [
-          SizedBox(
-            width: 18,
-            height: 18,
-            child: CircularProgressIndicator(
-              strokeWidth: 2,
-              color: ZipherColors.purple.withValues(alpha: 0.6),
-            ),
-          ),
+          // Privacy health bar — thin strip at card bottom
           const Gap(12),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+          SizedBox(
+            height: 3,
+            child: Stack(
               children: [
-                Text(
-                  'Shielding in progress',
-                  style: TextStyle(
-                    fontSize: 13,
-                    fontWeight: FontWeight.w600,
-                    color: ZipherColors.purple.withValues(alpha: 0.7),
+                Positioned.fill(
+                  child: Container(
+                    color: barColor.withValues(alpha: 0.10),
                   ),
                 ),
-                const Gap(2),
-                Text(
-                  'Waiting for confirmation...',
-                  style: TextStyle(
-                    fontSize: 11,
-                    color: Colors.white.withValues(alpha: 0.3),
+                Align(
+                  alignment: Alignment.centerLeft,
+                  child: FractionallySizedBox(
+                    widthFactor: pct,
+                    child: Container(
+                      decoration: BoxDecoration(
+                        color: barColor,
+                        borderRadius: const BorderRadius.only(
+                          topRight: Radius.circular(2),
+                          bottomRight: Radius.circular(2),
+                        ),
+                      ),
+                    ),
                   ),
                 ),
               ],
@@ -864,36 +834,75 @@ class _ActionButton extends StatelessWidget {
 
 // ─── Transaction row (home page — compact) ──────────────────
 
-class _TxRow extends StatelessWidget {
+class _TxRow extends StatefulWidget {
   final Tx tx;
   final int index;
   const _TxRow({required this.tx, required this.index});
 
   @override
+  State<_TxRow> createState() => _TxRowState();
+}
+
+class _TxRowState extends State<_TxRow> {
+  Tx get tx => widget.tx;
+  int get index => widget.index;
+
+  @override
   Widget build(BuildContext context) {
     final isIncoming = tx.value > 0;
-    final isShielding = tx.value <= 0 && (tx.address == null || tx.address!.isEmpty);
     final memo = tx.memo ?? '';
-    final label = memo.isNotEmpty
-        ? memo
-        : isShielding
-            ? 'Shielded'
-            : isIncoming
-                ? 'Received'
-                : 'Sent';
+    // Detect shielding: self-transfer (no address) or our auto-shield memo
+    final isShielding = (tx.value <= 0 &&
+            (tx.address == null || tx.address!.isEmpty)) ||
+        memo.contains('Auto-shield');
+
+    final String label;
+    if (isShielding) {
+      label = 'Shielded';
+    } else if (memo.isNotEmpty) {
+      label = memo;
+    } else if (isIncoming) {
+      label = 'Received';
+    } else {
+      label = 'Sent';
+    }
+
     final timeStr = timeago.format(tx.timestamp);
-    final amountStr = isShielding
-        ? '${decimalToString(tx.value.abs())} ZEC'
-        : '${isIncoming ? '+' : ''}${decimalToString(tx.value)} ZEC';
+
+    // For shielding, try memo first, then CipherScan as fallback
+    double? shieldedAmount;
+    if (isShielding) {
+      final match = RegExp(r'Auto-shield ([\d.,]+) ZEC').firstMatch(memo);
+      if (match != null) {
+        shieldedAmount = double.tryParse(match.group(1)!.replaceAll(',', '.'));
+      }
+      shieldedAmount ??= getShieldAmount(tx.fullTxId,
+          onLoaded: () { if (mounted) setState(() {}); });
+    }
+
+    final String amountStr;
+    if (isShielding && shieldedAmount != null) {
+      amountStr = '${decimalToString(shieldedAmount)} ZEC';
+    } else if (isShielding) {
+      amountStr = '···';
+    } else {
+      amountStr = '${isIncoming ? '+' : ''}${decimalToString(tx.value)} ZEC';
+    }
+
     final amountColor = isIncoming
         ? ZipherColors.green
         : isShielding
-            ? ZipherColors.purple.withValues(alpha: 0.6)
+            ? ZipherColors.purple.withValues(alpha: 0.7)
             : Colors.white.withValues(alpha: 0.6);
 
     // Fiat
     final price = marketPrice.price;
-    final fiat = price != null ? '\$${(tx.value.abs() * price).toStringAsFixed(2)}' : '';
+    final fiatValue = isShielding && shieldedAmount != null
+        ? shieldedAmount
+        : tx.value.abs();
+    final fiat = price != null
+        ? '\$${(fiatValue * price).toStringAsFixed(2)}'
+        : '';
 
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 3),
@@ -919,7 +928,9 @@ class _TxRow extends StatelessWidget {
                   width: 34,
                   height: 34,
                   decoration: BoxDecoration(
-                    color: Colors.white.withValues(alpha: 0.06),
+                    color: isShielding
+                        ? ZipherColors.purple.withValues(alpha: 0.10)
+                        : Colors.white.withValues(alpha: 0.06),
                     shape: BoxShape.circle,
                   ),
                   child: Icon(
@@ -929,7 +940,9 @@ class _TxRow extends StatelessWidget {
                             ? Icons.south_west_rounded
                             : Icons.north_east_rounded,
                     size: 16,
-                    color: Colors.white.withValues(alpha: 0.4),
+                    color: isShielding
+                        ? ZipherColors.purple.withValues(alpha: 0.6)
+                        : Colors.white.withValues(alpha: 0.4),
                   ),
                 ),
                 const Gap(12),
@@ -969,7 +982,7 @@ class _TxRow extends StatelessWidget {
                         color: amountColor,
                       ),
                     ),
-                    if (fiat.isNotEmpty && !isShielding) ...[
+                    if (fiat.isNotEmpty) ...[
                       const Gap(1),
                       Text(
                         fiat,
