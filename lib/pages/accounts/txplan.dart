@@ -13,9 +13,11 @@ import '../../generated/intl/messages.dart';
 
 class TxPlanPage extends StatefulWidget {
   final bool signOnly;
+  final bool isShield;
   final String plan;
   final String tab;
-  TxPlanPage(this.plan, {required this.tab, this.signOnly = false});
+  TxPlanPage(this.plan,
+      {required this.tab, this.signOnly = false, this.isShield = false});
 
   @override
   State<StatefulWidget> createState() => _TxPlanState();
@@ -35,13 +37,15 @@ class _TxPlanState extends State<TxPlanPage> with WithLoadingAnimation {
     final invalidPrivacy = privacyLevel < appSettings.minPrivacyLevel;
     final canSend = aa.canPay && !invalidPrivacy;
 
+    final isShield = widget.isShield;
+
     return Scaffold(
       backgroundColor: ZipherColors.bg,
       appBar: AppBar(
         backgroundColor: ZipherColors.bg,
         elevation: 0,
         title: Text(
-          'CONFIRM',
+          isShield ? 'SHIELD' : 'CONFIRM',
           style: TextStyle(
             fontSize: 14,
             fontWeight: FontWeight.w600,
@@ -66,19 +70,22 @@ class _TxPlanState extends State<TxPlanPage> with WithLoadingAnimation {
                   children: [
                     const Gap(16),
 
-                    // ── Hero: logo + arrow badge + amount ──
-                    _buildHero(totalAmount),
+                    // ── Hero: logo + badge + amount ──
+                    _buildHero(totalAmount, isShield: isShield),
                     const Gap(28),
 
-                    // ── Recipients ──
-                    ...outputs.map((o) => _buildRecipient(o)),
+                    // ── Recipient / Destination ──
+                    if (isShield)
+                      _buildShieldDestination()
+                    else
+                      ...outputs.map((o) => _buildRecipient(o)),
 
                     // ── Details card ──
-                    _buildDetails(fee, privacyLevel),
+                    _buildDetails(fee, privacyLevel, isShield: isShield),
                     const Gap(16),
 
                     // ── Privacy warning ──
-                    if (invalidPrivacy)
+                    if (invalidPrivacy && !isShield)
                       Container(
                         padding: const EdgeInsets.symmetric(
                             horizontal: 14, vertical: 12),
@@ -113,8 +120,8 @@ class _TxPlanState extends State<TxPlanPage> with WithLoadingAnimation {
               ),
             ),
 
-            // ── Send button ──
-            _buildSendButton(canSend),
+            // ── Action button ──
+            _buildSendButton(canSend, isShield: isShield),
           ],
         ),
       ),
@@ -125,12 +132,18 @@ class _TxPlanState extends State<TxPlanPage> with WithLoadingAnimation {
   // HERO
   // ═══════════════════════════════════════════════════════════
 
-  Widget _buildHero(int totalAmount) {
+  Widget _buildHero(int totalAmount, {bool isShield = false}) {
     final fiatStr = _fiatAmount(totalAmount);
+
+    final badgeColor =
+        isShield ? ZipherColors.purple : ZipherColors.cyan;
+    final badgeIcon =
+        isShield ? Icons.shield_rounded : Icons.north_east_rounded;
+    final label = isShield ? 'Shielding' : 'You\'re Sending';
 
     return Column(
       children: [
-        // Zcash logo with send arrow badge (matching TX detail style)
+        // Zcash logo with badge
         SizedBox(
           width: 64,
           height: 64,
@@ -156,15 +169,15 @@ class _TxPlanState extends State<TxPlanPage> with WithLoadingAnimation {
                   width: 24,
                   height: 24,
                   decoration: BoxDecoration(
-                    color: ZipherColors.cyan,
+                    color: badgeColor,
                     shape: BoxShape.circle,
                     border: Border.all(
                       color: ZipherColors.bg,
                       width: 2.5,
                     ),
                   ),
-                  child: const Icon(
-                    Icons.north_east_rounded,
+                  child: Icon(
+                    badgeIcon,
                     size: 12,
                     color: Colors.white,
                   ),
@@ -175,9 +188,9 @@ class _TxPlanState extends State<TxPlanPage> with WithLoadingAnimation {
         ),
         const Gap(18),
 
-        // "You're Sending" label
+        // Label
         Text(
-          'You\'re Sending',
+          label,
           style: TextStyle(
             fontSize: 14,
             fontWeight: FontWeight.w500,
@@ -325,13 +338,71 @@ class _TxPlanState extends State<TxPlanPage> with WithLoadingAnimation {
   }
 
   // ═══════════════════════════════════════════════════════════
+  // SHIELD DESTINATION (replaces recipient for shielding)
+  // ═══════════════════════════════════════════════════════════
+
+  Widget _buildShieldDestination() {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 10),
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 14),
+        decoration: BoxDecoration(
+          color: ZipherColors.purple.withValues(alpha: 0.05),
+          borderRadius: BorderRadius.circular(14),
+          border: Border.all(
+            color: ZipherColors.purple.withValues(alpha: 0.08),
+          ),
+        ),
+        child: Row(
+          children: [
+            Container(
+              width: 36,
+              height: 36,
+              decoration: BoxDecoration(
+                color: ZipherColors.purple.withValues(alpha: 0.10),
+                shape: BoxShape.circle,
+              ),
+              child: Icon(
+                Icons.shield_rounded,
+                size: 18,
+                color: ZipherColors.purple.withValues(alpha: 0.7),
+              ),
+            ),
+            const Gap(12),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'To your shielded wallet',
+                    style: TextStyle(
+                      fontSize: 14,
+                      fontWeight: FontWeight.w500,
+                      color: Colors.white.withValues(alpha: 0.8),
+                    ),
+                  ),
+                  const Gap(2),
+                  Text(
+                    'Transparent → Orchard (private)',
+                    style: TextStyle(
+                      fontSize: 11,
+                      color: Colors.white.withValues(alpha: 0.3),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  // ═══════════════════════════════════════════════════════════
   // DETAILS CARD
   // ═══════════════════════════════════════════════════════════
 
-  Widget _buildDetails(int fee, int privacyLevel) {
-    final privacyLabel = _privacyLabel(privacyLevel);
-    final privacyColor = _privacyColor(privacyLevel);
-
+  Widget _buildDetails(int fee, int privacyLevel, {bool isShield = false}) {
     return Container(
       padding: const EdgeInsets.all(14),
       decoration: BoxDecoration(
@@ -341,46 +412,55 @@ class _TxPlanState extends State<TxPlanPage> with WithLoadingAnimation {
       child: Column(
         children: [
           _detailRow('Network fee', amountToString2(fee, digits: 5) + ' ZEC'),
-          const Gap(10),
-          Divider(
-            height: 1,
-            color: Colors.white.withValues(alpha: 0.04),
-          ),
-          const Gap(10),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text(
-                'Privacy',
-                style: TextStyle(
-                  fontSize: 13,
-                  color: Colors.white.withValues(alpha: 0.35),
-                ),
-              ),
-              Row(
-                children: [
-                  Icon(
-                    privacyLevel >= 3
-                        ? Icons.shield_rounded
-                        : Icons.shield_outlined,
-                    size: 14,
-                    color: privacyColor.withValues(alpha: 0.7),
-                  ),
-                  const Gap(6),
-                  Text(
-                    privacyLabel,
-                    style: TextStyle(
-                      fontSize: 13,
-                      fontWeight: FontWeight.w500,
-                      color: privacyColor.withValues(alpha: 0.8),
-                    ),
-                  ),
-                ],
-              ),
-            ],
-          ),
+          if (!isShield) ...[
+            const Gap(10),
+            Divider(
+              height: 1,
+              color: Colors.white.withValues(alpha: 0.04),
+            ),
+            const Gap(10),
+            _buildPrivacyRow(privacyLevel),
+          ],
         ],
       ),
+    );
+  }
+
+  Widget _buildPrivacyRow(int privacyLevel) {
+    final privacyLabel = _privacyLabel(privacyLevel);
+    final privacyColor = _privacyColor(privacyLevel);
+
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Text(
+          'Privacy',
+          style: TextStyle(
+            fontSize: 13,
+            color: Colors.white.withValues(alpha: 0.35),
+          ),
+        ),
+        Row(
+          children: [
+            Icon(
+              privacyLevel >= 3
+                  ? Icons.shield_rounded
+                  : Icons.shield_outlined,
+              size: 14,
+              color: privacyColor.withValues(alpha: 0.7),
+            ),
+            const Gap(6),
+            Text(
+              privacyLabel,
+              style: TextStyle(
+                fontSize: 13,
+                fontWeight: FontWeight.w500,
+                color: privacyColor.withValues(alpha: 0.8),
+              ),
+            ),
+          ],
+        ),
+      ],
     );
   }
 
@@ -411,8 +491,25 @@ class _TxPlanState extends State<TxPlanPage> with WithLoadingAnimation {
   // SEND BUTTON
   // ═══════════════════════════════════════════════════════════
 
-  Widget _buildSendButton(bool canSend) {
-    final label = widget.signOnly ? 'Sign Transaction' : 'Send';
+  Widget _buildSendButton(bool canSend, {bool isShield = false}) {
+    final String label;
+    final IconData icon;
+    final Color accent;
+
+    if (widget.signOnly) {
+      label = 'Sign Transaction';
+      icon = Icons.draw_rounded;
+      accent = ZipherColors.cyan;
+    } else if (isShield) {
+      label = 'Shield Now';
+      icon = Icons.shield_rounded;
+      accent = ZipherColors.purple;
+    } else {
+      label = 'Send';
+      icon = Icons.send_rounded;
+      accent = ZipherColors.cyan;
+    }
+
     return SafeArea(
       child: Padding(
         padding: const EdgeInsets.fromLTRB(20, 8, 20, 12),
@@ -430,18 +527,16 @@ class _TxPlanState extends State<TxPlanPage> with WithLoadingAnimation {
                   child: Container(
                     padding: const EdgeInsets.symmetric(vertical: 16),
                     decoration: BoxDecoration(
-                      color: ZipherColors.cyan.withValues(alpha: 0.12),
+                      color: accent.withValues(alpha: 0.12),
                       borderRadius: BorderRadius.circular(14),
                     ),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Icon(
-                          widget.signOnly
-                              ? Icons.draw_rounded
-                              : Icons.send_rounded,
+                          icon,
                           size: 20,
-                          color: ZipherColors.cyan.withValues(alpha: 0.9),
+                          color: accent.withValues(alpha: 0.9),
                         ),
                         const Gap(10),
                         Text(
@@ -449,8 +544,7 @@ class _TxPlanState extends State<TxPlanPage> with WithLoadingAnimation {
                           style: TextStyle(
                             fontSize: 15,
                             fontWeight: FontWeight.w600,
-                            color:
-                                ZipherColors.cyan.withValues(alpha: 0.9),
+                            color: accent.withValues(alpha: 0.9),
                           ),
                         ),
                       ],

@@ -116,6 +116,7 @@ final router = GoRouter(
                     state.extra as String,
                     tab: state.uri.queryParameters['tab']!,
                     signOnly: state.uri.queryParameters['sign'] != null,
+                    isShield: state.uri.queryParameters['shield'] != null,
                   ),
                 ),
                 GoRoute(

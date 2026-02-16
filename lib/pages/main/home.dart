@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:timeago/timeago.dart' as timeago;
+import 'package:warp_api/data_fb_generated.dart';
 import 'package:warp_api/warp_api.dart';
 
 import '../../generated/intl/messages.dart';
@@ -34,6 +36,9 @@ class HomePageInner extends StatefulWidget {
 class _HomeState extends State<HomePageInner> {
   bool _balanceHidden = false;
 
+  // Track when a shield was last submitted (persists across rebuilds)
+  static DateTime? _lastShieldSubmit;
+
   @override
   void initState() {
     super.initState();
@@ -42,6 +47,17 @@ class _HomeState extends State<HomePageInner> {
   }
 
   String _formatFiat(double x) => '\$${x.toStringAsFixed(2)}';
+
+  void _showAccountSwitcher(BuildContext context) {
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: Colors.transparent,
+      isScrollControlled: true,
+      builder: (_) => _AccountSwitcherSheet(
+        onAccountChanged: () => setState(() {}),
+      ),
+    );
+  }
 
   Future<void> _onRefresh() async {
     if (syncStatus2.syncing) return;
@@ -132,12 +148,26 @@ class _HomeState extends State<HomePageInner> {
                           ),
                         ),
                         const Gap(10),
-                        Text(
-                          'Main',
-                          style: TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.w600,
-                            color: Colors.white.withValues(alpha: 0.9),
+                        GestureDetector(
+                          onTap: () => _showAccountSwitcher(context),
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Text(
+                                aa.name,
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w600,
+                                  color: Colors.white.withValues(alpha: 0.9),
+                                ),
+                              ),
+                              const Gap(4),
+                              Icon(
+                                Icons.expand_more_rounded,
+                                size: 20,
+                                color: Colors.white.withValues(alpha: 0.3),
+                              ),
+                            ],
                           ),
                         ),
                         const Spacer(),
@@ -275,14 +305,7 @@ class _HomeState extends State<HomePageInner> {
                             ),
                           ],
 
-                          // Privacy meter — only when there are funds
-                          if (totalBal > 0) ...[
-                            const Gap(20),
-                            _PrivacyMeter(
-                              shielded: shieldedBal,
-                              total: totalBal,
-                            ),
-                          ],
+                          // (privacy info moved to shield banner below)
                         ],
                       ),
                     ),
@@ -316,17 +339,43 @@ class _HomeState extends State<HomePageInner> {
                   ),
                 ),
 
-                // Shield nudge — show when transparent > 0
-                if (transparentBal > 0)
+                // Privacy banner — contextual
+                if (totalBal > 0 && transparentBal > 0) ...[
+                  // Check if a shield was recently submitted (< 10 min)
+                  if (_lastShieldSubmit != null &&
+                      DateTime.now().difference(_lastShieldSubmit!).inMinutes < 10)
+                    SliverToBoxAdapter(
+                      child: Padding(
+                        padding: const EdgeInsets.fromLTRB(20, 14, 20, 0),
+                        child: _ShieldingInProgress(),
+                      ),
+                    )
+                  else
+                    SliverToBoxAdapter(
+                      child: Padding(
+                        padding: const EdgeInsets.fromLTRB(20, 14, 20, 0),
+                        child: _ShieldNudge(
+                          transparentBal: transparentBal,
+                          shieldedBal: shieldedBal,
+                          totalBal: totalBal,
+                          onShield: () => _shield(transparentBal),
+                        ),
+                      ),
+                    ),
+                ] else if (totalBal > 0 && transparentBal == 0) ...[
+                  // Transparent is zero — clear any pending shield flag
+                  if (_lastShieldSubmit != null)
+                    SliverToBoxAdapter(child: Builder(builder: (_) {
+                      _lastShieldSubmit = null;
+                      return const SizedBox.shrink();
+                    })),
                   SliverToBoxAdapter(
                     child: Padding(
                       padding: const EdgeInsets.fromLTRB(20, 14, 20, 0),
-                      child: _ShieldNudge(
-                        transparentBal: transparentBal,
-                        onShield: () => _shield(transparentBal),
-                      ),
+                      child: _FullyPrivateBadge(),
                     ),
                   ),
+                ],
 
                 // Backup warning
                 if (!aa.saved)
@@ -482,13 +531,24 @@ class _HomeState extends State<HomePageInner> {
       final authed = await authBarrier(context, dismissable: true);
       if (!authed) return;
     }
+
+    // Deduct a generous fee buffer (20000 zatoshi = 0.0002 ZEC) so we
+    // don't try to shield more than we can afford after ZIP-317 fees.
+    const feeBuf = 20000;
+    final amountToShield = transparentBal > feeBuf
+        ? transparentBal - feeBuf
+        : transparentBal;
+
+    logger.i('[Shield] transparent=$transparentBal, '
+        'amountToShield=$amountToShield, fee=${coinSettings.feeT.fee}');
+
     try {
       final plan = await WarpApi.transferPools(
         aa.coin,
         aa.id,
-        0, // from: transparent
-        2, // to: orchard (most private pool)
-        transparentBal,
+        1, // from: transparent (bitmask: 1=t, 2=sapling, 4=orchard)
+        4, // to: orchard (most private pool)
+        amountToShield,
         false,
         'Auto-shield via Zipher',
         0,
@@ -496,8 +556,13 @@ class _HomeState extends State<HomePageInner> {
         coinSettings.feeT,
       );
       if (!mounted) return;
-      GoRouter.of(context).push('/account/txplan?tab=account', extra: plan);
+      await GoRouter.of(context)
+          .push('/account/txplan?tab=account&shield=1', extra: plan);
+      // User returned from shield flow — mark as submitted
+      _lastShieldSubmit = DateTime.now();
+      if (mounted) setState(() {});
     } on String catch (e) {
+      logger.e('[Shield] Error: $e');
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text(e), duration: const Duration(seconds: 3)),
@@ -508,192 +573,243 @@ class _HomeState extends State<HomePageInner> {
 
 // ─── Privacy meter ──────────────────────────────────────────
 
-class _PrivacyMeter extends StatelessWidget {
-  final int shielded;
-  final int total;
-
-  const _PrivacyMeter({required this.shielded, required this.total});
-
-  @override
-  Widget build(BuildContext context) {
-    final pct = total > 0 ? (shielded / total).clamp(0.0, 1.0) : 1.0;
-    final pctInt = (pct * 100).round();
-
-    // Color gradient: red (0%) → orange (50%) → purple (100%)
-    final Color barColor;
-    if (pct >= 0.8) {
-      barColor = ZipherColors.purple;
-    } else if (pct >= 0.5) {
-      barColor = Color.lerp(ZipherColors.orange, ZipherColors.purple,
-          (pct - 0.5) / 0.3)!;
-    } else {
-      barColor = Color.lerp(
-          const Color(0xFFEF4444), ZipherColors.orange, pct / 0.5)!;
-    }
-
-    final String label;
-    if (pctInt == 100) {
-      label = 'Fully private';
-    } else if (pctInt >= 80) {
-      label = 'Mostly private';
-    } else if (pctInt >= 50) {
-      label = 'Partially exposed';
-    } else {
-      label = 'Low privacy';
-    }
-
-    return Column(
-      children: [
-        // Label row
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Row(
-              children: [
-                Icon(
-                  pctInt == 100 ? Icons.shield_rounded : Icons.shield_outlined,
-                  size: 14,
-                  color: barColor.withValues(alpha: 0.8),
-                ),
-                const Gap(6),
-                Text(
-                  label,
-                  style: TextStyle(
-                    fontSize: 11,
-                    fontWeight: FontWeight.w500,
-                    color: barColor.withValues(alpha: 0.8),
-                  ),
-                ),
-              ],
-            ),
-            Text(
-              '$pctInt% shielded',
-              style: TextStyle(
-                fontSize: 11,
-                fontWeight: FontWeight.w500,
-                color: Colors.white.withValues(alpha: 0.3),
-              ),
-            ),
-          ],
-        ),
-        const Gap(6),
-        // Progress bar
-        ClipRRect(
-          borderRadius: BorderRadius.circular(3),
-          child: SizedBox(
-            height: 4,
-            child: Stack(
-              children: [
-                // Background track
-                Positioned.fill(
-                  child: Container(
-                    color: Colors.white.withValues(alpha: 0.06),
-                  ),
-                ),
-                // Fill bar
-                FractionallySizedBox(
-                  alignment: Alignment.centerLeft,
-                  widthFactor: pct,
-                  child: Container(
-                    decoration: BoxDecoration(
-                      color: barColor,
-                      borderRadius: BorderRadius.circular(3),
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ),
-      ],
-    );
-  }
-}
-
 // ─── Shield nudge banner ────────────────────────────────────
 
 class _ShieldNudge extends StatelessWidget {
   final int transparentBal;
+  final int shieldedBal;
+  final int totalBal;
   final VoidCallback onShield;
 
   const _ShieldNudge({
     required this.transparentBal,
+    required this.shieldedBal,
+    required this.totalBal,
     required this.onShield,
   });
 
   @override
   Widget build(BuildContext context) {
+    final pct = totalBal > 0 ? (shieldedBal / totalBal).clamp(0.0, 1.0) : 1.0;
+    final pctInt = (pct * 100).round();
+
+    // Accent color shifts from red (0%) → orange (50%) → purple (near 100%)
+    final Color accentColor;
+    if (pct >= 0.8) {
+      accentColor = ZipherColors.purple;
+    } else if (pct >= 0.5) {
+      accentColor = Color.lerp(
+          ZipherColors.orange, ZipherColors.purple, (pct - 0.5) / 0.3)!;
+    } else {
+      accentColor =
+          Color.lerp(const Color(0xFFEF4444), ZipherColors.orange, pct / 0.5)!;
+    }
+
     return Material(
       color: Colors.transparent,
       child: InkWell(
         onTap: onShield,
-        borderRadius: BorderRadius.circular(12),
+        borderRadius: BorderRadius.circular(14),
         child: Container(
-          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+          padding: const EdgeInsets.fromLTRB(14, 12, 14, 10),
           decoration: BoxDecoration(
-            color: ZipherColors.cyan.withValues(alpha: 0.06),
-            borderRadius: BorderRadius.circular(12),
+            color: accentColor.withValues(alpha: 0.05),
+            borderRadius: BorderRadius.circular(14),
             border: Border.all(
-              color: ZipherColors.cyan.withValues(alpha: 0.1),
+              color: accentColor.withValues(alpha: 0.10),
             ),
           ),
-          child: Row(
+          child: Column(
             children: [
-              Container(
-                width: 32,
-                height: 32,
-                decoration: BoxDecoration(
-                  color: ZipherColors.cyan.withValues(alpha: 0.1),
-                  shape: BoxShape.circle,
-                ),
-                child: Icon(
-                  Icons.shield_rounded,
-                  size: 16,
-                  color: ZipherColors.cyan.withValues(alpha: 0.8),
-                ),
-              ),
-              const Gap(12),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      'Shield your funds',
+              Row(
+                children: [
+                  // Shield icon
+                  Container(
+                    width: 34,
+                    height: 34,
+                    decoration: BoxDecoration(
+                      color: accentColor.withValues(alpha: 0.10),
+                      shape: BoxShape.circle,
+                    ),
+                    child: Icon(
+                      Icons.shield_outlined,
+                      size: 17,
+                      color: accentColor.withValues(alpha: 0.85),
+                    ),
+                  ),
+                  const Gap(12),
+                  // Text
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'Shield your funds',
+                          style: TextStyle(
+                            fontSize: 13,
+                            fontWeight: FontWeight.w600,
+                            color: Colors.white.withValues(alpha: 0.85),
+                          ),
+                        ),
+                        const Gap(2),
+                        Text(
+                          '${amountToString2(transparentBal)} ZEC exposed  ·  $pctInt% shielded',
+                          style: TextStyle(
+                            fontSize: 11,
+                            color: Colors.white.withValues(alpha: 0.35),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  // Shield action
+                  Container(
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 14, vertical: 7),
+                    decoration: BoxDecoration(
+                      color: accentColor.withValues(alpha: 0.14),
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    child: Text(
+                      'Shield',
                       style: TextStyle(
-                        fontSize: 13,
+                        fontSize: 12,
                         fontWeight: FontWeight.w600,
-                        color: Colors.white.withValues(alpha: 0.85),
+                        color: accentColor,
                       ),
                     ),
-                    const Gap(1),
-                    Text(
-                      '${amountToString2(transparentBal)} ZEC exposed on transparent',
-                      style: TextStyle(
-                        fontSize: 11,
-                        color: Colors.white.withValues(alpha: 0.35),
-                      ),
-                    ),
-                  ],
-                ),
+                  ),
+                ],
               ),
-              Container(
-                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-                decoration: BoxDecoration(
-                  color: ZipherColors.cyan.withValues(alpha: 0.12),
-                  borderRadius: BorderRadius.circular(8),
-                ),
-                child: Text(
-                  'Shield',
-                  style: TextStyle(
-                    fontSize: 12,
-                    fontWeight: FontWeight.w600,
-                    color: ZipherColors.cyan,
+              // Mini progress bar
+              const Gap(10),
+              ClipRRect(
+                borderRadius: BorderRadius.circular(2.5),
+                child: SizedBox(
+                  height: 4,
+                  child: Stack(
+                    children: [
+                      Positioned.fill(
+                        child: Container(
+                            color: accentColor.withValues(alpha: 0.20)),
+                      ),
+                      if (pct > 0)
+                        FractionallySizedBox(
+                          alignment: Alignment.centerLeft,
+                          widthFactor: pct,
+                          child: Container(
+                            decoration: BoxDecoration(
+                              color: accentColor,
+                              borderRadius: BorderRadius.circular(2.5),
+                            ),
+                          ),
+                        ),
+                    ],
                   ),
                 ),
               ),
             ],
           ),
         ),
+      ),
+    );
+  }
+}
+
+// ─── Fully Private badge (positive reinforcement) ───────────
+
+class _FullyPrivateBadge extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+      decoration: BoxDecoration(
+        color: ZipherColors.purple.withValues(alpha: 0.06),
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(
+          color: ZipherColors.purple.withValues(alpha: 0.10),
+        ),
+      ),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Icon(
+            Icons.shield_rounded,
+            size: 15,
+            color: ZipherColors.purple.withValues(alpha: 0.7),
+          ),
+          const Gap(8),
+          Text(
+            'Fully private',
+            style: TextStyle(
+              fontSize: 12,
+              fontWeight: FontWeight.w600,
+              color: ZipherColors.purple.withValues(alpha: 0.7),
+            ),
+          ),
+          const Gap(6),
+          Text(
+            '·  100% shielded',
+            style: TextStyle(
+              fontSize: 11,
+              color: Colors.white.withValues(alpha: 0.25),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+// ─── Shielding in progress banner ────────────────────────────
+
+class _ShieldingInProgress extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+      decoration: BoxDecoration(
+        color: ZipherColors.purple.withValues(alpha: 0.06),
+        borderRadius: BorderRadius.circular(14),
+        border: Border.all(
+          color: ZipherColors.purple.withValues(alpha: 0.10),
+        ),
+      ),
+      child: Row(
+        children: [
+          SizedBox(
+            width: 18,
+            height: 18,
+            child: CircularProgressIndicator(
+              strokeWidth: 2,
+              color: ZipherColors.purple.withValues(alpha: 0.6),
+            ),
+          ),
+          const Gap(12),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'Shielding in progress',
+                  style: TextStyle(
+                    fontSize: 13,
+                    fontWeight: FontWeight.w600,
+                    color: ZipherColors.purple.withValues(alpha: 0.7),
+                  ),
+                ),
+                const Gap(2),
+                Text(
+                  'Waiting for confirmation...',
+                  style: TextStyle(
+                    fontSize: 11,
+                    color: Colors.white.withValues(alpha: 0.3),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -871,5 +987,331 @@ class _TxRow extends StatelessWidget {
         ),
       ),
     );
+  }
+}
+
+// ═══════════════════════════════════════════════════════════
+// ACCOUNT SWITCHER BOTTOM SHEET
+// ═══════════════════════════════════════════════════════════
+
+class _AccountSwitcherSheet extends StatefulWidget {
+  final VoidCallback onAccountChanged;
+  const _AccountSwitcherSheet({required this.onAccountChanged});
+
+  @override
+  State<_AccountSwitcherSheet> createState() => _AccountSwitcherSheetState();
+}
+
+class _AccountSwitcherSheetState extends State<_AccountSwitcherSheet> {
+  late List<Account> accounts;
+  int? _editingIndex;
+  final _nameController = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+    accounts = getAllAccounts();
+  }
+
+  @override
+  void dispose() {
+    _nameController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final s = S.of(context);
+    return Container(
+      constraints: BoxConstraints(
+        maxHeight: MediaQuery.of(context).size.height * 0.6,
+      ),
+      decoration: BoxDecoration(
+        color: ZipherColors.surface,
+        borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          const Gap(10),
+          Container(
+            width: 36,
+            height: 4,
+            decoration: BoxDecoration(
+              color: Colors.white.withValues(alpha: 0.1),
+              borderRadius: BorderRadius.circular(2),
+            ),
+          ),
+          const Gap(16),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 20),
+            child: Row(
+              children: [
+                Text(
+                  'Accounts',
+                  style: TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w600,
+                    color: Colors.white.withValues(alpha: 0.8),
+                  ),
+                ),
+                const Spacer(),
+                GestureDetector(
+                  onTap: _addAccount,
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 10, vertical: 5),
+                    decoration: BoxDecoration(
+                      color: ZipherColors.cyan.withValues(alpha: 0.1),
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Icon(Icons.add_rounded,
+                            size: 14,
+                            color: ZipherColors.cyan.withValues(alpha: 0.7)),
+                        const Gap(4),
+                        Text(
+                          'Add',
+                          style: TextStyle(
+                            fontSize: 12,
+                            fontWeight: FontWeight.w600,
+                            color: ZipherColors.cyan.withValues(alpha: 0.7),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+          const Gap(12),
+          Divider(height: 1, color: Colors.white.withValues(alpha: 0.04)),
+          Flexible(
+            child: ListView.builder(
+              shrinkWrap: true,
+              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+              itemCount: accounts.length,
+              itemBuilder: (context, index) {
+                final a = accounts[index];
+                final isActive = a.coin == aa.coin && a.id == aa.id;
+                final isEditing = _editingIndex == index;
+
+                return Padding(
+                  padding: const EdgeInsets.only(bottom: 4),
+                  child: Material(
+                    color: Colors.transparent,
+                    child: InkWell(
+                      onTap: isEditing ? null : () => _switchTo(a),
+                      onLongPress: () => _startEditing(index, a),
+                      borderRadius: BorderRadius.circular(12),
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 14, vertical: 12),
+                        decoration: BoxDecoration(
+                          color: isActive
+                              ? ZipherColors.cyan.withValues(alpha: 0.06)
+                              : Colors.transparent,
+                          borderRadius: BorderRadius.circular(12),
+                          border: isActive
+                              ? Border.all(
+                                  color: ZipherColors.cyan
+                                      .withValues(alpha: 0.12))
+                              : null,
+                        ),
+                        child: Row(
+                          children: [
+                            Container(
+                              width: 36,
+                              height: 36,
+                              decoration: BoxDecoration(
+                                color: isActive
+                                    ? ZipherColors.cyan
+                                        .withValues(alpha: 0.12)
+                                    : Colors.white.withValues(alpha: 0.05),
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                              child: Center(
+                                child: Text(
+                                  (a.name ?? '?')[0].toUpperCase(),
+                                  style: TextStyle(
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.w700,
+                                    color: isActive
+                                        ? ZipherColors.cyan
+                                            .withValues(alpha: 0.8)
+                                        : Colors.white
+                                            .withValues(alpha: 0.3),
+                                  ),
+                                ),
+                              ),
+                            ),
+                            const Gap(12),
+                            Expanded(
+                              child: isEditing
+                                  ? TextField(
+                                      controller: _nameController,
+                                      autofocus: true,
+                                      style: TextStyle(
+                                        fontSize: 14,
+                                        fontWeight: FontWeight.w500,
+                                        color: Colors.white
+                                            .withValues(alpha: 0.85),
+                                      ),
+                                      decoration: InputDecoration(
+                                        isDense: true,
+                                        filled: false,
+                                        border: InputBorder.none,
+                                        contentPadding: EdgeInsets.zero,
+                                      ),
+                                      onSubmitted: (v) => _rename(a, v),
+                                    )
+                                  : Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          a.name ?? 'Account',
+                                          style: TextStyle(
+                                            fontSize: 14,
+                                            fontWeight: FontWeight.w500,
+                                            color: Colors.white
+                                                .withValues(alpha: 0.85),
+                                          ),
+                                        ),
+                                        if (isActive)
+                                          Text(
+                                            'Active',
+                                            style: TextStyle(
+                                              fontSize: 10,
+                                              color: ZipherColors.green
+                                                  .withValues(alpha: 0.5),
+                                            ),
+                                          ),
+                                      ],
+                                    ),
+                            ),
+                            Text(
+                              '${_accountBalance(a)} ZEC',
+                              style: TextStyle(
+                                fontSize: 12,
+                                color: Colors.white.withValues(alpha: 0.35),
+                              ),
+                            ),
+                            if (isEditing) ...[
+                              const Gap(8),
+                              GestureDetector(
+                                onTap: () => _delete(a, index),
+                                child: Icon(
+                                  Icons.delete_outline_rounded,
+                                  size: 18,
+                                  color:
+                                      ZipherColors.red.withValues(alpha: 0.5),
+                                ),
+                              ),
+                              const Gap(4),
+                              GestureDetector(
+                                onTap: () =>
+                                    setState(() => _editingIndex = null),
+                                child: Icon(
+                                  Icons.close_rounded,
+                                  size: 18,
+                                  color:
+                                      Colors.white.withValues(alpha: 0.25),
+                                ),
+                              ),
+                            ],
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                );
+              },
+            ),
+          ),
+          const Gap(12),
+        ],
+      ),
+    );
+  }
+
+  String _accountBalance(Account a) {
+    // For the active account, use live synced balance
+    if (a.coin == aa.coin && a.id == aa.id) {
+      final total = aa.poolBalances.transparent +
+          aa.poolBalances.sapling +
+          aa.poolBalances.orchard;
+      return amountToString2(total);
+    }
+    return amountToString2(a.balance);
+  }
+
+  void _switchTo(Account a) {
+    setActiveAccount(a.coin, a.id);
+    Future(() async {
+      final prefs = await SharedPreferences.getInstance();
+      await aa.save(prefs);
+    });
+    aa.update(null);
+    widget.onAccountChanged();
+    Navigator.of(context).pop();
+  }
+
+  void _addAccount() async {
+    Navigator.of(context).pop();
+    await GoRouter.of(context).push('/more/account_manager/new');
+    widget.onAccountChanged();
+  }
+
+  void _startEditing(int index, Account a) {
+    _nameController.text = a.name ?? '';
+    setState(() => _editingIndex = index);
+  }
+
+  void _rename(Account a, String name) {
+    if (name.isNotEmpty) {
+      WarpApi.updateAccountName(a.coin, a.id, name);
+    }
+    setState(() {
+      _editingIndex = null;
+      accounts = getAllAccounts();
+    });
+    if (a.coin == aa.coin && a.id == aa.id) {
+      widget.onAccountChanged();
+    }
+  }
+
+  void _delete(Account a, int index) async {
+    final s = S.of(context);
+    if (accounts.length <= 1) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Cannot delete the only account'),
+          backgroundColor: ZipherColors.surface,
+        ),
+      );
+      return;
+    }
+    if (a.coin == aa.coin && a.id == aa.id) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(s.cannotDeleteActive),
+          backgroundColor: ZipherColors.surface,
+        ),
+      );
+      return;
+    }
+    final confirmed = await showConfirmDialog(
+        context, s.deleteAccount(a.name!), s.confirmDeleteAccount);
+    if (confirmed) {
+      WarpApi.deleteAccount(a.coin, a.id);
+      setState(() {
+        _editingIndex = null;
+        accounts = getAllAccounts();
+      });
+    }
   }
 }

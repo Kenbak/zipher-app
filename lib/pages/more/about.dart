@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
-import 'package:mustache_template/mustache.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -18,37 +16,275 @@ class AboutPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final s = S.of(context);
-    final template = Template(contentTemplate);
-    var content = template.renderString({'APP': APP_NAME});
     final id = commitId.substring(0, 8);
-    final versionString = "${s.version}: $packageVersion/$id";
+
     return Scaffold(
+      backgroundColor: ZipherColors.bg,
+      appBar: AppBar(
         backgroundColor: ZipherColors.bg,
-        appBar: AppBar(
-          backgroundColor: ZipherColors.surface,
-          title: Text(s.about),
+        elevation: 0,
+        title: Text(
+          'ABOUT',
+          style: TextStyle(
+            fontSize: 14,
+            fontWeight: FontWeight.w600,
+            letterSpacing: 1.5,
+            color: Colors.white.withValues(alpha: 0.6),
+          ),
         ),
-        body: SingleChildScrollView(
-          child: Padding(
-            padding: EdgeInsets.fromLTRB(16, 8, 16, 8),
-            child: Column(
-              children: [
-                MarkdownBody(data: content),
-                Padding(padding: EdgeInsets.symmetric(vertical: 8)),
-                TextButton(
-                    child: Text(versionString),
-                    onPressed: () => openGithub(commitId)),
+        centerTitle: true,
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back_rounded,
+              color: Colors.white.withValues(alpha: 0.5)),
+          onPressed: () => GoRouter.of(context).pop(),
+        ),
+      ),
+      body: SingleChildScrollView(
+        padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+        child: Column(
+          children: [
+            // Logo + branding
+            const Gap(16),
+            Image.asset(
+              'assets/zipher_logo.png',
+              width: 56,
+              height: 56,
+              opacity: const AlwaysStoppedAnimation(0.8),
+            ),
+            const Gap(12),
+            Text(
+              'Zipher',
+              style: TextStyle(
+                fontSize: 24,
+                fontWeight: FontWeight.w700,
+                color: Colors.white.withValues(alpha: 0.85),
+              ),
+            ),
+            const Gap(4),
+            Text(
+              'by CipherScan',
+              style: TextStyle(
+                fontSize: 13,
+                color: ZipherColors.cyan.withValues(alpha: 0.5),
+              ),
+            ),
+            const Gap(4),
+            GestureDetector(
+              onTap: () => _openUrl('https://github.com/hhanh00/zwallet/commit/$commitId'),
+              child: Text(
+                'v$packageVersion ($id)',
+                style: TextStyle(
+                  fontSize: 11,
+                  color: Colors.white.withValues(alpha: 0.15),
+                ),
+              ),
+            ),
+
+            const Gap(36),
+
+            // ── Privacy ──
+            _InfoCard(
+              icon: Icons.shield_rounded,
+              iconColor: ZipherColors.purple,
+              title: 'Your Privacy',
+              items: [
+                'Zipher does not collect any data. It has no servers of its own.',
+                'Connects to public lightwalletd nodes for blockchain data and CoinGecko for prices.',
+                'Your IP may be visible to your ISP. Use a VPN or Tor for extra privacy.',
               ],
             ),
-          ),
-        ));
+
+            const Gap(12),
+
+            // ── Self-Custody ──
+            _InfoCard(
+              icon: Icons.key_rounded,
+              iconColor: ZipherColors.orange,
+              title: 'Self-Custody',
+              items: [
+                'You own your keys. Nobody else can access your funds.',
+                'Back up your seed phrase. If you lose it, your funds are gone forever.',
+                'Zipher cannot recover your keys or reverse transactions.',
+              ],
+            ),
+
+            const Gap(12),
+
+            // ── Open Source ──
+            _InfoCard(
+              icon: Icons.code_rounded,
+              iconColor: ZipherColors.cyan,
+              title: 'Open Source',
+              items: [
+                'Zipher is built on top of YWallet\'s open-source Zcash engine.',
+                'Verify the code yourself on GitHub.',
+              ],
+            ),
+
+            const Gap(24),
+
+            // Links
+            _linkButton(
+              icon: Icons.language_rounded,
+              label: 'cipherscan.app',
+              onTap: () => _openUrl('https://cipherscan.app'),
+            ),
+            const Gap(8),
+            _linkButton(
+              icon: Icons.code_rounded,
+              label: 'View on GitHub',
+              onTap: () => _openUrl('https://github.com/hhanh00/zwallet'),
+            ),
+
+            const Gap(32),
+
+            // Disclaimer
+            Container(
+              padding: const EdgeInsets.all(14),
+              decoration: BoxDecoration(
+                color: Colors.white.withValues(alpha: 0.02),
+                borderRadius: BorderRadius.circular(14),
+              ),
+              child: Text(
+                'THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND. '
+                'THE AUTHORS ARE NOT LIABLE FOR ANY DAMAGES ARISING FROM THE USE OF THIS SOFTWARE.',
+                style: TextStyle(
+                  fontSize: 10,
+                  color: Colors.white.withValues(alpha: 0.1),
+                  height: 1.5,
+                ),
+                textAlign: TextAlign.center,
+              ),
+            ),
+
+            const Gap(40),
+          ],
+        ),
+      ),
+    );
   }
 
-  openGithub(String commitId) {
-    launchUrl(Uri.parse("https://github.com/hhanh00/zwallet/commit/$commitId"));
+  void _openUrl(String url) {
+    launchUrl(Uri.parse(url), mode: LaunchMode.externalApplication);
+  }
+
+  Widget _linkButton(
+      {required IconData icon,
+      required String label,
+      required VoidCallback onTap}) {
+    return InkWell(
+      onTap: onTap,
+      borderRadius: BorderRadius.circular(12),
+      child: Container(
+        width: double.infinity,
+        padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
+        decoration: BoxDecoration(
+          color: Colors.white.withValues(alpha: 0.03),
+          borderRadius: BorderRadius.circular(12),
+        ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(icon, size: 16, color: Colors.white.withValues(alpha: 0.25)),
+            const Gap(8),
+            Text(
+              label,
+              style: TextStyle(
+                fontSize: 13,
+                color: Colors.white.withValues(alpha: 0.4),
+              ),
+            ),
+            const Gap(6),
+            Icon(Icons.open_in_new_rounded,
+                size: 12, color: Colors.white.withValues(alpha: 0.12)),
+          ],
+        ),
+      ),
+    );
   }
 }
+
+class _InfoCard extends StatelessWidget {
+  final IconData icon;
+  final Color iconColor;
+  final String title;
+  final List<String> items;
+
+  const _InfoCard({
+    required this.icon,
+    required this.iconColor,
+    required this.title,
+    required this.items,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: iconColor.withValues(alpha: 0.03),
+        borderRadius: BorderRadius.circular(14),
+        border: Border.all(color: iconColor.withValues(alpha: 0.06)),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Icon(icon, size: 16, color: iconColor.withValues(alpha: 0.5)),
+              const Gap(8),
+              Text(
+                title,
+                style: TextStyle(
+                  fontSize: 13,
+                  fontWeight: FontWeight.w600,
+                  color: Colors.white.withValues(alpha: 0.6),
+                ),
+              ),
+            ],
+          ),
+          const Gap(10),
+          for (final item in items)
+            Padding(
+              padding: const EdgeInsets.only(bottom: 6),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.only(top: 5),
+                    child: Container(
+                      width: 4,
+                      height: 4,
+                      decoration: BoxDecoration(
+                        color: Colors.white.withValues(alpha: 0.12),
+                        shape: BoxShape.circle,
+                      ),
+                    ),
+                  ),
+                  const Gap(10),
+                  Expanded(
+                    child: Text(
+                      item,
+                      style: TextStyle(
+                        fontSize: 12,
+                        color: Colors.white.withValues(alpha: 0.35),
+                        height: 1.4,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+        ],
+      ),
+    );
+  }
+}
+
+// ═══════════════════════════════════════════════════════════
+// DISCLAIMER PAGE (kept from original)
+// ═══════════════════════════════════════════════════════════
 
 class DisclaimerPage extends StatefulWidget {
   @override
@@ -72,7 +308,6 @@ class _DisclaimerState extends State<DisclaimerPage> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               const Gap(16),
-              // Back button
               IconButton(
                 onPressed: () => GoRouter.of(context).pop(),
                 icon: const Icon(Icons.arrow_back_ios_new,
@@ -85,7 +320,6 @@ class _DisclaimerState extends State<DisclaimerPage> {
                 ),
               ),
               const Gap(32),
-              // Icon
               Container(
                 width: 56,
                 height: 56,
@@ -97,7 +331,6 @@ class _DisclaimerState extends State<DisclaimerPage> {
                     color: ZipherColors.orange, size: 28),
               ),
               const Gap(20),
-              // Title
               const Text(
                 'Self-Custody',
                 style: TextStyle(
@@ -117,7 +350,6 @@ class _DisclaimerState extends State<DisclaimerPage> {
                 ),
               ),
               const Gap(32),
-              // Disclaimer items
               _DisclaimerTile(
                 accepted: _accepted[0],
                 icon: Icons.vpn_key_outlined,
@@ -139,7 +371,6 @@ class _DisclaimerState extends State<DisclaimerPage> {
                 onChanged: (v) => setState(() => _accepted[2] = v),
               ),
               const Spacer(),
-              // Continue button
               SizedBox(
                 width: double.infinity,
                 child: AnimatedOpacity(
@@ -207,14 +438,11 @@ class _DisclaimerTile extends StatelessWidget {
               width: 24,
               height: 24,
               decoration: BoxDecoration(
-                color: accepted
-                    ? ZipherColors.green
-                    : Colors.transparent,
+                color: accepted ? ZipherColors.green : Colors.transparent,
                 borderRadius: BorderRadius.circular(7),
                 border: Border.all(
-                  color: accepted
-                      ? ZipherColors.green
-                      : ZipherColors.textMuted,
+                  color:
+                      accepted ? ZipherColors.green : ZipherColors.textMuted,
                   width: 1.5,
                 ),
               ),
