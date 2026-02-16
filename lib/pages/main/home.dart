@@ -41,8 +41,7 @@ class _HomeState extends State<HomePageInner> {
     Future(marketPrice.update);
   }
 
-  String _formatFiat(double x) =>
-      decimalFormat(x, 2, symbol: appSettings.currency);
+  String _formatFiat(double x) => '\$${x.toStringAsFixed(2)}';
 
   Future<void> _onRefresh() async {
     if (syncStatus2.syncing) return;
@@ -78,13 +77,36 @@ class _HomeState extends State<HomePageInner> {
               fiatBalance != null ? _formatFiat(fiatBalance) : null;
 
           final txs = aa.txs.items;
-          final recentTxs = txs.length > 5 ? txs.sublist(0, 5) : txs;
+          final recentTxs = txs.length > 3 ? txs.sublist(0, 3) : txs;
 
           return RefreshIndicator(
             onRefresh: _onRefresh,
             color: ZipherColors.cyan,
             backgroundColor: ZipherColors.surface,
-            child: CustomScrollView(
+            child: Stack(
+              children: [
+                // Radial gradient glow behind balance (Jupiter-style)
+                Positioned(
+                  top: -80,
+                  left: 0,
+                  right: 0,
+                  height: 380,
+                  child: Container(
+                    decoration: BoxDecoration(
+                      gradient: RadialGradient(
+                        center: const Alignment(0.0, -0.3),
+                        radius: 1.2,
+                        colors: [
+                          ZipherColors.cyan.withValues(alpha: 0.08),
+                          ZipherColors.purple.withValues(alpha: 0.03),
+                          Colors.transparent,
+                        ],
+                        stops: const [0.0, 0.5, 1.0],
+                      ),
+                    ),
+                  ),
+                ),
+                CustomScrollView(
               physics: const AlwaysScrollableScrollPhysics(),
               slivers: [
                 // Header: logo + "Main" … QR scan
@@ -196,11 +218,10 @@ class _HomeState extends State<HomePageInner> {
                                       ),
                                       child: Center(
                                         child: Image.asset(
-                                          'assets/zcash_small.png',
-                                          width: 20,
-                                          height: 20,
-                                          color: Colors.white,
-                                          colorBlendMode: BlendMode.srcIn,
+                                          'assets/zcash_logo.png',
+                                          width: 24,
+                                          height: 24,
+                                          fit: BoxFit.contain,
                                         ),
                                       ),
                                     ),
@@ -324,7 +345,7 @@ class _HomeState extends State<HomePageInner> {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text(
-                          'Activity',
+                          'Recent Activity',
                           style: TextStyle(
                             fontSize: 16,
                             fontWeight: FontWeight.w600,
@@ -392,11 +413,13 @@ class _HomeState extends State<HomePageInner> {
                     sliver: SliverList(
                       delegate: SliverChildBuilderDelegate(
                         (context, index) =>
-                            _TxRow(tx: recentTxs[index]),
+                            _TxRow(tx: recentTxs[index], index: index),
                         childCount: recentTxs.length,
                       ),
                     ),
                   ),
+              ],
+            ),
               ],
             ),
           );
@@ -727,44 +750,73 @@ class _ActionButton extends StatelessWidget {
 
 class _TxRow extends StatelessWidget {
   final Tx tx;
-  const _TxRow({required this.tx});
+  final int index;
+  const _TxRow({required this.tx, required this.index});
 
   @override
   Widget build(BuildContext context) {
     final isIncoming = tx.value > 0;
-    final icon =
-        isIncoming ? Icons.arrow_downward_rounded : Icons.arrow_upward_rounded;
+    final isShielding = tx.value <= 0 && (tx.address == null || tx.address!.isEmpty);
     final memo = tx.memo ?? '';
-    final label = memo.isNotEmpty ? memo : (isIncoming ? 'Received' : 'Sent');
+    final label = memo.isNotEmpty
+        ? memo
+        : isShielding
+            ? 'Shielded'
+            : isIncoming
+                ? 'Received'
+                : 'Sent';
     final timeStr = timeago.format(tx.timestamp);
-    final amountStr =
-        '${isIncoming ? '+' : ''}${decimalToString(tx.value)} ZEC';
+    final amountStr = isShielding
+        ? '${decimalToString(tx.value.abs())} ZEC'
+        : '${isIncoming ? '+' : ''}${decimalToString(tx.value)} ZEC';
+    final amountColor = isIncoming
+        ? ZipherColors.green
+        : isShielding
+            ? ZipherColors.purple.withValues(alpha: 0.6)
+            : Colors.white.withValues(alpha: 0.6);
+
+    // Fiat
+    final price = marketPrice.price;
+    final fiat = price != null ? '\$${(tx.value.abs() * price).toStringAsFixed(2)}' : '';
 
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 4),
+      padding: const EdgeInsets.symmetric(vertical: 3),
       child: Material(
         color: Colors.transparent,
-        borderRadius: BorderRadius.circular(12),
+        borderRadius: BorderRadius.circular(14),
         child: InkWell(
-          borderRadius: BorderRadius.circular(12),
-          onTap: () => GoRouter.of(context).go('/history'),
-          child: Padding(
+          borderRadius: BorderRadius.circular(14),
+          onTap: () => GoRouter.of(context).push('/history/details?index=$index'),
+          child: Container(
             padding:
-                const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+                const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+            decoration: BoxDecoration(
+              color: Colors.white.withValues(alpha: 0.03),
+              borderRadius: BorderRadius.circular(14),
+              border: Border.all(
+                color: Colors.white.withValues(alpha: 0.04),
+              ),
+            ),
             child: Row(
               children: [
                 Container(
-                  width: 40,
-                  height: 40,
+                  width: 34,
+                  height: 34,
                   decoration: BoxDecoration(
-                    color: Colors.white.withValues(alpha: 0.05),
+                    color: Colors.white.withValues(alpha: 0.06),
                     shape: BoxShape.circle,
                   ),
-                  child: Icon(icon,
-                      size: 18,
-                      color: Colors.white.withValues(alpha: 0.4)),
+                  child: Icon(
+                    isShielding
+                        ? Icons.shield_rounded
+                        : isIncoming
+                            ? Icons.south_west_rounded
+                            : Icons.north_east_rounded,
+                    size: 16,
+                    color: Colors.white.withValues(alpha: 0.4),
+                  ),
                 ),
-                const Gap(14),
+                const Gap(12),
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -790,15 +842,28 @@ class _TxRow extends StatelessWidget {
                     ],
                   ),
                 ),
-                Text(
-                  amountStr,
-                  style: TextStyle(
-                    fontSize: 14,
-                    fontWeight: FontWeight.w600,
-                    color: isIncoming
-                        ? ZipherColors.green
-                        : Colors.white.withValues(alpha: 0.6),
-                  ),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  children: [
+                    Text(
+                      amountStr,
+                      style: TextStyle(
+                        fontSize: 14,
+                        fontWeight: FontWeight.w600,
+                        color: amountColor,
+                      ),
+                    ),
+                    if (fiat.isNotEmpty && !isShielding) ...[
+                      const Gap(1),
+                      Text(
+                        fiat,
+                        style: TextStyle(
+                          fontSize: 11,
+                          color: Colors.white.withValues(alpha: 0.2),
+                        ),
+                      ),
+                    ],
+                  ],
                 ),
               ],
             ),

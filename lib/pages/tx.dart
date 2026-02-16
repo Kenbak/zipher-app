@@ -10,7 +10,6 @@ import 'package:url_launcher/url_launcher.dart';
 import 'package:warp_api/warp_api.dart';
 
 import '../accounts.dart';
-import '../appsettings.dart';
 import '../zipher_theme.dart';
 import '../generated/intl/messages.dart';
 import '../store2.dart';
@@ -32,7 +31,7 @@ String _fiatStr(double zecValue) {
   final price = marketPrice.price;
   if (price == null) return '';
   final fiat = zecValue.abs() * price;
-  return decimalFormat(fiat, 2, symbol: appSettings.currency);
+  return '\$${fiat.toStringAsFixed(2)}';
 }
 
 /// Human-readable date like "Dec 5 at 12:49 AM" or "Yesterday"
@@ -135,6 +134,38 @@ _InvoiceData? _parseInvoice(String? memo) {
   );
 }
 
+/// Detect shielding: self-transfer with no destination address
+bool _isShielding(Tx tx) =>
+    tx.value <= 0 && (tx.address == null || tx.address!.isEmpty);
+
+/// Subtitle parts for activity row: (prefix, value, shouldColorValue)
+({String prefix, String value, bool colorValue}) _txSubtitleParts(
+    Tx tx, bool isReceive, _TxPrivacy privacy) {
+  if (_isShielding(tx)) {
+    return (prefix: '', value: 'Shielding', colorValue: true);
+  }
+  final addr = tx.address ?? '';
+  if (isReceive) {
+    if (addr.isEmpty || !addr.startsWith('t')) {
+      return (prefix: 'From: ', value: 'Private', colorValue: true);
+    }
+    return (
+      prefix: 'From: ',
+      value: centerTrim(addr, length: 16),
+      colorValue: false
+    );
+  } else {
+    if (addr.isEmpty) {
+      return (prefix: 'To: ', value: _privacyLabel(privacy), colorValue: true);
+    }
+    return (
+      prefix: 'To: ',
+      value: tx.contact ?? centerTrim(addr, length: 16),
+      colorValue: false
+    );
+  }
+}
+
 // ─── Activity page ──────────────────────────────────────────
 
 class TxPage extends StatefulWidget {
@@ -181,9 +212,23 @@ class TxPageState extends State<TxPage> {
 
             return ListView.builder(
               padding: EdgeInsets.fromLTRB(0, topPad + 8, 0, 24),
-              itemCount: _countItems(groups),
-              itemBuilder: (context, i) =>
-                  _buildGroupedItem(context, groups, i),
+              itemCount: _countItems(groups) + 1, // +1 for header
+              itemBuilder: (context, i) {
+                if (i == 0) {
+                  return Padding(
+                    padding: const EdgeInsets.fromLTRB(20, 8, 20, 4),
+                    child: Text(
+                      'Activity',
+                      style: TextStyle(
+                        fontSize: 22,
+                        fontWeight: FontWeight.w700,
+                        color: Colors.white.withValues(alpha: 0.9),
+                      ),
+                    ),
+                  );
+                }
+                return _buildGroupedItem(context, groups, i - 1);
+              },
             );
           },
         ),
@@ -307,11 +352,11 @@ class _TxRow extends StatelessWidget {
   Widget build(BuildContext context) {
     final isReceive = tx.value > 0;
     final privacy = _classifyTx(tx);
-    final pColor = _privacyColor(privacy);
 
     // Label: "Received", "Sent", "Shielded" (for self-transfers)
+    final bool isShielding = _isShielding(tx);
     final String label;
-    if (tx.value == 0) {
+    if (isShielding) {
       label = 'Shielded';
     } else if (isReceive) {
       label = 'Received';
@@ -320,99 +365,171 @@ class _TxRow extends StatelessWidget {
     }
 
     final dateStr = _humanDate(tx.timestamp);
-    final amountStr =
-        '${isReceive ? '+' : ''}${decimalToString(tx.value)} ZEC';
+    final amountStr = isShielding
+        ? '${decimalToString(tx.value.abs())} ZEC'
+        : '${isReceive ? '+' : ''}${decimalToString(tx.value)} ZEC';
     final amountColor = isReceive
         ? ZipherColors.green
-        : Colors.white.withValues(alpha: 0.6);
+        : isShielding
+            ? ZipherColors.purple.withValues(alpha: 0.6)
+            : ZipherColors.red;
     final fiat = _fiatStr(tx.value);
 
-    return GestureDetector(
-      onTap: () => gotoTx(context, index),
-      behavior: HitTestBehavior.translucent,
-      child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 4),
-        child: Row(
-          children: [
-            // Direction icon
-            Container(
-              width: 40,
-              height: 40,
-              decoration: BoxDecoration(
-                color: Colors.white.withValues(alpha: 0.05),
-                shape: BoxShape.circle,
-              ),
-              child: Icon(
-                isReceive
-                    ? Icons.arrow_downward_rounded
-                    : tx.value == 0
-                        ? Icons.shield_rounded
-                        : Icons.arrow_upward_rounded,
-                size: 18,
-                color: Colors.white.withValues(alpha: 0.4),
-              ),
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 3),
+      child: GestureDetector(
+        onTap: () => gotoTx(context, index),
+        child: Container(
+          padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 14),
+          decoration: BoxDecoration(
+            color: Colors.white.withValues(alpha: 0.03),
+            borderRadius: BorderRadius.circular(14),
+            border: Border.all(
+              color: Colors.white.withValues(alpha: 0.04),
             ),
-            const Gap(12),
-
-            // Label + privacy badge + date
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // Top line: direction badge + date
+              Row(
                 children: [
-                  Row(
-                    children: [
-                      Text(
-                        label,
-                        style: TextStyle(
-                          fontSize: 15,
-                          fontWeight: FontWeight.w600,
-                          color: Colors.white.withValues(alpha: 0.9),
+                  Container(
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 7, vertical: 2),
+                    decoration: BoxDecoration(
+                      color: Colors.white.withValues(alpha: 0.06),
+                      borderRadius: BorderRadius.circular(6),
+                    ),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Icon(
+                          isShielding
+                              ? Icons.shield_rounded
+                              : isReceive
+                                  ? Icons.south_west_rounded
+                                  : Icons.north_east_rounded,
+                          size: 10,
+                          color: Colors.white.withValues(alpha: 0.5),
                         ),
-                      ),
-                      const Gap(6),
-                      // Privacy indicator (small dot + label)
-                      Icon(
-                        _privacyIcon(privacy),
-                        size: 12,
-                        color: pColor.withValues(alpha: 0.5),
-                      ),
-                    ],
+                        const Gap(3),
+                        Text(
+                          label,
+                          style: TextStyle(
+                            fontSize: 11,
+                            fontWeight: FontWeight.w600,
+                            color: Colors.white.withValues(alpha: 0.5),
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
-                  const Gap(2),
+                  const Spacer(),
                   Text(
                     dateStr,
                     style: TextStyle(
-                      fontSize: 12,
+                      fontSize: 11,
                       color: Colors.white.withValues(alpha: 0.25),
                     ),
                   ),
                 ],
               ),
-            ),
-
-            // Amount + fiat
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.end,
-              children: [
-                Text(
-                  amountStr,
-                  style: TextStyle(
-                    fontSize: 15,
-                    fontWeight: FontWeight.w600,
-                    color: amountColor,
-                  ),
-                ),
-                if (fiat.isNotEmpty)
-                  Text(
-                    fiat,
-                    style: TextStyle(
-                      fontSize: 11,
-                      color: Colors.white.withValues(alpha: 0.2),
+              const Gap(10),
+              // Bottom line: logo + ZEC/subtitle → amount + fiat
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Container(
+                    width: 38,
+                    height: 38,
+                    decoration: BoxDecoration(
+                      color: Colors.white.withValues(alpha: 0.08),
+                      shape: BoxShape.circle,
+                    ),
+                    child: Center(
+                      child: Image.asset(
+                        'assets/zcash_logo.png',
+                        width: 28,
+                        height: 28,
+                        fit: BoxFit.contain,
+                      ),
                     ),
                   ),
-              ],
-            ),
-          ],
+                  const Gap(10),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'ZEC',
+                          style: TextStyle(
+                            fontSize: 15,
+                            fontWeight: FontWeight.w600,
+                            color: Colors.white.withValues(alpha: 0.9),
+                          ),
+                        ),
+                        const Gap(2),
+                        Builder(builder: (context) {
+                          final sub =
+                              _txSubtitleParts(tx, isReceive, privacy);
+                          final mutedStyle = TextStyle(
+                            fontSize: 12,
+                            color: Colors.white.withValues(alpha: 0.3),
+                          );
+                          return RichText(
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            text: TextSpan(
+                              children: [
+                                if (sub.prefix.isNotEmpty)
+                                  TextSpan(
+                                      text: sub.prefix, style: mutedStyle),
+                                TextSpan(
+                                  text: sub.value,
+                                  style: sub.colorValue
+                                      ? TextStyle(
+                                          fontSize: 12,
+                                          fontWeight: FontWeight.w500,
+                                          color: _privacyColor(privacy)
+                                              .withValues(alpha: 0.6),
+                                        )
+                                      : mutedStyle,
+                                ),
+                              ],
+                            ),
+                          );
+                        }),
+                      ],
+                    ),
+                  ),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.end,
+                    children: [
+                      Text(
+                        amountStr,
+                        style: TextStyle(
+                          fontSize: 15,
+                          fontWeight: FontWeight.w600,
+                          color: amountColor,
+                        ),
+                      ),
+                      if (fiat.isNotEmpty && !isShielding) ...[
+                        const Gap(2),
+                        Text(
+                          fiat,
+                          style: TextStyle(
+                            fontSize: 12,
+                            color: Colors.white.withValues(alpha: 0.25),
+                          ),
+                        ),
+                      ],
+                    ],
+                  ),
+                ],
+              ),
+            ],
+          ),
         ),
       ),
     );
@@ -517,22 +634,11 @@ class TransactionState extends State<TransactionPage> {
   @override
   Widget build(BuildContext context) {
     final isReceive = tx.value > 0;
-    final isSelfTransfer = tx.value == 0;
+    final isSelfTransfer = _isShielding(tx);
     final privacy = _classifyTx(tx);
     final pColor = _privacyColor(privacy);
-    final amountColor =
-        isReceive ? ZipherColors.green : Colors.white.withValues(alpha: 0.85);
     final invoice = _parseInvoice(tx.memo);
     final fiat = _fiatStr(tx.value);
-
-    final String directionLabel;
-    if (isSelfTransfer) {
-      directionLabel = 'Shielded';
-    } else if (isReceive) {
-      directionLabel = 'Received';
-    } else {
-      directionLabel = 'Sent';
-    }
 
     return Scaffold(
       backgroundColor: ZipherColors.bg,
@@ -541,7 +647,7 @@ class TransactionState extends State<TransactionPage> {
         elevation: 0,
         leading: IconButton(
           onPressed: () => GoRouter.of(context).pop(),
-          icon: const Icon(Icons.arrow_back_rounded, size: 22),
+          icon: const Icon(Icons.arrow_back_rounded, size: 22, color: Colors.white),
         ),
       ),
       body: SingleChildScrollView(
@@ -550,61 +656,114 @@ class TransactionState extends State<TransactionPage> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const Gap(8),
+              const Gap(20),
 
-              // ── Hero: direction label + arrow with amount ──
+              // ── Hero: Jupiter-inspired logo + arrow badge ──
               Center(
                 child: Column(
                   children: [
-                    Text(
-                      directionLabel,
-                      style: TextStyle(
-                        fontSize: 14,
-                        color: Colors.white.withValues(alpha: 0.4),
+                    // Zcash logo with direction arrow badge
+                    SizedBox(
+                      width: 72,
+                      height: 72,
+                      child: Stack(
+                        clipBehavior: Clip.none,
+                        children: [
+                          // Main Zcash logo in circle
+                          Container(
+                            width: 72,
+                            height: 72,
+                            decoration: BoxDecoration(
+                              color: Colors.white.withValues(alpha: 0.08),
+                              shape: BoxShape.circle,
+                            ),
+                            child: Center(
+                              child: Image.asset(
+                                'assets/zcash_logo.png',
+                                width: 48,
+                                height: 48,
+                                fit: BoxFit.contain,
+                              ),
+                            ),
+                          ),
+                          // Direction arrow badge (bottom-right)
+                          Positioned(
+                            right: -2,
+                            bottom: -2,
+                            child: Container(
+                              width: 26,
+                              height: 26,
+                              decoration: BoxDecoration(
+                                color: isSelfTransfer
+                                    ? ZipherColors.purple
+                                    : ZipherColors.cyan,
+                                shape: BoxShape.circle,
+                                border: Border.all(
+                                  color: ZipherColors.bg,
+                                  width: 2.5,
+                                ),
+                              ),
+                              child: Icon(
+                                isSelfTransfer
+                                    ? Icons.shield_rounded
+                                    : isReceive
+                                        ? Icons.south_west_rounded
+                                        : Icons.north_east_rounded,
+                                size: 13,
+                                color: Colors.white,
+                              ),
+                            ),
+                          ),
+                        ],
                       ),
                     ),
-                    const Gap(8),
-                    // Arrow + amount on same line
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        Container(
-                          width: 36,
-                          height: 36,
-                          decoration: BoxDecoration(
-                            color: Colors.white.withValues(alpha: 0.06),
-                            shape: BoxShape.circle,
-                          ),
-                          child: Icon(
-                            isSelfTransfer
-                                ? Icons.shield_rounded
-                                : isReceive
-                                    ? Icons.arrow_downward_rounded
-                                    : Icons.arrow_upward_rounded,
-                            size: 18,
-                            color: Colors.white.withValues(alpha: 0.4),
-                          ),
-                        ),
-                        const Gap(12),
-                        Text(
-                          '${isReceive ? '' : '- '}${decimalToString(tx.value.abs())} ZEC',
-                          style: TextStyle(
-                            fontSize: 30,
-                            fontWeight: FontWeight.w700,
-                            color: amountColor,
-                            letterSpacing: -0.5,
-                          ),
-                        ),
-                      ],
+
+                    const Gap(20),
+
+                    // "You Received" / "You Sent" label
+                    Text(
+                      isSelfTransfer
+                          ? 'You Shielded'
+                          : isReceive
+                              ? 'You Received'
+                              : 'You Sent',
+                      style: TextStyle(
+                        fontSize: 15,
+                        fontWeight: FontWeight.w500,
+                        color: Colors.white.withValues(alpha: 0.45),
+                      ),
                     ),
-                    if (fiat.isNotEmpty) ...[
-                      const Gap(4),
-                      Text(
-                        fiat,
-                        style: TextStyle(
-                          fontSize: 14,
-                          color: Colors.white.withValues(alpha: 0.25),
+
+                    const Gap(10),
+
+                    // Amount — always white on detail page
+                    Text(
+                      '${decimalToString(tx.value.abs())} ZEC',
+                      style: const TextStyle(
+                        fontSize: 32,
+                        fontWeight: FontWeight.w700,
+                        color: Colors.white,
+                        letterSpacing: -0.5,
+                      ),
+                    ),
+
+                    // USD equivalent — subtle pill (hide for 0-value shielding)
+                    if (fiat.isNotEmpty && !isSelfTransfer) ...[
+                      const Gap(8),
+                      Container(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 10, vertical: 4),
+                        decoration: BoxDecoration(
+                          color: Colors.white.withValues(alpha: 0.05),
+                          borderRadius: BorderRadius.circular(20),
+                        ),
+                        child: Text(
+                          fiat,
+                          style: TextStyle(
+                            fontSize: 13,
+                            fontWeight: FontWeight.w500,
+                            color: Colors.white.withValues(alpha: 0.35),
+                          ),
                         ),
                       ),
                     ],
@@ -672,7 +831,7 @@ class TransactionState extends State<TransactionPage> {
   }
 
   Widget _buildDetails(
-      bool isReceive, _TxPrivacy privacy, Color pColor) {
+      bool isReceive, _TxPrivacy privacy, Color _) {
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.all(14),
@@ -682,27 +841,6 @@ class TransactionState extends State<TransactionPage> {
       ),
       child: Column(
         children: [
-          _DetailRow(
-            label: 'Privacy',
-            child: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Icon(_privacyIcon(privacy),
-                    size: 13, color: pColor.withValues(alpha: 0.7)),
-                const Gap(4),
-                Text(
-                  _privacyLabel(privacy),
-                  style: TextStyle(
-                    fontSize: 13,
-                    fontWeight: FontWeight.w500,
-                    color: pColor.withValues(alpha: 0.8),
-                  ),
-                ),
-              ],
-            ),
-          ),
-          _detailDivider(),
-
           if (tx.confirmations != null) ...[
             _DetailRow(
               label: 'Status',
@@ -721,46 +859,75 @@ class TransactionState extends State<TransactionPage> {
             _detailDivider(),
           ],
 
-          if (tx.address?.isNotEmpty ?? false) ...[
-            _DetailRow(
-              label: isReceive ? 'From' : 'Sent to',
-              child: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Flexible(
-                    child: Text(
-                      isReceive
-                          ? (tx.address!.startsWith('t')
-                              ? centerTrim(tx.address!)
-                              : 'Shielded sender')
-                          : (tx.contact ?? centerTrim(tx.address!)),
-                      style: TextStyle(
-                        fontSize: 13,
-                        color: Colors.white.withValues(alpha: 0.7),
-                      ),
-                    ),
-                  ),
-                  const Gap(6),
-                  GestureDetector(
-                    onTap: () {
-                      Clipboard.setData(
-                          ClipboardData(text: tx.address!));
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(
-                          content: Text('Address copied'),
-                          duration: Duration(seconds: 1),
+          // From / Sent to — show "Private" for shielded, address for transparent
+          Builder(builder: (context) {
+            final isSelf = _isShielding(tx);
+            final addr = tx.address ?? '';
+            final bool isShieldedReceive =
+                isReceive && (addr.isEmpty || !addr.startsWith('t'));
+
+            return Column(
+              children: [
+                _DetailRow(
+                  label: isSelf ? 'To' : (isReceive ? 'From' : 'Sent to'),
+                  child: isSelf
+                      ? Text(
+                          'Your shielded wallet',
+                          style: TextStyle(
+                            fontSize: 13,
+                            fontWeight: FontWeight.w500,
+                            color: ZipherColors.purple.withValues(alpha: 0.8),
+                          ),
+                        )
+                      : isShieldedReceive
+                      ? Text(
+                          'Private',
+                          style: TextStyle(
+                            fontSize: 13,
+                            fontWeight: FontWeight.w500,
+                            color: ZipherColors.purple.withValues(alpha: 0.8),
+                          ),
+                        )
+                      : Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Flexible(
+                              child: Text(
+                                isReceive
+                                    ? centerTrim(addr)
+                                    : (tx.contact ?? centerTrim(addr)),
+                                style: TextStyle(
+                                  fontSize: 13,
+                                  color: Colors.white.withValues(alpha: 0.7),
+                                ),
+                              ),
+                            ),
+                            if (addr.isNotEmpty) ...[
+                              const Gap(6),
+                              GestureDetector(
+                                onTap: () {
+                                  Clipboard.setData(
+                                      ClipboardData(text: addr));
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    const SnackBar(
+                                      content: Text('Address copied'),
+                                      duration: Duration(seconds: 1),
+                                    ),
+                                  );
+                                },
+                                child: Icon(Icons.copy_rounded,
+                                    size: 13,
+                                    color:
+                                        Colors.white.withValues(alpha: 0.2)),
+                              ),
+                            ],
+                          ],
                         ),
-                      );
-                    },
-                    child: Icon(Icons.copy_rounded,
-                        size: 13,
-                        color: Colors.white.withValues(alpha: 0.2)),
-                  ),
-                ],
-              ),
-            ),
-            _detailDivider(),
-          ],
+                ),
+                _detailDivider(),
+              ],
+            );
+          }),
 
           _DetailRow(
             label: 'Transaction ID',

@@ -152,6 +152,8 @@ flutter:
     - assets/stealthex.png
     - assets/zipher_logo.png
     - assets/zcash_small.png
+    - assets/zcash_logo.svg
+    - assets/zcash_logo.png
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.
