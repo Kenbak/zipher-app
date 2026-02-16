@@ -442,18 +442,28 @@ class _RequestPaymentSheetState extends State<_RequestPaymentSheet> {
   int _step = 0; // 0=amount, 1=memo, 2=result
   final _amountController = TextEditingController();
   final _memoController = TextEditingController();
+  final _refController = TextEditingController();
   String _paymentURI = '';
 
   @override
   void dispose() {
     _amountController.dispose();
     _memoController.dispose();
+    _refController.dispose();
     super.dispose();
+  }
+
+  String _buildMemo() {
+    final ref = _refController.text.trim();
+    final memo = _memoController.text.trim();
+    if (ref.isNotEmpty) {
+      return '[zipher:inv:$ref] $memo';
+    }
+    return memo;
   }
 
   void _nextStep() {
     if (_step == 0) {
-      // Validate amount
       final text = _amountController.text.trim();
       if (text.isEmpty) {
         ScaffoldMessenger.of(context).showSnackBar(
@@ -463,9 +473,8 @@ class _RequestPaymentSheetState extends State<_RequestPaymentSheet> {
       }
       setState(() => _step = 1);
     } else if (_step == 1) {
-      // Generate payment URI
       final amountZat = stringToAmount(_amountController.text.trim());
-      final memo = _memoController.text.trim();
+      final memo = _buildMemo();
       _paymentURI = WarpApi.makePaymentURI(
           aa.coin, widget.address, amountZat, memo);
       setState(() => _step = 2);
@@ -569,13 +578,49 @@ class _RequestPaymentSheetState extends State<_RequestPaymentSheet> {
       mainAxisSize: MainAxisSize.min,
       children: [
         Text(
-          'Add a reason (optional)',
+          'Payment details (optional)',
           style: TextStyle(
             fontSize: 13,
             color: Colors.white.withValues(alpha: 0.4),
           ),
         ),
         const Gap(16),
+        // Invoice reference field
+        TextField(
+          controller: _refController,
+          style: TextStyle(
+            fontSize: 14,
+            color: Colors.white.withValues(alpha: 0.85),
+            fontFamily: 'monospace',
+          ),
+          decoration: InputDecoration(
+            hintText: 'Invoice ref (e.g. INV-2026-001)',
+            hintStyle: TextStyle(
+              fontSize: 14,
+              color: Colors.white.withValues(alpha: 0.15),
+            ),
+            prefixIcon: Padding(
+              padding: const EdgeInsets.only(left: 12, right: 8),
+              child: Icon(
+                Icons.receipt_outlined,
+                size: 18,
+                color: ZipherColors.purple.withValues(alpha: 0.5),
+              ),
+            ),
+            prefixIconConstraints:
+                const BoxConstraints(minWidth: 0, minHeight: 0),
+            filled: true,
+            fillColor: Colors.white.withValues(alpha: 0.05),
+            border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(12),
+              borderSide: BorderSide.none,
+            ),
+            contentPadding:
+                const EdgeInsets.symmetric(horizontal: 14, vertical: 14),
+          ),
+        ),
+        const Gap(10),
+        // Description / memo field
         TextField(
           controller: _memoController,
           autofocus: true,
@@ -585,7 +630,7 @@ class _RequestPaymentSheetState extends State<_RequestPaymentSheet> {
             color: Colors.white.withValues(alpha: 0.85),
           ),
           decoration: InputDecoration(
-            hintText: 'e.g. Dinner, Invoice #123...',
+            hintText: 'Reason or description...',
             hintStyle: TextStyle(
               fontSize: 15,
               color: Colors.white.withValues(alpha: 0.15),
@@ -598,7 +643,28 @@ class _RequestPaymentSheetState extends State<_RequestPaymentSheet> {
             ),
           ),
         ),
-        const Gap(24),
+        const Gap(8),
+        // Hint about invoice
+        Row(
+          children: [
+            Icon(
+              Icons.info_outline_rounded,
+              size: 12,
+              color: Colors.white.withValues(alpha: 0.15),
+            ),
+            const Gap(6),
+            Expanded(
+              child: Text(
+                'Adding an invoice ref creates a trackable payment request',
+                style: TextStyle(
+                  fontSize: 11,
+                  color: Colors.white.withValues(alpha: 0.2),
+                ),
+              ),
+            ),
+          ],
+        ),
+        const Gap(20),
         Row(
           children: [
             Expanded(
@@ -624,6 +690,7 @@ class _RequestPaymentSheetState extends State<_RequestPaymentSheet> {
   }
 
   Widget _buildResultStep() {
+    final ref = _refController.text.trim();
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
@@ -636,6 +703,35 @@ class _RequestPaymentSheetState extends State<_RequestPaymentSheet> {
             color: Colors.white.withValues(alpha: 0.9),
           ),
         ),
+        if (ref.isNotEmpty) ...[
+          const Gap(6),
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+            decoration: BoxDecoration(
+              color: ZipherColors.purple.withValues(alpha: 0.1),
+              borderRadius: BorderRadius.circular(6),
+            ),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Icon(
+                  Icons.receipt_outlined,
+                  size: 13,
+                  color: ZipherColors.purple.withValues(alpha: 0.7),
+                ),
+                const Gap(6),
+                Text(
+                  'Invoice #$ref',
+                  style: TextStyle(
+                    fontSize: 12,
+                    fontWeight: FontWeight.w500,
+                    color: ZipherColors.purple.withValues(alpha: 0.7),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
         if (_memoController.text.trim().isNotEmpty) ...[
           const Gap(4),
           Text(

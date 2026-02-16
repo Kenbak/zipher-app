@@ -10,12 +10,10 @@ import 'pages/more/cold.dart';
 import 'settings.pb.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:url_launcher/url_launcher.dart';
 import 'package:warp_api/warp_api.dart';
 
 import 'accounts.dart';
 import 'coin/coins.dart';
-import 'generated/intl/messages.dart';
 import 'pages/accounts/manager.dart';
 import 'pages/accounts/multipay.dart';
 import 'pages/accounts/new_import.dart';
@@ -45,7 +43,7 @@ import 'pages/showqr.dart';
 import 'pages/splash.dart';
 import 'pages/welcome.dart';
 import 'pages/settings.dart';
-import 'pages/messages.dart';
+import 'pages/swap_placeholder.dart';
 import 'pages/utils.dart';
 import 'store2.dart';
 import 'zipher_theme.dart';
@@ -60,7 +58,7 @@ final helpRouteMap = {
   "/txplan": "/transacting/report",
   "/submit_tx": "/transacting/report#transaction-sent",
   "/broadcast_tx": "/transacting/report#transaction-sent",
-  "/messages": "/messages",
+  "/swap": "/swap",
   "/history": "/history",
 };
 
@@ -172,14 +170,9 @@ final router = GoRouter(
         StatefulShellBranch(
           routes: [
             GoRoute(
-                path: '/messages',
-                builder: (context, state) => MessagePage(),
-                routes: [
-                  GoRoute(
-                      path: 'details',
-                      builder: (context, state) => MessageItemPage(
-                          int.parse(state.uri.queryParameters["index"]!))),
-                ]),
+                path: '/swap',
+                builder: (context, state) => SwapPlaceholderPage(),
+            ),
           ],
         ),
         StatefulShellBranch(
@@ -377,7 +370,6 @@ class ScaffoldBar extends StatefulWidget {
 class _ScaffoldBar extends State<ScaffoldBar> {
   @override
   Widget build(BuildContext context) {
-    final s = S.of(context);
     final router = GoRouter.of(context);
     final RouteMatch lastMatch =
         router.routerDelegate.currentConfiguration.last;
@@ -391,39 +383,6 @@ class _ScaffoldBar extends State<ScaffoldBar> {
         onPopInvoked: _onPop,
         child: Scaffold(
           backgroundColor: ZipherColors.bg,
-          appBar: AppBar(
-            backgroundColor: ZipherColors.surface,
-            elevation: 0,
-            centerTitle: false,
-            title: Row(
-              children: [
-                ClipRRect(
-                  borderRadius: BorderRadius.circular(ZipherRadius.sm),
-                  child: Image.asset('assets/zipher_logo.png', height: 28),
-                ),
-                const SizedBox(width: 10),
-                ZipherWidgets.brandText(fontSize: 18),
-                const SizedBox(width: 8),
-                Container(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
-                  decoration: BoxDecoration(
-                    color: ZipherColors.cyan.withValues(alpha: 0.12),
-                    borderRadius: BorderRadius.circular(4),
-                  ),
-                  child: Text(
-                    aa.name,
-                    style: const TextStyle(
-                      fontSize: 10,
-                      fontWeight: FontWeight.w500,
-                      color: ZipherColors.cyan,
-                    ),
-                  ),
-                ),
-              ],
-            ),
-            actions: const [],
-          ),
           bottomNavigationBar: Container(
             decoration: const BoxDecoration(
               color: ZipherColors.surface,
@@ -444,12 +403,12 @@ class _ScaffoldBar extends State<ScaffoldBar> {
                     activeIcon: Icon(Icons.home_rounded),
                     label: 'Home'),
                 const BottomNavigationBarItem(
-                    icon: Icon(Icons.mail_outline_rounded),
-                    activeIcon: Icon(Icons.mail_rounded),
-                    label: 'Messages'),
+                    icon: Icon(Icons.swap_horiz_outlined),
+                    activeIcon: Icon(Icons.swap_horiz_rounded),
+                    label: 'Swap'),
                 const BottomNavigationBarItem(
-                    icon: Icon(Icons.access_time_outlined),
-                    activeIcon: Icon(Icons.access_time_filled),
+                    icon: Icon(Icons.receipt_long_outlined),
+                    activeIcon: Icon(Icons.receipt_long_rounded),
                     label: 'Activity'),
                 const BottomNavigationBarItem(
                     icon: Icon(Icons.settings_outlined),
