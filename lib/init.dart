@@ -17,6 +17,7 @@ import 'generated/intl/messages.dart';
 import 'main.dart';
 import 'pages/utils.dart';
 import 'router.dart';
+import 'sent_memos_db.dart';
 import 'zipher_theme.dart';
 
 Future<void> initCoins() async {
@@ -25,6 +26,9 @@ Future<void> initCoins() async {
   for (var coin in coins) {
     coin.init(dbPath);
   }
+  // Initialize the app-level DB and migrate any old SharedPreferences data
+  await SentMemosDb.database;
+  await SentMemosDb.migrateFromSharedPrefs();
 }
 
 Future<void> restoreWindow() async {

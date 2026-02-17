@@ -40,6 +40,8 @@ class _SubmitTxState extends State<SubmitTxPage> {
         if (widget.txBin != null)
           txIdJs = WarpApi.broadcast(aa.coin, widget.txBin!);
         txId = jsonDecode(txIdJs!);
+        // Persist any pending outgoing memo keyed by this tx hash
+        await commitOutgoingMemo(txId!);
         // Mark shield-in-progress if this was a shielding transaction
         if (shieldPending) {
           lastShieldSubmit = DateTime.now();

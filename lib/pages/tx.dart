@@ -399,9 +399,16 @@ class _TxRowState extends State<_TxRow> {
 
     // Label: "Received", "Sent", "Shielded" (for self-transfers)
     final bool isShielding = _isShielding(tx);
+    final memo = tx.memo ?? '';
+    final bool isMessage = memo.startsWith('\u{1F6E1}') ||
+        memo.startsWith('🛡') ||
+        (!isReceive && getOutgoingMemo(tx.fullTxId) != null);
+
     final String label;
     if (isShielding) {
       label = 'Shielded';
+    } else if (isMessage) {
+      label = isReceive ? 'Message received' : 'Message sent';
     } else if (isReceive) {
       label = 'Received';
     } else {
@@ -409,9 +416,6 @@ class _TxRowState extends State<_TxRow> {
     }
 
     final dateStr = _humanDate(tx.timestamp);
-
-    // For shielding, try memo first, then CipherScan as fallback
-    final memo = tx.memo ?? '';
     double? shieldedAmount;
     if (isShielding) {
       final match = RegExp(r'Auto-shield ([\d.,]+) ZEC').firstMatch(memo);
@@ -442,6 +446,17 @@ class _TxRowState extends State<_TxRow> {
         : tx.value.abs();
     final fiat = _fiatStr(fiatValue);
 
+    // For message transactions, extract a clean memo preview
+    final String? memoPreview;
+    if (isMessage) {
+      final outgoing = getOutgoingMemo(tx.fullTxId);
+      final raw = memo.isNotEmpty ? memo : (outgoing ?? '');
+      final parsed = parseMemoBody(raw);
+      memoPreview = parsed.isNotEmpty ? parsed : null;
+    } else {
+      memoPreview = null;
+    }
+
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 3),
       child: GestureDetector(
@@ -455,6 +470,17 @@ class _TxRowState extends State<_TxRow> {
               color: Colors.white.withValues(alpha: 0.04),
             ),
           ),
+          foregroundDecoration: isMessage
+              ? BoxDecoration(
+                  borderRadius: BorderRadius.circular(14),
+                  border: Border(
+                    left: BorderSide(
+                      width: 2.5,
+                      color: ZipherColors.purple.withValues(alpha: 0.4),
+                    ),
+                  ),
+                )
+              : null,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -467,7 +493,9 @@ class _TxRowState extends State<_TxRow> {
                     decoration: BoxDecoration(
                       color: isShielding
                           ? ZipherColors.purple.withValues(alpha: 0.10)
-                          : Colors.white.withValues(alpha: 0.06),
+                          : isMessage
+                              ? ZipherColors.purple.withValues(alpha: 0.08)
+                              : Colors.white.withValues(alpha: 0.06),
                       borderRadius: BorderRadius.circular(6),
                     ),
                     child: Row(
@@ -476,11 +504,15 @@ class _TxRowState extends State<_TxRow> {
                         Icon(
                           isShielding
                               ? Icons.shield_rounded
-                              : isReceive
-                                  ? Icons.south_west_rounded
-                                  : Icons.north_east_rounded,
+                              : isMessage
+                                  ? (isReceive
+                                      ? Icons.chat_bubble_rounded
+                                      : Icons.send_rounded)
+                                  : isReceive
+                                      ? Icons.south_west_rounded
+                                      : Icons.north_east_rounded,
                           size: 10,
-                          color: isShielding
+                          color: (isShielding || isMessage)
                               ? ZipherColors.purple.withValues(alpha: 0.7)
                               : Colors.white.withValues(alpha: 0.5),
                         ),
@@ -490,7 +522,7 @@ class _TxRowState extends State<_TxRow> {
                           style: TextStyle(
                             fontSize: 11,
                             fontWeight: FontWeight.w600,
-                            color: isShielding
+                            color: (isShielding || isMessage)
                                 ? ZipherColors.purple.withValues(alpha: 0.7)
                                 : Colors.white.withValues(alpha: 0.5),
                           ),
@@ -509,40 +541,49 @@ class _TxRowState extends State<_TxRow> {
                 ],
               ),
               const Gap(10),
-              // Bottom line: logo + ZEC/subtitle → amount + fiat
+              // Bottom line: logo + primary/subtitle → amount + fiat
               Row(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  Container(
-                    width: 38,
-                    height: 38,
-                    decoration: BoxDecoration(
-                      color: Colors.white.withValues(alpha: 0.08),
-                      shape: BoxShape.circle,
-                    ),
-                    child: Center(
-                      child: Image.asset(
-                        'assets/zcash_logo.png',
-                        width: 28,
-                        height: 28,
-                        fit: BoxFit.contain,
+                  // ZEC logo for standard transactions only
+                  if (!isMessage) ...[
+                    Container(
+                      width: 38,
+                      height: 38,
+                      decoration: BoxDecoration(
+                        color: Colors.white.withValues(alpha: 0.08),
+                        shape: BoxShape.circle,
+                      ),
+                      child: Center(
+                        child: Image.asset(
+                          'assets/zcash_logo.png',
+                          width: 28,
+                          height: 28,
+                          fit: BoxFit.contain,
+                        ),
                       ),
                     ),
-                  ),
-                  const Gap(10),
+                    const Gap(10),
+                  ],
                   Expanded(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
+                        // Primary text: memo preview for messages, "ZEC" otherwise
                         Text(
-                          'ZEC',
+                          (isMessage && memoPreview != null)
+                              ? memoPreview
+                              : 'ZEC',
                           style: TextStyle(
                             fontSize: 15,
                             fontWeight: FontWeight.w600,
                             color: Colors.white.withValues(alpha: 0.9),
                           ),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
                         ),
                         const Gap(2),
+                        // Subtitle: privacy info (messages already labeled in the badge)
                         Builder(builder: (context) {
                           final sub =
                               _txSubtitleParts(tx, isReceive, privacy);
@@ -576,6 +617,7 @@ class _TxRowState extends State<_TxRow> {
                       ],
                     ),
                   ),
+                  const Gap(10),
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.end,
                     children: [
@@ -704,13 +746,41 @@ class TransactionState extends State<TransactionPage> {
 
   Tx get tx => aa.txs.items[idx];
 
+  /// Look up the matching ZMessage for this tx (if any).
+  /// The messages table has no foreign key to transactions, so we match
+  /// by block height + direction.  If multiple messages share the same
+  /// height we pick the one whose direction matches.
+  ZMessage? get _linkedMessage {
+    final isReceive = tx.value > 0;
+    final candidates = aa.messages.items
+        .where((m) => m.height == tx.height && m.incoming == isReceive)
+        .toList();
+    if (candidates.length == 1) return candidates.first;
+    if (candidates.isNotEmpty) return candidates.first;
+    // Fallback: try matching by height alone (ignore direction)
+    final byHeight =
+        aa.messages.items.where((m) => m.height == tx.height).toList();
+    if (byHeight.length == 1) return byHeight.first;
+    if (byHeight.isNotEmpty) return byHeight.first;
+    return null;
+  }
+
+  /// Effective memo: prefer tx.memo, then linked ZMessage body,
+  /// then our local outgoing memo cache.
+  String? get _effectiveMemo {
+    if (tx.memo != null && tx.memo!.isNotEmpty) return tx.memo;
+    final msgBody = _linkedMessage?.body;
+    if (msgBody != null && msgBody.isNotEmpty) return msgBody;
+    return getOutgoingMemo(tx.fullTxId);
+  }
+
   @override
   Widget build(BuildContext context) {
     final isReceive = tx.value > 0;
     final isSelfTransfer = _isShielding(tx);
     final privacy = _classifyTx(tx);
     final pColor = _privacyColor(privacy);
-    final invoice = _parseInvoice(tx.memo);
+    final invoice = _parseInvoice(_effectiveMemo);
 
     // For shielding, try memo first, then CipherScan as fallback
     final memo = tx.memo ?? '';
@@ -867,8 +937,8 @@ class TransactionState extends State<TransactionPage> {
                 const Gap(8),
                 _InvoiceCard(invoice: invoice),
                 const Gap(20),
-              ] else if ((tx.memo?.isNotEmpty ?? false) &&
-                  !(tx.memo!.contains('Auto-shield'))) ...[
+              ] else if ((_effectiveMemo?.isNotEmpty ?? false) &&
+                  !(_effectiveMemo!.contains('Auto-shield'))) ...[
                 _SectionHeader(label: 'Message'),
                 const Gap(8),
                 Container(
@@ -880,7 +950,7 @@ class TransactionState extends State<TransactionPage> {
                     borderRadius: BorderRadius.circular(12),
                   ),
                   child: Text(
-                    tx.memo!,
+                    parseMemoBody(_effectiveMemo!),
                     style: TextStyle(
                       fontSize: 14,
                       color: Colors.white.withValues(alpha: 0.7),
@@ -1099,7 +1169,7 @@ class TransactionState extends State<TransactionPage> {
             ),
             const Gap(4),
             Text(
-              txm.memo,
+              parseMemoBody(txm.memo),
               style: TextStyle(
                 fontSize: 14,
                 color: Colors.white.withValues(alpha: 0.6),
@@ -1289,5 +1359,5 @@ class _InvoiceCard extends StatelessWidget {
 }
 
 void gotoTx(BuildContext context, int index) {
-  GoRouter.of(context).push('/history/details?index=$index');
+  GoRouter.of(context).push('/more/history/details?index=$index');
 }

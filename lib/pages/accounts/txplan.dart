@@ -80,6 +80,60 @@ class _TxPlanState extends State<TxPlanPage> with WithLoadingAnimation {
                     else
                       ...outputs.map((o) => _buildRecipient(o)),
 
+                    // ── Memo preview ──
+                    if (pendingOutgoingMemo != null &&
+                        pendingOutgoingMemo!.isNotEmpty) ...[
+                      const Gap(8),
+                      Container(
+                        width: double.infinity,
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 14, vertical: 12),
+                        decoration: BoxDecoration(
+                          color: Colors.white.withValues(alpha: 0.03),
+                          borderRadius: BorderRadius.circular(14),
+                          border: Border.all(
+                            color: Colors.white.withValues(alpha: 0.04),
+                          ),
+                        ),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Row(
+                              children: [
+                                Icon(Icons.lock_rounded,
+                                    size: 12,
+                                    color: ZipherColors.purple
+                                        .withValues(alpha: 0.5)),
+                                const Gap(6),
+                                Text(
+                                  'Encrypted Memo',
+                                  style: TextStyle(
+                                    fontSize: 11,
+                                    fontWeight: FontWeight.w500,
+                                    color: Colors.white
+                                        .withValues(alpha: 0.3),
+                                  ),
+                                ),
+                              ],
+                            ),
+                            const Gap(8),
+                            Text(
+                              pendingOutgoingMemo!,
+                              maxLines: 3,
+                              overflow: TextOverflow.ellipsis,
+                              style: TextStyle(
+                                fontSize: 13,
+                                color:
+                                    Colors.white.withValues(alpha: 0.6),
+                                height: 1.4,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      const Gap(12),
+                    ],
+
                     // ── Details card ──
                     _buildDetails(fee, privacyLevel, isShield: isShield),
                     const Gap(16),

@@ -33,6 +33,7 @@ import 'pages/more/budget.dart';
 import 'pages/more/coin.dart';
 import 'pages/more/contacts.dart';
 import 'pages/more/keytool.dart';
+import 'pages/messages.dart';
 import 'pages/more/more.dart';
 import 'pages/more/pool.dart';
 import 'pages/more/sweep.dart';
@@ -59,7 +60,8 @@ final helpRouteMap = {
   "/submit_tx": "/transacting/report#transaction-sent",
   "/broadcast_tx": "/transacting/report#transaction-sent",
   "/swap": "/swap",
-  "/history": "/history",
+  "/more/history": "/history",
+  "/messages": "/messages",
 };
 
 final router = GoRouter(
@@ -179,13 +181,19 @@ final router = GoRouter(
         StatefulShellBranch(
           routes: [
             GoRoute(
-                path: '/history',
-                builder: (context, state) => TxPage(),
+                path: '/messages',
+                builder: (context, state) => MessagesPage(),
                 routes: [
                   GoRoute(
-                      path: 'details',
-                      builder: (context, state) => TransactionPage(
-                          int.parse(state.uri.queryParameters["index"]!))),
+                    path: 'thread',
+                    builder: (context, state) => ConversationPage(
+                      conversationKey: state.extra as String,
+                    ),
+                  ),
+                  GoRoute(
+                    path: 'compose',
+                    builder: (context, state) => ComposeMessagePage(),
+                  ),
                 ]),
           ],
         ),
@@ -278,6 +286,17 @@ final router = GoRouter(
                     path: 'submit_tx',
                     builder: (context, state) =>
                         SubmitTxPage(txPlan: state.extra as String),
+                  ),
+                  GoRoute(
+                    path: 'history',
+                    builder: (context, state) => TxPage(),
+                    routes: [
+                      GoRoute(
+                        path: 'details',
+                        builder: (context, state) => TransactionPage(
+                            int.parse(state.uri.queryParameters["index"]!)),
+                      ),
+                    ],
                   ),
                   GoRoute(
                     path: 'contacts',
@@ -405,16 +424,16 @@ class _ScaffoldBar extends State<ScaffoldBar> {
                     const icons = [
                       Icons.home_outlined,
                       Icons.swap_horiz_outlined,
-                      Icons.receipt_long_outlined,
+                      Icons.chat_bubble_outline_rounded,
                       Icons.more_horiz_rounded,
                     ];
                     const activeIcons = [
                       Icons.home_rounded,
                       Icons.swap_horiz_rounded,
-                      Icons.receipt_long_rounded,
+                      Icons.chat_bubble_rounded,
                       Icons.more_horiz_rounded,
                     ];
-                    const labels = ['Home', 'Swap', 'Activity', 'More'];
+                    const labels = ['Home', 'Swap', 'Messages', 'More'];
                     return Expanded(
                       child: GestureDetector(
                         behavior: HitTestBehavior.opaque,

@@ -405,7 +405,7 @@ class _HomeState extends State<HomePageInner> {
                         if (recentTxs.isNotEmpty)
                           GestureDetector(
                             onTap: () =>
-                                GoRouter.of(context).go('/history'),
+                                GoRouter.of(context).go('/more/history'),
                             child: Text(
                               'See all',
                               style: TextStyle(
@@ -914,10 +914,20 @@ class _TxRowState extends State<_TxRow> {
             (tx.address == null || tx.address!.isEmpty)) ||
         memo.contains('Auto-shield');
 
+    // Check for message content: raw memo or outgoing cache
+    final bool isMessage = memo.startsWith('\u{1F6E1}') ||
+        memo.startsWith('🛡') ||
+        (!isIncoming && getOutgoingMemo(tx.fullTxId) != null);
+    final String? messageBody = isMessage
+        ? (memo.isNotEmpty ? parseMemoBody(memo) : getOutgoingMemo(tx.fullTxId))
+        : null;
+
     final String label;
     if (isShielding) {
       label = 'Shielded';
-    } else if (memo.isNotEmpty) {
+    } else if (isMessage && messageBody != null && messageBody.isNotEmpty) {
+      label = messageBody;
+    } else if (memo.isNotEmpty && !isMessage) {
       label = memo;
     } else if (isIncoming) {
       label = 'Received';
@@ -969,7 +979,7 @@ class _TxRowState extends State<_TxRow> {
         borderRadius: BorderRadius.circular(14),
         child: InkWell(
           borderRadius: BorderRadius.circular(14),
-          onTap: () => GoRouter.of(context).push('/history/details?index=$index'),
+          onTap: () => GoRouter.of(context).push('/more/history/details?index=$index'),
           child: Container(
             padding:
                 const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
@@ -988,19 +998,27 @@ class _TxRowState extends State<_TxRow> {
                   decoration: BoxDecoration(
                     color: isShielding
                         ? ZipherColors.purple.withValues(alpha: 0.10)
-                        : Colors.white.withValues(alpha: 0.06),
+                        : isMessage
+                            ? ZipherColors.purple.withValues(alpha: 0.08)
+                            : Colors.white.withValues(alpha: 0.06),
                     shape: BoxShape.circle,
                   ),
                   child: Icon(
                     isShielding
                         ? Icons.shield_rounded
-                        : isIncoming
-                            ? Icons.south_west_rounded
-                            : Icons.north_east_rounded,
+                        : isMessage
+                            ? (isIncoming
+                                ? Icons.chat_bubble_rounded
+                                : Icons.send_rounded)
+                            : isIncoming
+                                ? Icons.south_west_rounded
+                                : Icons.north_east_rounded,
                     size: 16,
                     color: isShielding
                         ? ZipherColors.purple.withValues(alpha: 0.6)
-                        : Colors.white.withValues(alpha: 0.4),
+                        : isMessage
+                            ? ZipherColors.purple.withValues(alpha: 0.5)
+                            : Colors.white.withValues(alpha: 0.4),
                   ),
                 ),
                 const Gap(12),
@@ -1029,7 +1047,10 @@ class _TxRowState extends State<_TxRow> {
                     ],
                   ),
                 ),
-                Column(
+                const Gap(10),
+                ConstrainedBox(
+                  constraints: const BoxConstraints(minWidth: 110),
+                  child: Column(
                   crossAxisAlignment: CrossAxisAlignment.end,
                   children: [
                     Text(
@@ -1051,6 +1072,7 @@ class _TxRowState extends State<_TxRow> {
                       ),
                     ],
                   ],
+                ),
                 ),
               ],
             ),

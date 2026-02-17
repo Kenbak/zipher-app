@@ -36,6 +36,7 @@ void setActiveAccount(int coin, int id) {
   coinSettings.save(coin);
   aa.updateDivisified();
   aa.update(null);
+  loadOutgoingMemos(coin: coin, accountId: id);
   aaSequence.seqno = DateTime.now().microsecondsSinceEpoch;
 }
 

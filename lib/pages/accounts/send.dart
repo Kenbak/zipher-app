@@ -67,6 +67,7 @@ class _QuickSendState extends State<QuickSendPage> with WithLoadingAnimation {
   int _amountZat = 0;
   bool _deductFee = false;
   String _memoText = '';
+  late bool _includeReplyTo = appSettings.includeReplyTo != 0;
   bool isShielded = true; // Default shielded (Zashi-style)
   int addressPools = 0;
   bool isTex = false;
@@ -275,44 +276,51 @@ class _QuickSendState extends State<QuickSendPage> with WithLoadingAnimation {
                 color: Colors.white.withValues(alpha: 0.05),
                 borderRadius: BorderRadius.circular(14),
               ),
-              child: Row(
-                children: [
-                  Expanded(
-                    child: TextField(
-                      controller: _addressController,
-                      style: TextStyle(
-                        fontSize: 14,
-                        color: Colors.white.withValues(alpha: 0.85),
-                      ),
-                      decoration: InputDecoration(
-                        hintText: 'Zcash address or payment URI',
-                        hintStyle: TextStyle(
+              child: ContactAutocomplete(
+                controller: _addressController,
+                onSelected: (address, name) {
+                  _addressController.text = address;
+                  field.didChange(address);
+                },
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: TextField(
+                        controller: _addressController,
+                        style: TextStyle(
                           fontSize: 14,
-                          color: Colors.white.withValues(alpha: 0.18),
+                          color: Colors.white.withValues(alpha: 0.85),
                         ),
-                        filled: false,
-                        border: InputBorder.none,
-                        enabledBorder: InputBorder.none,
-                        focusedBorder: InputBorder.none,
-                        contentPadding: const EdgeInsets.symmetric(
-                            horizontal: 16, vertical: 14),
+                        decoration: InputDecoration(
+                          hintText: 'Zcash address or payment URI',
+                          hintStyle: TextStyle(
+                            fontSize: 14,
+                            color: Colors.white.withValues(alpha: 0.18),
+                          ),
+                          filled: false,
+                          border: InputBorder.none,
+                          enabledBorder: InputBorder.none,
+                          focusedBorder: InputBorder.none,
+                          contentPadding: const EdgeInsets.symmetric(
+                              horizontal: 16, vertical: 14),
+                        ),
+                        onChanged: (v) => field.didChange(v),
                       ),
-                      onChanged: (v) => field.didChange(v),
                     ),
-                  ),
-                  _iconBtn(Icons.people_outline_rounded, () async {
-                    final c = await GoRouter.of(context)
-                        .push<Contact>('/account/quick_send/contacts');
-                    if (c != null) _setAddress(c.address!, field);
-                  }),
-                  _iconBtn(Icons.qr_code_rounded, () async {
-                    final text = await scanQRCode(context,
-                        validator:
-                            composeOr([addressValidator, paymentURIValidator]));
-                    _setAddress(text, field);
-                  }),
-                  const Gap(4),
-                ],
+                    _iconBtn(Icons.people_outline_rounded, () async {
+                      final c = await GoRouter.of(context)
+                          .push<Contact>('/account/quick_send/contacts');
+                      if (c != null) _setAddress(c.address!, field);
+                    }),
+                    _iconBtn(Icons.qr_code_rounded, () async {
+                      final text = await scanQRCode(context,
+                          validator:
+                              composeOr([addressValidator, paymentURIValidator]));
+                      _setAddress(text, field);
+                    }),
+                    const Gap(4),
+                  ],
+                ),
               ),
             );
           },
@@ -508,6 +516,9 @@ class _QuickSendState extends State<QuickSendPage> with WithLoadingAnimation {
               TextField(
                 controller: _memoController,
                 maxLines: 4,
+                maxLength: _includeReplyTo
+                    ? MAX_MESSAGE_CHARS_WITH_REPLY
+                    : MAX_MESSAGE_CHARS_NO_REPLY,
                 style: TextStyle(
                   fontSize: 14,
                   color: Colors.white.withValues(alpha: 0.8),
@@ -523,6 +534,7 @@ class _QuickSendState extends State<QuickSendPage> with WithLoadingAnimation {
                   enabledBorder: InputBorder.none,
                   focusedBorder: InputBorder.none,
                   contentPadding: const EdgeInsets.fromLTRB(16, 14, 16, 4),
+                  counterText: '',
                 ),
                 onChanged: (v) => setState(() => _memoText = v),
               ),
@@ -531,10 +543,10 @@ class _QuickSendState extends State<QuickSendPage> with WithLoadingAnimation {
                 child: Align(
                   alignment: Alignment.centerRight,
                   child: Text(
-                    '${_memoBytes}/512',
+                    '${_memoText.length}/${_includeReplyTo ? MAX_MESSAGE_CHARS_WITH_REPLY : MAX_MESSAGE_CHARS_NO_REPLY}',
                     style: TextStyle(
                       fontSize: 11,
-                      color: _memoBytes > 511
+                      color: _memoText.length > (_includeReplyTo ? MAX_MESSAGE_CHARS_WITH_REPLY : MAX_MESSAGE_CHARS_NO_REPLY) - 1
                           ? ZipherColors.red.withValues(alpha: 0.7)
                           : Colors.white.withValues(alpha: 0.2),
                     ),
@@ -544,6 +556,103 @@ class _QuickSendState extends State<QuickSendPage> with WithLoadingAnimation {
             ],
           ),
         ),
+        const Gap(10),
+        // Reply-to toggle
+        GestureDetector(
+          onTap: () =>
+              setState(() => _includeReplyTo = !_includeReplyTo),
+          behavior: HitTestBehavior.opaque,
+          child: Padding(
+            padding: const EdgeInsets.symmetric(vertical: 4),
+            child: Row(
+              children: [
+                Icon(
+                  _includeReplyTo
+                      ? Icons.reply_rounded
+                      : Icons.reply_rounded,
+                  size: 14,
+                  color: _includeReplyTo
+                      ? ZipherColors.purple.withValues(alpha: 0.5)
+                      : Colors.white.withValues(alpha: 0.15),
+                ),
+                const Gap(8),
+                Expanded(
+                  child: Text(
+                    _includeReplyTo
+                        ? 'Reply address included'
+                        : 'Reply address hidden',
+                    style: TextStyle(
+                      fontSize: 12,
+                      color: _includeReplyTo
+                          ? ZipherColors.purple.withValues(alpha: 0.5)
+                          : Colors.white.withValues(alpha: 0.2),
+                    ),
+                  ),
+                ),
+                Container(
+                  width: 32,
+                  height: 18,
+                  decoration: BoxDecoration(
+                    color: _includeReplyTo
+                        ? ZipherColors.purple.withValues(alpha: 0.25)
+                        : Colors.white.withValues(alpha: 0.06),
+                    borderRadius: BorderRadius.circular(9),
+                  ),
+                  child: AnimatedAlign(
+                    duration: const Duration(milliseconds: 150),
+                    alignment: _includeReplyTo
+                        ? Alignment.centerRight
+                        : Alignment.centerLeft,
+                    child: Container(
+                      width: 14,
+                      height: 14,
+                      margin: const EdgeInsets.symmetric(horizontal: 2),
+                      decoration: BoxDecoration(
+                        color: _includeReplyTo
+                            ? ZipherColors.purple
+                            : Colors.white.withValues(alpha: 0.3),
+                        shape: BoxShape.circle,
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+
+        // Warning when reply-to is OFF and address is a known contact
+        if (!_includeReplyTo && _address.isNotEmpty)
+          Builder(
+            builder: (context) {
+              final contacts = WarpApi.getContacts(aa.coin);
+              final isKnown = contacts.any(
+                  (c) => c.address != null && c.address == _address);
+              if (!isKnown) return const SizedBox.shrink();
+              return Padding(
+                padding: const EdgeInsets.only(top: 4),
+                child: Row(
+                  children: [
+                    Icon(
+                      Icons.info_outline_rounded,
+                      size: 12,
+                      color: Colors.orangeAccent.withValues(alpha: 0.6),
+                    ),
+                    const Gap(6),
+                    Expanded(
+                      child: Text(
+                        'Recipient won\'t know this is from you',
+                        style: TextStyle(
+                          fontSize: 10,
+                          color: Colors.orangeAccent.withValues(alpha: 0.5),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              );
+            },
+          ),
       ],
     );
   }
@@ -654,13 +763,13 @@ class _QuickSendState extends State<QuickSendPage> with WithLoadingAnimation {
       _showError('Enter a recipient address');
       return;
     }
-    // Validate amount (0 ZEC is allowed for memo-only transactions)
-    if (_amountZat < 0) {
-      _showError('Enter a valid amount');
+    // Validate amount
+    if (_amountZat <= 0) {
+      _showError('Enter a valid amount (min 0.0001 ZEC)');
       return;
     }
-    if (_amountZat == 0 && _memoText.isEmpty) {
-      _showError('Add a memo for 0 ZEC transactions');
+    if (_amountZat < MIN_MEMO_AMOUNT) {
+      _showError('Minimum amount is 0.0001 ZEC');
       return;
     }
     if (_amountZat > _spendable) {
@@ -673,8 +782,7 @@ class _QuickSendState extends State<QuickSendPage> with WithLoadingAnimation {
       return;
     }
 
-    final includeReply = appSettings.includeReplyTo != 0;
-    final memoData = MemoData(includeReply, '', _memoText);
+    final memoData = MemoData(_includeReplyTo, '', _memoText);
     final sc = SendContext(addr, _pools, Amount(_amountZat, _deductFee), memoData);
     SendContext.instance = sc;
 
@@ -700,6 +808,12 @@ class _QuickSendState extends State<QuickSendPage> with WithLoadingAnimation {
               appSettings.anchorOffset,
               coinSettings.feeT,
             ));
+        // Store memo + recipient so SubmitTxPage can persist after broadcast
+        if (_memoText.isNotEmpty) {
+          pendingOutgoingMemo = _memoText;
+          pendingOutgoingRecipient = addr;
+          pendingOutgoingAnonymous = !_includeReplyTo;
+        }
         GoRouter.of(context).push('/account/txplan?tab=account', extra: plan);
       } on String catch (e) {
         showMessageBox2(context, s.error, e);

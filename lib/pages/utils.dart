@@ -26,6 +26,8 @@ import 'package:share_plus/share_plus.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:warp_api/data_fb_generated.dart';
 import 'package:warp_api/warp_api.dart';
+
+import 'avatar.dart';
 import 'package:path/path.dart' as p;
 import 'package:http/http.dart' as http;
 import 'dart:convert' as convert;
@@ -35,6 +37,7 @@ import '../appsettings.dart';
 import '../coin/coins.dart';
 import '../generated/intl/messages.dart';
 import '../router.dart';
+import '../sent_memos_db.dart';
 import '../store2.dart';
 import '../zipher_theme.dart';
 import 'widgets.dart';
@@ -45,6 +48,40 @@ const APP_NAME = "Zipher";
 const ZECUNIT = 100000000.0;
 const ZECUNIT_INT = 100000000;
 const MAX_PRECISION = 8;
+
+/// Minimum amount (in zatoshis) for a message or memo-bearing transaction.
+/// Ensures the recipient's wallet reliably detects the note.
+const MIN_MEMO_AMOUNT = 10000; // 0.0001 ZEC
+
+/// Max characters for message body when reply-to address is included.
+/// Zcash memos are 512 bytes; ~150 bytes for 🛡MSG header + UA address.
+const MAX_MESSAGE_CHARS_WITH_REPLY = 350;
+
+/// Max characters for message body without reply-to address.
+/// Nearly the full 512-byte memo minus the small 🛡MSG header (~10 bytes).
+const MAX_MESSAGE_CHARS_NO_REPLY = 500;
+
+/// Parse a raw Zcash memo that may contain the 🛡MSG header + reply-to
+/// address and return just the human-readable message body.
+/// Format: "🛡MSG\n{address}\n\n{body}" or "🛡MSG\n{address}\n{subject}\n{body}"
+String parseMemoBody(String raw) {
+  final trimmed = raw.trim();
+  // Check for the MSG prefix (shield emoji + MSG)
+  if (!trimmed.startsWith('\u{1F6E1}') && !trimmed.startsWith('🛡')) {
+    return trimmed; // Not a MSG-formatted memo, return as-is
+  }
+  // Find the double-newline that separates header from body
+  final idx = trimmed.indexOf('\n\n');
+  if (idx >= 0) {
+    return trimmed.substring(idx + 2).trim();
+  }
+  // Fallback: try single newline separation (subject\nbody after address)
+  final lines = trimmed.split('\n');
+  if (lines.length >= 3) {
+    return lines.sublist(2).join('\n').trim();
+  }
+  return trimmed;
+}
 
 final DateFormat noteDateFormat = DateFormat("yy-MM-dd HH:mm");
 final DateFormat txDateFormat = DateFormat("MM-dd HH:mm");
@@ -69,8 +106,14 @@ String decimalFormat(double x, int decimalDigits, {String symbol = ''}) {
   ).format(x).trimRight();
 }
 
-String decimalToString(double x) =>
-    decimalFormat(x, decimalDigits(appSettings.fullPrec));
+String decimalToString(double x) {
+  final defaultD = decimalDigits(appSettings.fullPrec);
+  final abs = x.abs();
+  int d = defaultD;
+  if (abs > 0 && abs < 0.001) d = d.clamp(5, 8);
+  else if (abs > 0 && abs < 0.01) d = d.clamp(4, 8);
+  return decimalFormat(x, d);
+}
 
 Future<bool> showMessageBox2(BuildContext context, String title, String content,
     {String? label, bool dismissable = true}) async {
@@ -517,8 +560,21 @@ int stringToAmount(String? s) {
 }
 
 String amountToString2(int amount, {int? digits}) {
-  final dd = digits ?? decimalDigits(appSettings.fullPrec);
+  final dd = digits ?? smartDigits(amount);
   return decimalFormat(amount / ZECUNIT, dd);
+}
+
+/// Return enough decimal places so the value isn't displayed as zero
+/// and small balances always show meaningful precision.
+int smartDigits(int amountZat) {
+  final defaultD = decimalDigits(appSettings.fullPrec);
+  if (amountZat == 0) return defaultD;
+  final abs = amountZat.abs();
+  if (abs < 1000) return 8.clamp(defaultD, 8);          // < 0.00001 ZEC
+  if (abs < 10000) return 5.clamp(defaultD, 8);         // < 0.0001 ZEC
+  if (abs < 100000) return 5.clamp(defaultD, 8);        // < 0.001 ZEC
+  if (abs < 100000000) return 4.clamp(defaultD, 8);     // < 1 ZEC
+  return defaultD;
 }
 
 Future<void> saveFile(String data, String filename, String title) async {
@@ -880,3 +936,252 @@ String? isValidUA(int uaType) {
   if (uaType == 1) return GetIt.I<S>().invalidAddress;
   return null;
 }
+
+// ═══════════════════════════════════════════════════════════
+// CONTACT AUTOCOMPLETE OVERLAY
+// ═══════════════════════════════════════════════════════════
+
+/// An overlay that shows contact suggestions as the user types in an address
+/// field. Wrap any address TextField with this widget.
+class ContactAutocomplete extends StatefulWidget {
+  final TextEditingController controller;
+  final Widget child;
+  final void Function(String address, String name) onSelected;
+
+  const ContactAutocomplete({
+    super.key,
+    required this.controller,
+    required this.child,
+    required this.onSelected,
+  });
+
+  @override
+  State<ContactAutocomplete> createState() => _ContactAutocompleteState();
+}
+
+class _ContactAutocompleteState extends State<ContactAutocomplete> {
+  final _link = LayerLink();
+  OverlayEntry? _overlay;
+  List<Contact> _matches = [];
+
+  @override
+  void initState() {
+    super.initState();
+    widget.controller.addListener(_onChanged);
+  }
+
+  @override
+  void dispose() {
+    widget.controller.removeListener(_onChanged);
+    _removeOverlay();
+    super.dispose();
+  }
+
+  void _onChanged() {
+    final query = widget.controller.text.trim().toLowerCase();
+    if (query.isEmpty || query.length > 60) {
+      _removeOverlay();
+      return;
+    }
+    final contacts = WarpApi.getContacts(aa.coin);
+    _matches = contacts.where((c) {
+      if (c.name == null || c.address == null) return false;
+      return c.name!.toLowerCase().contains(query) ||
+          c.address!.toLowerCase().startsWith(query);
+    }).toList();
+
+    if (_matches.isEmpty) {
+      _removeOverlay();
+    } else {
+      _showOverlay();
+    }
+  }
+
+  void _showOverlay() {
+    _removeOverlay();
+    _overlay = OverlayEntry(builder: (context) {
+      return Positioned(
+        width: 300,
+        child: CompositedTransformFollower(
+          link: _link,
+          showWhenUnlinked: false,
+          offset: const Offset(0, 56),
+          child: Material(
+            color: Colors.transparent,
+            child: Container(
+              constraints: const BoxConstraints(maxHeight: 180),
+              decoration: BoxDecoration(
+                color: const Color(0xFF1A1A2E),
+                borderRadius: BorderRadius.circular(12),
+                border: Border.all(
+                  color: Colors.white.withValues(alpha: 0.08),
+                ),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withValues(alpha: 0.4),
+                    blurRadius: 12,
+                    offset: const Offset(0, 4),
+                  ),
+                ],
+              ),
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(12),
+                child: ListView.separated(
+                  padding: EdgeInsets.zero,
+                  shrinkWrap: true,
+                  itemCount: _matches.length,
+                  separatorBuilder: (_, __) => Divider(
+                    height: 1,
+                    color: Colors.white.withValues(alpha: 0.04),
+                  ),
+                  itemBuilder: (context, index) {
+                    final c = _matches[index];
+                    return ListTile(
+                      dense: true,
+                      visualDensity: VisualDensity.compact,
+                      leading: CircleAvatar(
+                        radius: 14,
+                        backgroundColor:
+                            initialToColor(c.name![0].toUpperCase())
+                                .withValues(alpha: 0.15),
+                        child: Text(
+                          c.name![0].toUpperCase(),
+                          style: TextStyle(
+                            fontSize: 11,
+                            fontWeight: FontWeight.w700,
+                            color: initialToColor(c.name![0].toUpperCase()),
+                          ),
+                        ),
+                      ),
+                      title: Text(
+                        c.name!,
+                        style: TextStyle(
+                          fontSize: 13,
+                          fontWeight: FontWeight.w500,
+                          color: Colors.white.withValues(alpha: 0.8),
+                        ),
+                      ),
+                      subtitle: Text(
+                        centerTrim(c.address!, length: 16),
+                        style: TextStyle(
+                          fontSize: 10,
+                          color: Colors.white.withValues(alpha: 0.25),
+                        ),
+                      ),
+                      onTap: () {
+                        widget.onSelected(c.address!, c.name!);
+                        _removeOverlay();
+                      },
+                    );
+                  },
+                ),
+              ),
+            ),
+          ),
+        ),
+      );
+    });
+    Overlay.of(context).insert(_overlay!);
+  }
+
+  void _removeOverlay() {
+    _overlay?.remove();
+    _overlay = null;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return CompositedTransformTarget(
+      link: _link,
+      child: widget.child,
+    );
+  }
+}
+
+// ═══════════════════════════════════════════════════════════
+// OUTGOING MEMO STORE  (backed by zipher_app.db)
+// The Rust backend doesn't store outgoing memos in the
+// transactions table, so we store them on the Dart side
+// in a dedicated SQLite database.
+// ═══════════════════════════════════════════════════════════
+
+/// A cached outgoing message with full metadata.
+class CachedOutgoingMemo {
+  final String memo;
+  final String recipient;
+  final int timestampMs;
+
+  /// True when the message was sent without a reply-to address,
+  /// meaning the recipient won't know who sent it.
+  final bool anonymous;
+
+  CachedOutgoingMemo({
+    required this.memo,
+    required this.recipient,
+    required this.timestampMs,
+    this.anonymous = false,
+  });
+}
+
+/// Pending message waiting to be associated with the next broadcast tx.
+String? pendingOutgoingMemo;
+String? pendingOutgoingRecipient;
+bool pendingOutgoingAnonymous = false;
+
+/// In-memory cache: full tx hash → CachedOutgoingMemo (per-account).
+/// Loaded from SQLite on account switch for fast synchronous reads.
+Map<String, CachedOutgoingMemo> _outgoingMemos = {};
+int _loadedCoin = -1;
+int _loadedAccount = -1;
+
+/// Load (or reload) sent memos for the given account from the DB.
+/// Call at startup and on every account switch.
+Future<void> loadOutgoingMemos({int? coin, int? accountId}) async {
+  final c = coin ?? aa.coin;
+  final id = accountId ?? aa.id;
+  if (c == _loadedCoin && id == _loadedAccount) return;
+  _loadedCoin = c;
+  _loadedAccount = id;
+  _outgoingMemos = await SentMemosDb.getAllForAccount(c, id);
+}
+
+/// Call after signAndBroadcast returns the full tx hash.
+Future<void> commitOutgoingMemo(String fullTxHash) async {
+  if (pendingOutgoingMemo != null && pendingOutgoingMemo!.isNotEmpty) {
+    final now = DateTime.now().millisecondsSinceEpoch;
+    final memo = pendingOutgoingMemo!;
+    final recipient = pendingOutgoingRecipient ?? '';
+    final anonymous = pendingOutgoingAnonymous;
+
+    // Write to DB
+    await SentMemosDb.insert(
+      coin: aa.coin,
+      accountId: aa.id,
+      txHash: fullTxHash,
+      memo: memo,
+      recipient: recipient,
+      timestampMs: now,
+      anonymous: anonymous,
+    );
+
+    // Update in-memory cache
+    _outgoingMemos[fullTxHash] = CachedOutgoingMemo(
+      memo: memo,
+      recipient: recipient,
+      timestampMs: now,
+      anonymous: anonymous,
+    );
+
+    pendingOutgoingMemo = null;
+    pendingOutgoingRecipient = null;
+    pendingOutgoingAnonymous = false;
+  }
+}
+
+/// Retrieve a cached outgoing memo by full tx hash (synchronous, from memory).
+String? getOutgoingMemo(String fullTxHash) {
+  return _outgoingMemos[fullTxHash]?.memo;
+}
+
+/// Get all cached outgoing messages for the current account (for Messages page).
+Map<String, CachedOutgoingMemo> get outgoingMemoCache => _outgoingMemos;

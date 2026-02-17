@@ -61,6 +61,13 @@ class _MorePageState extends State<MorePage> {
                   onTap: () => GoRouter.of(context).push('/settings'),
                 ),
                 _SettingsItem(
+                  icon: Icons.receipt_long_rounded,
+                  iconColor: ZipherColors.cyan,
+                  label: 'Activity',
+                  subtitle: 'Full transaction history',
+                  onTap: () => _nav('/more/history'),
+                ),
+                _SettingsItem(
                   icon: Icons.people_outline_rounded,
                   iconColor: ZipherColors.cyan,
                   label: s.contacts,
