@@ -225,8 +225,9 @@ Future<void> showSnackBar(String msg) async {
 }
 
 void openTxInExplorer(String txId) {
+  final base = isTestnet ? 'https://testnet.cipherscan.app' : 'https://cipherscan.app';
   launchUrl(
-    Uri.parse('https://cipherscan.app/tx/$txId'),
+    Uri.parse('$base/tx/$txId'),
     mode: LaunchMode.externalApplication,
   );
 }

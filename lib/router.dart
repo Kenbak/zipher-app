@@ -1,6 +1,7 @@
 import 'package:showcaseview/showcaseview.dart';
 
 import 'pages/accounts/swap/history.dart';
+import 'pages/faucet.dart';
 import 'pages/swap.dart';
 import 'pages/swap_status.dart';
 import 'pages/more/cold.dart';
@@ -9,6 +10,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
 import 'accounts.dart';
+import 'coin/coins.dart';
 import 'pages/accounts/manager.dart';
 import 'pages/accounts/new_import.dart';
 import 'pages/accounts/restore.dart';
@@ -140,7 +142,8 @@ final router = GoRouter(
           routes: [
             GoRoute(
                 path: '/swap',
-                builder: (context, state) => NearSwapPage(),
+                builder: (context, state) =>
+                    isTestnet ? FaucetPage() : NearSwapPage(),
                 routes: [
                   GoRoute(
                     path: 'status',
@@ -369,17 +372,17 @@ class _ScaffoldBar extends State<ScaffoldBar> {
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: List.generate(3, (i) {
                     final isActive = widget.shell.currentIndex == i;
-                    const icons = [
+                    final icons = [
                       Icons.home_outlined,
-                      Icons.swap_horiz_outlined,
+                      isTestnet ? Icons.water_drop_outlined : Icons.swap_horiz_outlined,
                       Icons.more_horiz_rounded,
                     ];
-                    const activeIcons = [
+                    final activeIcons = [
                       Icons.home_rounded,
-                      Icons.swap_horiz_rounded,
+                      isTestnet ? Icons.water_drop_rounded : Icons.swap_horiz_rounded,
                       Icons.more_horiz_rounded,
                     ];
-                    const labels = ['Home', 'Swap', 'More'];
+                    final labels = ['Home', isTestnet ? 'Faucet' : 'Swap', 'More'];
                     return Expanded(
                       child: GestureDetector(
                         behavior: HitTestBehavior.opaque,
