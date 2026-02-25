@@ -50,13 +50,13 @@ class _TxPlanState extends State<TxPlanPage> with WithLoadingAnimation {
             fontSize: 14,
             fontWeight: FontWeight.w600,
             letterSpacing: 1.5,
-            color: Colors.white.withValues(alpha: 0.6),
+            color: ZipherColors.text60,
           ),
         ),
         centerTitle: true,
         leading: IconButton(
           icon: Icon(Icons.arrow_back_rounded,
-              color: Colors.white.withValues(alpha: 0.5)),
+              color: ZipherColors.text60),
           onPressed: () => GoRouter.of(context).pop(),
         ),
       ),
@@ -89,10 +89,10 @@ class _TxPlanState extends State<TxPlanPage> with WithLoadingAnimation {
                         padding: const EdgeInsets.symmetric(
                             horizontal: 14, vertical: 12),
                         decoration: BoxDecoration(
-                          color: Colors.white.withValues(alpha: 0.03),
+                          color: ZipherColors.cardBg,
                           borderRadius: BorderRadius.circular(14),
                           border: Border.all(
-                            color: Colors.white.withValues(alpha: 0.04),
+                            color: ZipherColors.borderSubtle,
                           ),
                         ),
                         child: Column(
@@ -124,7 +124,7 @@ class _TxPlanState extends State<TxPlanPage> with WithLoadingAnimation {
                               style: TextStyle(
                                 fontSize: 13,
                                 color:
-                                    Colors.white.withValues(alpha: 0.6),
+                                    ZipherColors.text60,
                                 height: 1.4,
                               ),
                             ),
@@ -208,7 +208,7 @@ class _TxPlanState extends State<TxPlanPage> with WithLoadingAnimation {
                 width: 64,
                 height: 64,
                 decoration: BoxDecoration(
-                  color: Colors.white.withValues(alpha: 0.06),
+                  color: ZipherColors.cardBgElevated,
                   shape: BoxShape.circle,
                 ),
                 child: Center(
@@ -248,7 +248,7 @@ class _TxPlanState extends State<TxPlanPage> with WithLoadingAnimation {
           style: TextStyle(
             fontSize: 14,
             fontWeight: FontWeight.w500,
-            color: Colors.white.withValues(alpha: 0.4),
+            color: ZipherColors.text40,
           ),
         ),
         const Gap(8),
@@ -274,7 +274,7 @@ class _TxPlanState extends State<TxPlanPage> with WithLoadingAnimation {
               style: TextStyle(
                 fontSize: 14,
                 fontWeight: FontWeight.w500,
-                color: Colors.white.withValues(alpha: 0.3),
+                color: ZipherColors.text40,
               ),
             ),
           ],
@@ -287,7 +287,7 @@ class _TxPlanState extends State<TxPlanPage> with WithLoadingAnimation {
             fiatStr,
             style: TextStyle(
               fontSize: 13,
-              color: Colors.white.withValues(alpha: 0.25),
+              color: ZipherColors.text20,
             ),
           ),
         ],
@@ -313,7 +313,7 @@ class _TxPlanState extends State<TxPlanPage> with WithLoadingAnimation {
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 14),
         decoration: BoxDecoration(
-          color: Colors.white.withValues(alpha: 0.03),
+          color: ZipherColors.cardBg,
           borderRadius: BorderRadius.circular(14),
         ),
         child: Row(
@@ -351,7 +351,7 @@ class _TxPlanState extends State<TxPlanPage> with WithLoadingAnimation {
                     'To',
                     style: TextStyle(
                       fontSize: 12,
-                      color: Colors.white.withValues(alpha: 0.25),
+                      color: ZipherColors.text20,
                     ),
                   ),
                   const Gap(2),
@@ -361,7 +361,7 @@ class _TxPlanState extends State<TxPlanPage> with WithLoadingAnimation {
                       style: TextStyle(
                         fontSize: 14,
                         fontWeight: FontWeight.w500,
-                        color: Colors.white.withValues(alpha: 0.8),
+                        color: ZipherColors.text90,
                       ),
                     ),
                     const Gap(1),
@@ -370,7 +370,7 @@ class _TxPlanState extends State<TxPlanPage> with WithLoadingAnimation {
                       style: TextStyle(
                         fontSize: 11,
                         fontFamily: 'monospace',
-                        color: Colors.white.withValues(alpha: 0.2),
+                        color: ZipherColors.text20,
                       ),
                     ),
                   ] else
@@ -379,7 +379,7 @@ class _TxPlanState extends State<TxPlanPage> with WithLoadingAnimation {
                       style: TextStyle(
                         fontSize: 13,
                         fontFamily: 'monospace',
-                        color: Colors.white.withValues(alpha: 0.6),
+                        color: ZipherColors.text60,
                       ),
                     ),
                 ],
@@ -432,7 +432,7 @@ class _TxPlanState extends State<TxPlanPage> with WithLoadingAnimation {
                     style: TextStyle(
                       fontSize: 14,
                       fontWeight: FontWeight.w500,
-                      color: Colors.white.withValues(alpha: 0.8),
+                      color: ZipherColors.text90,
                     ),
                   ),
                   const Gap(2),
@@ -440,7 +440,7 @@ class _TxPlanState extends State<TxPlanPage> with WithLoadingAnimation {
                     'Transparent → Orchard (private)',
                     style: TextStyle(
                       fontSize: 11,
-                      color: Colors.white.withValues(alpha: 0.3),
+                      color: ZipherColors.text40,
                     ),
                   ),
                 ],
@@ -460,7 +460,7 @@ class _TxPlanState extends State<TxPlanPage> with WithLoadingAnimation {
     return Container(
       padding: const EdgeInsets.all(14),
       decoration: BoxDecoration(
-        color: Colors.white.withValues(alpha: 0.03),
+        color: ZipherColors.cardBg,
         borderRadius: BorderRadius.circular(14),
       ),
       child: Column(
@@ -470,7 +470,7 @@ class _TxPlanState extends State<TxPlanPage> with WithLoadingAnimation {
             const Gap(10),
             Divider(
               height: 1,
-              color: Colors.white.withValues(alpha: 0.04),
+              color: ZipherColors.borderSubtle,
             ),
             const Gap(10),
             _buildPrivacyRow(privacyLevel),
@@ -491,7 +491,7 @@ class _TxPlanState extends State<TxPlanPage> with WithLoadingAnimation {
           'Privacy',
           style: TextStyle(
             fontSize: 13,
-            color: Colors.white.withValues(alpha: 0.35),
+            color: ZipherColors.text40,
           ),
         ),
         Row(
@@ -526,7 +526,7 @@ class _TxPlanState extends State<TxPlanPage> with WithLoadingAnimation {
           label,
           style: TextStyle(
             fontSize: 13,
-            color: Colors.white.withValues(alpha: 0.35),
+            color: ZipherColors.text40,
           ),
         ),
         Text(
@@ -534,7 +534,7 @@ class _TxPlanState extends State<TxPlanPage> with WithLoadingAnimation {
           style: TextStyle(
             fontSize: 13,
             fontWeight: FontWeight.w500,
-            color: Colors.white.withValues(alpha: 0.7),
+            color: ZipherColors.text90,
           ),
         ),
       ],

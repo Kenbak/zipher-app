@@ -49,13 +49,13 @@ class _RescanState extends State<RescanPage> with WithLoadingAnimation {
             fontSize: 14,
             fontWeight: FontWeight.w600,
             letterSpacing: 1.5,
-            color: Colors.white.withValues(alpha: 0.6),
+            color: ZipherColors.text60,
           ),
         ),
         centerTitle: true,
         leading: IconButton(
           icon: Icon(Icons.arrow_back_rounded,
-              color: Colors.white.withValues(alpha: 0.5)),
+              color: ZipherColors.text60),
           onPressed: () => GoRouter.of(context).pop(),
         ),
       ),
@@ -111,7 +111,7 @@ class _RescanState extends State<RescanPage> with WithLoadingAnimation {
                     'Roll back to a recent save point. Fastest option.',
                     style: TextStyle(
                       fontSize: 11,
-                      color: Colors.white.withValues(alpha: 0.18),
+                      color: ZipherColors.text20,
                     ),
                   ),
                   const Gap(10),
@@ -128,7 +128,7 @@ class _RescanState extends State<RescanPage> with WithLoadingAnimation {
                   'Re-download all transactions from a specific point. Slower but thorough.',
                   style: TextStyle(
                     fontSize: 11,
-                    color: Colors.white.withValues(alpha: 0.18),
+                    color: ZipherColors.text20,
                   ),
                 ),
                 const Gap(12),
@@ -141,14 +141,14 @@ class _RescanState extends State<RescanPage> with WithLoadingAnimation {
                     padding: const EdgeInsets.symmetric(
                         horizontal: 16, vertical: 14),
                     decoration: BoxDecoration(
-                      color: Colors.white.withValues(alpha: 0.05),
+                      color: ZipherColors.cardBg,
                       borderRadius: BorderRadius.circular(14),
                     ),
                     child: Row(
                       children: [
                         Icon(Icons.calendar_today_rounded,
                             size: 16,
-                            color: Colors.white.withValues(alpha: 0.3)),
+                            color: ZipherColors.text40),
                         const Gap(10),
                         Expanded(
                           child: Text(
@@ -158,8 +158,8 @@ class _RescanState extends State<RescanPage> with WithLoadingAnimation {
                             style: TextStyle(
                               fontSize: 14,
                               color: _selectedDate != null
-                                  ? Colors.white.withValues(alpha: 0.85)
-                                  : Colors.white.withValues(alpha: 0.15),
+                                  ? ZipherColors.text90
+                                  : ZipherColors.text20,
                             ),
                           ),
                         ),
@@ -168,7 +168,7 @@ class _RescanState extends State<RescanPage> with WithLoadingAnimation {
                               ? Icons.expand_less_rounded
                               : Icons.expand_more_rounded,
                           size: 18,
-                          color: Colors.white.withValues(alpha: 0.2),
+                          color: ZipherColors.text20,
                         ),
                       ],
                     ),
@@ -179,7 +179,7 @@ class _RescanState extends State<RescanPage> with WithLoadingAnimation {
                   const Gap(8),
                   Container(
                     decoration: BoxDecoration(
-                      color: Colors.white.withValues(alpha: 0.03),
+                      color: ZipherColors.cardBg,
                       borderRadius: BorderRadius.circular(14),
                     ),
                     child: Theme(
@@ -187,7 +187,7 @@ class _RescanState extends State<RescanPage> with WithLoadingAnimation {
                         colorScheme: ColorScheme.dark(
                           primary: ZipherColors.cyan,
                           surface: ZipherColors.bg,
-                          onSurface: Colors.white.withValues(alpha: 0.7),
+                          onSurface: ZipherColors.text90,
                         ),
                       ),
                       child: CalendarDatePicker(
@@ -217,14 +217,14 @@ class _RescanState extends State<RescanPage> with WithLoadingAnimation {
                         size: 16,
                         color: _useHeight
                             ? ZipherColors.cyan.withValues(alpha: 0.6)
-                            : Colors.white.withValues(alpha: 0.15),
+                            : ZipherColors.text20,
                       ),
                       const Gap(6),
                       Text(
                         'Use block height instead',
                         style: TextStyle(
                           fontSize: 12,
-                          color: Colors.white.withValues(alpha: 0.3),
+                          color: ZipherColors.text40,
                         ),
                       ),
                     ],
@@ -235,7 +235,7 @@ class _RescanState extends State<RescanPage> with WithLoadingAnimation {
                   const Gap(8),
                   Container(
                     decoration: BoxDecoration(
-                      color: Colors.white.withValues(alpha: 0.05),
+                      color: ZipherColors.cardBg,
                       borderRadius: BorderRadius.circular(14),
                     ),
                     child: FormBuilderTextField(
@@ -244,13 +244,13 @@ class _RescanState extends State<RescanPage> with WithLoadingAnimation {
                       keyboardType: TextInputType.number,
                       style: TextStyle(
                         fontSize: 14,
-                        color: Colors.white.withValues(alpha: 0.85),
+                        color: ZipherColors.text90,
                       ),
                       decoration: InputDecoration(
                         hintText: 'e.g. 2000000',
                         hintStyle: TextStyle(
                           fontSize: 14,
-                          color: Colors.white.withValues(alpha: 0.15),
+                          color: ZipherColors.text20,
                         ),
                         filled: false,
                         border: InputBorder.none,
@@ -310,7 +310,7 @@ class _RescanState extends State<RescanPage> with WithLoadingAnimation {
     final recent = checkpoints.take(5).toList();
     return Container(
       decoration: BoxDecoration(
-        color: Colors.white.withValues(alpha: 0.03),
+        color: ZipherColors.cardBg,
         borderRadius: BorderRadius.circular(14),
       ),
       child: Column(
@@ -320,7 +320,7 @@ class _RescanState extends State<RescanPage> with WithLoadingAnimation {
             if (i < recent.length - 1)
               Divider(
                 height: 1,
-                color: Colors.white.withValues(alpha: 0.04),
+                color: ZipherColors.borderSubtle,
                 indent: 16,
                 endIndent: 16,
               ),
@@ -347,7 +347,7 @@ class _RescanState extends State<RescanPage> with WithLoadingAnimation {
             children: [
               Icon(Icons.history_rounded,
                   size: 16,
-                  color: Colors.white.withValues(alpha: 0.2)),
+                  color: ZipherColors.text20),
               const Gap(12),
               Expanded(
                 child: Column(
@@ -357,14 +357,14 @@ class _RescanState extends State<RescanPage> with WithLoadingAnimation {
                       '$dateStr at $timeStr',
                       style: TextStyle(
                         fontSize: 13,
-                        color: Colors.white.withValues(alpha: 0.6),
+                        color: ZipherColors.text60,
                       ),
                     ),
                     Text(
                       'Block ${cp.height}',
                       style: TextStyle(
                         fontSize: 10,
-                        color: Colors.white.withValues(alpha: 0.15),
+                        color: ZipherColors.text20,
                       ),
                     ),
                   ],
@@ -372,7 +372,7 @@ class _RescanState extends State<RescanPage> with WithLoadingAnimation {
               ),
               Icon(Icons.chevron_right_rounded,
                   size: 16,
-                  color: Colors.white.withValues(alpha: 0.1)),
+                  color: ZipherColors.text10),
             ],
           ),
         ),
@@ -387,7 +387,7 @@ class _RescanState extends State<RescanPage> with WithLoadingAnimation {
         fontSize: 12,
         fontWeight: FontWeight.w600,
         letterSpacing: 0.5,
-        color: Colors.white.withValues(alpha: 0.25),
+        color: ZipherColors.text20,
       ),
     );
   }

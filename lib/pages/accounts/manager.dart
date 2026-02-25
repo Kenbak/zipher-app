@@ -44,13 +44,13 @@ class _AccountManagerState extends State<AccountManagerPage> {
             fontSize: 14,
             fontWeight: FontWeight.w600,
             letterSpacing: 1.5,
-            color: Colors.white.withValues(alpha: 0.6),
+            color: ZipherColors.text60,
           ),
         ),
         centerTitle: true,
         leading: IconButton(
           icon: Icon(Icons.arrow_back_rounded,
-              color: Colors.white.withValues(alpha: 0.5)),
+              color: ZipherColors.text60),
           onPressed: () => GoRouter.of(context).pop(),
         ),
         actions: [
@@ -59,7 +59,7 @@ class _AccountManagerState extends State<AccountManagerPage> {
               onPressed: _edit,
               icon: Icon(Icons.edit_rounded,
                   size: 20,
-                  color: Colors.white.withValues(alpha: 0.4)),
+                  color: ZipherColors.text40),
             ),
           if (selected != null && !editing)
             IconButton(
@@ -84,13 +84,13 @@ class _AccountManagerState extends State<AccountManagerPage> {
                 children: [
                   Icon(Icons.account_balance_wallet_outlined,
                       size: 40,
-                      color: Colors.white.withValues(alpha: 0.08)),
+                      color: ZipherColors.cardBgElevated),
                   const Gap(12),
                   Text(
                     'No accounts',
                     style: TextStyle(
                       fontSize: 14,
-                      color: Colors.white.withValues(alpha: 0.15),
+                      color: ZipherColors.text20,
                     ),
                   ),
                 ],
@@ -116,7 +116,7 @@ class _AccountManagerState extends State<AccountManagerPage> {
                       decoration: BoxDecoration(
                         color: isSelected
                             ? ZipherColors.cyan.withValues(alpha: 0.06)
-                            : Colors.white.withValues(alpha: 0.03),
+                            : ZipherColors.cardBg,
                         borderRadius: BorderRadius.circular(14),
                         border: isSelected
                             ? Border.all(
@@ -160,8 +160,7 @@ class _AccountManagerState extends State<AccountManagerPage> {
                                     style: TextStyle(
                                       fontSize: 14,
                                       fontWeight: FontWeight.w500,
-                                      color: Colors.white
-                                          .withValues(alpha: 0.85),
+                                      color: ZipherColors.text90,
                                     ),
                                     decoration: InputDecoration(
                                       isDense: true,
@@ -177,8 +176,7 @@ class _AccountManagerState extends State<AccountManagerPage> {
                                     style: TextStyle(
                                       fontSize: 14,
                                       fontWeight: FontWeight.w500,
-                                      color: Colors.white
-                                          .withValues(alpha: 0.85),
+                                      color: ZipherColors.text90,
                                     ),
                                   ),
                                 const Gap(2),
@@ -224,7 +222,7 @@ class _AccountManagerState extends State<AccountManagerPage> {
                               fontSize: 13,
                               fontWeight: FontWeight.w500,
                               color:
-                                  Colors.white.withValues(alpha: 0.5),
+                                  ZipherColors.text60,
                             ),
                           ),
                         ],

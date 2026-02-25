@@ -67,7 +67,7 @@ class _SubmitTxState extends State<SubmitTxPage> {
             IconButton(
               onPressed: _done,
               icon: Icon(Icons.close_rounded,
-                  color: Colors.white.withValues(alpha: 0.4)),
+                  color: ZipherColors.text40),
             ),
         ],
       ),
@@ -100,7 +100,7 @@ class _SubmitTxState extends State<SubmitTxPage> {
             style: TextStyle(
               fontSize: 18,
               fontWeight: FontWeight.w600,
-              color: Colors.white.withValues(alpha: 0.8),
+              color: ZipherColors.text90,
             ),
           ),
           const Gap(8),
@@ -108,7 +108,7 @@ class _SubmitTxState extends State<SubmitTxPage> {
             'Signing and broadcasting your transaction',
             style: TextStyle(
               fontSize: 13,
-              color: Colors.white.withValues(alpha: 0.25),
+              color: ZipherColors.text20,
             ),
           ),
         ],
@@ -162,7 +162,7 @@ class _SubmitTxState extends State<SubmitTxPage> {
             textAlign: TextAlign.center,
             style: TextStyle(
               fontSize: 14,
-              color: Colors.white.withValues(alpha: 0.3),
+              color: ZipherColors.text40,
             ),
           ),
           const Gap(28),
@@ -182,14 +182,14 @@ class _SubmitTxState extends State<SubmitTxPage> {
               padding:
                   const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
               decoration: BoxDecoration(
-                color: Colors.white.withValues(alpha: 0.03),
+                color: ZipherColors.cardBg,
                 borderRadius: BorderRadius.circular(12),
               ),
               child: Row(
                 children: [
                   Icon(Icons.tag_rounded,
                       size: 16,
-                      color: Colors.white.withValues(alpha: 0.2)),
+                      color: ZipherColors.text20),
                   const Gap(10),
                   Expanded(
                     child: Text(
@@ -197,13 +197,13 @@ class _SubmitTxState extends State<SubmitTxPage> {
                       style: TextStyle(
                         fontSize: 13,
                         fontFamily: 'monospace',
-                        color: Colors.white.withValues(alpha: 0.5),
+                        color: ZipherColors.text60,
                       ),
                     ),
                   ),
                   Icon(Icons.copy_rounded,
                       size: 14,
-                      color: Colors.white.withValues(alpha: 0.2)),
+                      color: ZipherColors.text20),
                 ],
               ),
             ),
@@ -222,7 +222,7 @@ class _SubmitTxState extends State<SubmitTxPage> {
                 child: Container(
                   padding: const EdgeInsets.symmetric(vertical: 14),
                   decoration: BoxDecoration(
-                    color: Colors.white.withValues(alpha: 0.04),
+                    color: ZipherColors.cardBg,
                     borderRadius: BorderRadius.circular(14),
                   ),
                   child: Row(
@@ -253,7 +253,7 @@ class _SubmitTxState extends State<SubmitTxPage> {
             'Transaction will appear on CipherScan once confirmed',
             style: TextStyle(
               fontSize: 11,
-              color: Colors.white.withValues(alpha: 0.15),
+              color: ZipherColors.text20,
             ),
           ),
           const Gap(12),
@@ -343,7 +343,7 @@ class _SubmitTxState extends State<SubmitTxPage> {
             textAlign: TextAlign.center,
             style: TextStyle(
               fontSize: 14,
-              color: Colors.white.withValues(alpha: 0.3),
+              color: ZipherColors.text40,
             ),
           ),
           const Gap(28),
@@ -379,7 +379,7 @@ class _SubmitTxState extends State<SubmitTxPage> {
                 child: Container(
                   padding: const EdgeInsets.symmetric(vertical: 16),
                   decoration: BoxDecoration(
-                    color: Colors.white.withValues(alpha: 0.06),
+                    color: ZipherColors.cardBgElevated,
                     borderRadius: BorderRadius.circular(14),
                   ),
                   child: Row(
@@ -388,7 +388,7 @@ class _SubmitTxState extends State<SubmitTxPage> {
                       Icon(Icons.arrow_back_rounded,
                           size: 18,
                           color:
-                              Colors.white.withValues(alpha: 0.5)),
+                              ZipherColors.text60),
                       const Gap(8),
                       Text(
                         'Go Back',
@@ -396,7 +396,7 @@ class _SubmitTxState extends State<SubmitTxPage> {
                           fontSize: 15,
                           fontWeight: FontWeight.w600,
                           color:
-                              Colors.white.withValues(alpha: 0.6),
+                              ZipherColors.text60,
                         ),
                       ),
                     ],
@@ -445,13 +445,13 @@ class ExportUnsignedTxPage extends StatelessWidget {
             fontSize: 14,
             fontWeight: FontWeight.w600,
             letterSpacing: 1.5,
-            color: Colors.white.withValues(alpha: 0.6),
+            color: ZipherColors.text60,
           ),
         ),
         centerTitle: true,
         leading: IconButton(
           icon: Icon(Icons.arrow_back_rounded,
-              color: Colors.white.withValues(alpha: 0.5)),
+              color: ZipherColors.text60),
           onPressed: () => GoRouter.of(context).pop(),
         ),
         actions: [

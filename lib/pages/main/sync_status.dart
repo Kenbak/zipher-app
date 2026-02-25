@@ -97,7 +97,7 @@ class SyncStatusState extends State<SyncStatusWidget> {
                     height: 14,
                     child: CircularProgressIndicator(
                       strokeWidth: 1.5,
-                      color: Colors.white.withValues(alpha: 0.4),
+                      color: ZipherColors.text40,
                     ),
                   ),
                 const SizedBox(width: 8),
@@ -109,7 +109,7 @@ class SyncStatusState extends State<SyncStatusWidget> {
                       fontWeight: FontWeight.w400,
                       color: !connected
                           ? ZipherColors.red.withValues(alpha: 0.8)
-                          : Colors.white.withValues(alpha: 0.35),
+                          : ZipherColors.text40,
                     ),
                   ),
                 ),
@@ -124,9 +124,9 @@ class SyncStatusState extends State<SyncStatusWidget> {
                   height: 2,
                   child: LinearProgressIndicator(
                     value: value.clamp(0, 1),
-                    backgroundColor: Colors.white.withValues(alpha: 0.05),
-                    valueColor: AlwaysStoppedAnimation<Color>(
-                        Colors.white.withValues(alpha: 0.2)),
+                    backgroundColor: ZipherColors.cyan.withValues(alpha: 0.15),
+                    valueColor: const AlwaysStoppedAnimation<Color>(
+                        ZipherColors.cyan),
                   ),
                 ),
               ),

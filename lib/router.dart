@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:showcaseview/showcaseview.dart';
 
 import 'pages/accounts/swap/history.dart';
@@ -142,8 +144,11 @@ final router = GoRouter(
           routes: [
             GoRoute(
                 path: '/swap',
-                builder: (context, state) =>
-                    isTestnet ? FaucetPage() : NearSwapPage(),
+                builder: (context, state) => ValueListenableBuilder<bool>(
+                  valueListenable: testnetNotifier,
+                  builder: (_, isTest, __) =>
+                      isTest ? FaucetPage() : NearSwapPage(),
+                ),
                 routes: [
                   GoRoute(
                     path: 'status',
@@ -337,6 +342,7 @@ class ScaffoldBar extends StatefulWidget {
 class _ScaffoldBar extends State<ScaffoldBar> {
   int _knownCoin = aa.coin;
   int _knownId = aa.id;
+  bool _knownTestnet = isTestnet;
   final Set<int> _staleTabs = {};
 
   @override
@@ -354,12 +360,15 @@ class _ScaffoldBar extends State<ScaffoldBar> {
         onPopInvoked: _onPop,
         child: Scaffold(
           backgroundColor: ZipherColors.bg,
-          bottomNavigationBar: Container(
+          bottomNavigationBar: ClipRect(
+            child: BackdropFilter(
+              filter: ImageFilter.blur(sigmaX: 20, sigmaY: 20),
+              child: Container(
             decoration: BoxDecoration(
-              color: ZipherColors.bg.withValues(alpha: 0.85),
+              color: ZipherColors.bg.withValues(alpha: 0.80),
               border: Border(
                 top: BorderSide(
-                  color: Colors.white.withValues(alpha: 0.05),
+                  color: ZipherColors.borderSubtle,
                   width: 0.5,
                 ),
               ),
@@ -387,10 +396,14 @@ class _ScaffoldBar extends State<ScaffoldBar> {
                       child: GestureDetector(
                         behavior: HitTestBehavior.opaque,
                         onTap: () {
-                          // Detect account change since last tap
+                          // Detect account or network change since last tap
                           if (aa.coin != _knownCoin || aa.id != _knownId) {
                             _knownCoin = aa.coin;
                             _knownId = aa.id;
+                            _staleTabs.addAll([0, 1, 2]);
+                          }
+                          if (isTestnet != _knownTestnet) {
+                            _knownTestnet = isTestnet;
                             _staleTabs.addAll([0, 1, 2]);
                           }
                           final isCurrentTab = i == widget.shell.currentIndex;
@@ -419,8 +432,7 @@ class _ScaffoldBar extends State<ScaffoldBar> {
                                 size: 24,
                                 color: isActive
                                     ? ZipherColors.cyan
-                                    : Colors.white
-                                        .withValues(alpha: 0.30),
+                                    : ZipherColors.text20,
                               ),
                             ),
                             const SizedBox(height: 4),
@@ -433,8 +445,7 @@ class _ScaffoldBar extends State<ScaffoldBar> {
                                     : FontWeight.w400,
                                 color: isActive
                                     ? ZipherColors.cyan
-                                    : Colors.white
-                                        .withValues(alpha: 0.30),
+                                    : ZipherColors.text20,
                               ),
                             ),
                           ],
@@ -445,6 +456,8 @@ class _ScaffoldBar extends State<ScaffoldBar> {
                 ),
               ),
             ),
+          ),
+          ),
           ),
           body: ShowCaseWidget(builder: (context) => widget.shell),
         ));
@@ -466,6 +479,14 @@ class PlaceHolderPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(appBar: AppBar(title: Text(title)), body: child);
+    return Scaffold(
+      backgroundColor: ZipherColors.bg,
+      body: Column(
+        children: [
+          ZipherWidgets.pageHeader(context, title),
+          if (child != null) Expanded(child: child!),
+        ],
+      ),
+    );
   }
 }

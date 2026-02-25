@@ -55,7 +55,7 @@ class _PaymentURIState extends State<PaymentURIPage> {
         elevation: 0,
         leading: IconButton(
           icon: Icon(Icons.arrow_back_rounded,
-              color: Colors.white.withValues(alpha: 0.7)),
+              color: ZipherColors.text60),
           onPressed: () => GoRouter.of(context).pop(),
         ),
         title: Text(
@@ -63,7 +63,7 @@ class _PaymentURIState extends State<PaymentURIPage> {
           style: TextStyle(
             fontSize: 17,
             fontWeight: FontWeight.w600,
-            color: Colors.white.withValues(alpha: 0.9),
+            color: ZipherColors.text90,
           ),
         ),
         centerTitle: true,
@@ -154,13 +154,13 @@ class _PaymentURIState extends State<PaymentURIPage> {
                   children: [
                     Icon(Icons.verified_user_outlined,
                         size: 14,
-                        color: Colors.white.withValues(alpha: 0.2)),
+                        color: ZipherColors.text20),
                     const Gap(6),
                     Text(
                       'For privacy, always use shielded address',
                       style: TextStyle(
                         fontSize: 12,
-                        color: Colors.white.withValues(alpha: 0.2),
+                        color: ZipherColors.text20,
                       ),
                     ),
                   ],
@@ -263,7 +263,7 @@ class _AddressCard extends StatelessWidget {
                   style: TextStyle(
                     fontSize: 14,
                     fontWeight: FontWeight.w600,
-                    color: Colors.white.withValues(alpha: textAlpha),
+                    color: primary ? ZipherColors.text90 : ZipherColors.text60,
                   ),
                 ),
               ),
@@ -288,7 +288,7 @@ class _AddressCard extends StatelessWidget {
             style: TextStyle(
               fontSize: 13,
               fontFamily: 'monospace',
-              color: Colors.white.withValues(alpha: textAlpha * 0.6),
+              color: primary ? ZipherColors.text60 : ZipherColors.text40,
               letterSpacing: 0.5,
             ),
           ),
@@ -326,11 +326,11 @@ class _SmallIconBtn extends StatelessWidget {
         width: 32,
         height: 32,
         decoration: BoxDecoration(
-          color: Colors.white.withValues(alpha: 0.06),
+          color: ZipherColors.cardBgElevated,
           borderRadius: BorderRadius.circular(8),
         ),
         child: Icon(icon,
-            size: 16, color: Colors.white.withValues(alpha: alpha * 0.7)),
+            size: 16, color: alpha > 0.7 ? ZipherColors.text60 : ZipherColors.text40),
       ),
     );
   }
@@ -357,7 +357,7 @@ class _QRSheet extends StatelessWidget {
               width: 36,
               height: 4,
               decoration: BoxDecoration(
-                color: Colors.white.withValues(alpha: 0.15),
+                color: ZipherColors.text20,
                 borderRadius: BorderRadius.circular(2),
               ),
             ),
@@ -367,7 +367,7 @@ class _QRSheet extends StatelessWidget {
               style: TextStyle(
                 fontSize: 16,
                 fontWeight: FontWeight.w600,
-                color: Colors.white.withValues(alpha: 0.9),
+                color: ZipherColors.text90,
               ),
             ),
             const Gap(16),
@@ -391,7 +391,7 @@ class _QRSheet extends StatelessWidget {
               style: TextStyle(
                 fontSize: 11,
                 fontFamily: 'monospace',
-                color: Colors.white.withValues(alpha: 0.35),
+                color: ZipherColors.text40,
               ),
               textAlign: TextAlign.center,
             ),
@@ -501,7 +501,7 @@ class _RequestPaymentSheetState extends State<_RequestPaymentSheet> {
               width: 36,
               height: 4,
               decoration: BoxDecoration(
-                color: Colors.white.withValues(alpha: 0.15),
+                color: ZipherColors.text20,
                 borderRadius: BorderRadius.circular(2),
               ),
             ),
@@ -511,7 +511,7 @@ class _RequestPaymentSheetState extends State<_RequestPaymentSheet> {
               style: TextStyle(
                 fontSize: 16,
                 fontWeight: FontWeight.w600,
-                color: Colors.white.withValues(alpha: 0.9),
+                color: ZipherColors.text90,
               ),
             ),
             const Gap(16),
@@ -533,7 +533,7 @@ class _RequestPaymentSheetState extends State<_RequestPaymentSheet> {
           'How much ZEC?',
           style: TextStyle(
             fontSize: 13,
-            color: Colors.white.withValues(alpha: 0.4),
+            color: ZipherColors.text40,
           ),
         ),
         const Gap(16),
@@ -545,14 +545,14 @@ class _RequestPaymentSheetState extends State<_RequestPaymentSheet> {
           style: TextStyle(
             fontSize: 32,
             fontWeight: FontWeight.w700,
-            color: Colors.white.withValues(alpha: 0.9),
+            color: ZipherColors.text90,
           ),
           decoration: InputDecoration(
             hintText: '0.00',
             hintStyle: TextStyle(
               fontSize: 32,
               fontWeight: FontWeight.w700,
-              color: Colors.white.withValues(alpha: 0.15),
+              color: ZipherColors.text20,
             ),
             border: InputBorder.none,
             enabledBorder: InputBorder.none,
@@ -561,7 +561,7 @@ class _RequestPaymentSheetState extends State<_RequestPaymentSheet> {
             suffixText: 'ZEC',
             suffixStyle: TextStyle(
               fontSize: 16,
-              color: Colors.white.withValues(alpha: 0.3),
+              color: ZipherColors.text40,
             ),
           ),
         ),
@@ -587,7 +587,7 @@ class _RequestPaymentSheetState extends State<_RequestPaymentSheet> {
           'Payment details (optional)',
           style: TextStyle(
             fontSize: 13,
-            color: Colors.white.withValues(alpha: 0.4),
+            color: ZipherColors.text40,
           ),
         ),
         const Gap(16),
@@ -596,14 +596,14 @@ class _RequestPaymentSheetState extends State<_RequestPaymentSheet> {
           controller: _refController,
           style: TextStyle(
             fontSize: 14,
-            color: Colors.white.withValues(alpha: 0.85),
+            color: ZipherColors.text90,
             fontFamily: 'monospace',
           ),
           decoration: InputDecoration(
             hintText: 'Invoice ref (e.g. INV-2026-001)',
             hintStyle: TextStyle(
               fontSize: 14,
-              color: Colors.white.withValues(alpha: 0.15),
+              color: ZipherColors.text20,
             ),
             prefixIcon: Padding(
               padding: const EdgeInsets.only(left: 12, right: 8),
@@ -616,7 +616,7 @@ class _RequestPaymentSheetState extends State<_RequestPaymentSheet> {
             prefixIconConstraints:
                 const BoxConstraints(minWidth: 0, minHeight: 0),
             filled: true,
-            fillColor: Colors.white.withValues(alpha: 0.05),
+            fillColor: ZipherColors.cardBg,
             border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(12),
               borderSide: BorderSide.none,
@@ -633,16 +633,16 @@ class _RequestPaymentSheetState extends State<_RequestPaymentSheet> {
           maxLines: 3,
           style: TextStyle(
             fontSize: 15,
-            color: Colors.white.withValues(alpha: 0.85),
+            color: ZipherColors.text90,
           ),
           decoration: InputDecoration(
             hintText: 'Reason or description...',
             hintStyle: TextStyle(
               fontSize: 15,
-              color: Colors.white.withValues(alpha: 0.15),
+              color: ZipherColors.text20,
             ),
             filled: true,
-            fillColor: Colors.white.withValues(alpha: 0.05),
+            fillColor: ZipherColors.cardBg,
             border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(12),
               borderSide: BorderSide.none,
@@ -656,7 +656,7 @@ class _RequestPaymentSheetState extends State<_RequestPaymentSheet> {
             Icon(
               Icons.info_outline_rounded,
               size: 12,
-              color: Colors.white.withValues(alpha: 0.15),
+              color: ZipherColors.text20,
             ),
             const Gap(6),
             Expanded(
@@ -664,7 +664,7 @@ class _RequestPaymentSheetState extends State<_RequestPaymentSheet> {
                 'Adding an invoice ref creates a trackable payment request',
                 style: TextStyle(
                   fontSize: 11,
-                  color: Colors.white.withValues(alpha: 0.2),
+                  color: ZipherColors.text20,
                 ),
               ),
             ),
@@ -706,7 +706,7 @@ class _RequestPaymentSheetState extends State<_RequestPaymentSheet> {
           style: TextStyle(
             fontSize: 20,
             fontWeight: FontWeight.w700,
-            color: Colors.white.withValues(alpha: 0.9),
+            color: ZipherColors.text90,
           ),
         ),
         if (ref.isNotEmpty) ...[
@@ -744,7 +744,7 @@ class _RequestPaymentSheetState extends State<_RequestPaymentSheet> {
             _memoController.text.trim(),
             style: TextStyle(
               fontSize: 13,
-              color: Colors.white.withValues(alpha: 0.35),
+              color: ZipherColors.text40,
             ),
           ),
         ],

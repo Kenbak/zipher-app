@@ -116,7 +116,7 @@ class _WelcomePageState extends State<WelcomePage>
                     style: TextStyle(
                       fontSize: 15,
                       fontWeight: FontWeight.w400,
-                      color: Colors.white.withValues(alpha: 0.30),
+                      color: ZipherColors.text40,
                       letterSpacing: 0.5,
                     ),
                   ),
@@ -148,11 +148,11 @@ class _WelcomePageState extends State<WelcomePage>
                         child: Container(
                           padding: const EdgeInsets.symmetric(vertical: 14),
                           decoration: BoxDecoration(
-                            color: Colors.white.withValues(alpha: 0.04),
+                            color: ZipherColors.cardBg,
                             borderRadius:
                                 BorderRadius.circular(ZipherRadius.md),
                             border: Border.all(
-                              color: Colors.white.withValues(alpha: 0.06),
+                              color: ZipherColors.borderSubtle,
                             ),
                           ),
                           child: Row(
@@ -161,7 +161,7 @@ class _WelcomePageState extends State<WelcomePage>
                               Icon(
                                 Icons.download_rounded,
                                 size: 18,
-                                color: Colors.white.withValues(alpha: 0.5),
+                                color: ZipherColors.text60,
                               ),
                               const Gap(8),
                               Text(
@@ -169,7 +169,7 @@ class _WelcomePageState extends State<WelcomePage>
                                 style: TextStyle(
                                   fontSize: 15,
                                   fontWeight: FontWeight.w500,
-                                  color: Colors.white.withValues(alpha: 0.5),
+                                  color: ZipherColors.text60,
                                 ),
                               ),
                             ],

@@ -337,16 +337,16 @@ class TxPageState extends State<TxPage> {
                       children: [
                         IconButton(
                           icon: Icon(Icons.arrow_back_rounded,
-                              color: Colors.white.withValues(alpha: 0.7)),
+                              color: ZipherColors.text60),
                           onPressed: () => Navigator.of(context).pop(),
                         ),
                         Text(
                           'Activity',
-                          style: TextStyle(
-                            fontSize: 22,
-                            fontWeight: FontWeight.w700,
-                            color: Colors.white.withValues(alpha: 0.9),
-                          ),
+                            style: TextStyle(
+                              fontSize: 22,
+                              fontWeight: FontWeight.w700,
+                              color: ZipherColors.text90,
+                            ),
                         ),
                       ],
                     ),
@@ -382,7 +382,7 @@ class TxPageState extends State<TxPage> {
             style: TextStyle(
               fontSize: 13,
               fontWeight: FontWeight.w600,
-              color: Colors.white.withValues(alpha: 0.4),
+              color: ZipherColors.text40,
               letterSpacing: 0.3,
             ),
           ),
@@ -435,16 +435,16 @@ class _EmptyActivity extends StatelessWidget {
             children: [
               IconButton(
                 icon: Icon(Icons.arrow_back_rounded,
-                    color: Colors.white.withValues(alpha: 0.7)),
+                    color: ZipherColors.text60),
                 onPressed: () => Navigator.of(context).pop(),
               ),
               Text(
                 'Activity',
-                style: TextStyle(
-                  fontSize: 22,
-                  fontWeight: FontWeight.w700,
-                  color: Colors.white.withValues(alpha: 0.9),
-                ),
+                            style: TextStyle(
+                              fontSize: 22,
+                              fontWeight: FontWeight.w700,
+                              color: ZipherColors.text90,
+                            ),
               ),
             ],
           ),
@@ -460,13 +460,13 @@ class _EmptyActivity extends StatelessWidget {
               width: 64,
               height: 64,
               decoration: BoxDecoration(
-                color: Colors.white.withValues(alpha: 0.04),
+                color: ZipherColors.cardBg,
                 shape: BoxShape.circle,
               ),
               child: Icon(
                 Icons.receipt_long_outlined,
                 size: 28,
-                color: Colors.white.withValues(alpha: 0.12),
+                color: ZipherColors.text10,
               ),
             ),
             const Gap(16),
@@ -475,7 +475,7 @@ class _EmptyActivity extends StatelessWidget {
               style: TextStyle(
                 fontSize: 16,
                 fontWeight: FontWeight.w600,
-                color: Colors.white.withValues(alpha: 0.5),
+                color: ZipherColors.text60,
               ),
             ),
             const Gap(6),
@@ -483,7 +483,7 @@ class _EmptyActivity extends StatelessWidget {
               'Your transactions will appear here',
               style: TextStyle(
                 fontSize: 13,
-                color: Colors.white.withValues(alpha: 0.25),
+                color: ZipherColors.text20,
               ),
             ),
           ],
@@ -629,11 +629,9 @@ class _TxRowState extends State<_TxRow> {
         child: Container(
           padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 14),
           decoration: BoxDecoration(
-            color: Colors.white.withValues(alpha: 0.03),
+            color: ZipherColors.cardBg,
             borderRadius: BorderRadius.circular(14),
-            border: Border.all(
-              color: Colors.white.withValues(alpha: 0.04),
-            ),
+            border: Border.all(color: ZipherColors.borderSubtle),
           ),
           foregroundDecoration: isMessage
               ? BoxDecoration(
@@ -662,7 +660,7 @@ class _TxRowState extends State<_TxRow> {
                               ? ZipherColors.purple.withValues(alpha: 0.10)
                               : isMessage
                                   ? ZipherColors.purple.withValues(alpha: 0.08)
-                                  : Colors.white.withValues(alpha: 0.06),
+                                  : ZipherColors.cardBgElevated,
                       borderRadius: BorderRadius.circular(6),
                     ),
                     child: Row(
@@ -685,7 +683,7 @@ class _TxRowState extends State<_TxRow> {
                               ? ZipherColors.cyan.withValues(alpha: 0.7)
                               : (isShielding || isMessage)
                                   ? ZipherColors.purple.withValues(alpha: 0.7)
-                                  : Colors.white.withValues(alpha: 0.5),
+                                  : ZipherColors.text60,
                         ),
                         const Gap(3),
                         Text(
@@ -697,7 +695,7 @@ class _TxRowState extends State<_TxRow> {
                                 ? ZipherColors.cyan.withValues(alpha: 0.7)
                                 : (isShielding || isMessage)
                                     ? ZipherColors.purple.withValues(alpha: 0.7)
-                                    : Colors.white.withValues(alpha: 0.5),
+                                    : ZipherColors.text60,
                           ),
                         ),
                       ],
@@ -751,7 +749,7 @@ class _TxRowState extends State<_TxRow> {
                     dateStr,
                     style: TextStyle(
                       fontSize: 11,
-                      color: Colors.white.withValues(alpha: 0.25),
+                      color: ZipherColors.text20,
                     ),
                   ),
                 ],
@@ -767,7 +765,7 @@ class _TxRowState extends State<_TxRow> {
                       width: 38,
                       height: 38,
                       decoration: BoxDecoration(
-                        color: Colors.white.withValues(alpha: 0.08),
+                        color: ZipherColors.cardBgElevated,
                         shape: BoxShape.circle,
                       ),
                       child: Center(
@@ -793,7 +791,7 @@ class _TxRowState extends State<_TxRow> {
                           style: TextStyle(
                             fontSize: 15,
                             fontWeight: FontWeight.w600,
-                            color: Colors.white.withValues(alpha: 0.9),
+                            color: ZipherColors.text90,
                           ),
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
@@ -805,7 +803,7 @@ class _TxRowState extends State<_TxRow> {
                               _txSubtitleParts(tx, isReceive, privacy);
                           final mutedStyle = TextStyle(
                             fontSize: 12,
-                            color: Colors.white.withValues(alpha: 0.3),
+                            color: ZipherColors.text40,
                           );
                           return RichText(
                             maxLines: 1,
@@ -851,7 +849,7 @@ class _TxRowState extends State<_TxRow> {
                           fiat,
                           style: TextStyle(
                             fontSize: 12,
-                            color: Colors.white.withValues(alpha: 0.25),
+                            color: ZipherColors.text20,
                           ),
                         ),
                       ],
@@ -1048,7 +1046,7 @@ class TransactionState extends State<TransactionPage> {
                             width: 72,
                             height: 72,
                             decoration: BoxDecoration(
-                              color: Colors.white.withValues(alpha: 0.08),
+                              color: ZipherColors.cardBgElevated,
                               shape: BoxShape.circle,
                             ),
                             child: Center(
@@ -1104,7 +1102,7 @@ class TransactionState extends State<TransactionPage> {
                       style: TextStyle(
                         fontSize: 15,
                         fontWeight: FontWeight.w500,
-                        color: Colors.white.withValues(alpha: 0.45),
+                        color: ZipherColors.text40,
                       ),
                     ),
 
@@ -1128,7 +1126,7 @@ class TransactionState extends State<TransactionPage> {
                         padding: const EdgeInsets.symmetric(
                             horizontal: 10, vertical: 4),
                         decoration: BoxDecoration(
-                          color: Colors.white.withValues(alpha: 0.05),
+                          color: ZipherColors.cardBg,
                           borderRadius: BorderRadius.circular(20),
                         ),
                         child: Text(
@@ -1136,7 +1134,7 @@ class TransactionState extends State<TransactionPage> {
                           style: TextStyle(
                             fontSize: 13,
                             fontWeight: FontWeight.w500,
-                            color: Colors.white.withValues(alpha: 0.35),
+                            color: ZipherColors.text40,
                           ),
                         ),
                       ),
@@ -1162,14 +1160,14 @@ class TransactionState extends State<TransactionPage> {
                   padding:
                       const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
                   decoration: BoxDecoration(
-                    color: Colors.white.withValues(alpha: 0.04),
+                    color: ZipherColors.cardBg,
                     borderRadius: BorderRadius.circular(12),
                   ),
                   child: Text(
                     parseMemoBody(_effectiveMemo!),
                     style: TextStyle(
                       fontSize: 14,
-                      color: Colors.white.withValues(alpha: 0.7),
+                      color: ZipherColors.text60,
                       height: 1.5,
                     ),
                   ),
@@ -1211,7 +1209,7 @@ class TransactionState extends State<TransactionPage> {
       width: double.infinity,
       padding: const EdgeInsets.all(14),
       decoration: BoxDecoration(
-        color: Colors.white.withValues(alpha: 0.03),
+        color: ZipherColors.cardBg,
         borderRadius: BorderRadius.circular(12),
       ),
       child: Column(
@@ -1273,7 +1271,7 @@ class TransactionState extends State<TransactionPage> {
                                     : (tx.contact ?? centerTrim(addr)),
                                 style: TextStyle(
                                   fontSize: 13,
-                                  color: Colors.white.withValues(alpha: 0.7),
+                                  color: ZipherColors.text60,
                                 ),
                               ),
                             ),
@@ -1293,7 +1291,7 @@ class TransactionState extends State<TransactionPage> {
                                 child: Icon(Icons.copy_rounded,
                                     size: 13,
                                     color:
-                                        Colors.white.withValues(alpha: 0.2)),
+                                        ZipherColors.text20),
                               ),
                             ],
                           ],
@@ -1315,7 +1313,7 @@ class TransactionState extends State<TransactionPage> {
                     style: TextStyle(
                       fontSize: 13,
                       fontFamily: 'monospace',
-                      color: Colors.white.withValues(alpha: 0.7),
+                      color: ZipherColors.text60,
                     ),
                   ),
                 ),
@@ -1333,7 +1331,7 @@ class TransactionState extends State<TransactionPage> {
                   },
                   child: Icon(Icons.copy_rounded,
                       size: 13,
-                      color: Colors.white.withValues(alpha: 0.2)),
+                      color: ZipherColors.text20),
                 ),
               ],
             ),
@@ -1346,7 +1344,7 @@ class TransactionState extends State<TransactionPage> {
               _humanDate(tx.timestamp),
               style: TextStyle(
                 fontSize: 13,
-                color: Colors.white.withValues(alpha: 0.7),
+                                  color: ZipherColors.text60,
               ),
             ),
           ),
@@ -1358,7 +1356,7 @@ class TransactionState extends State<TransactionPage> {
   Widget _detailDivider() => Padding(
         padding: const EdgeInsets.symmetric(vertical: 2),
         child: Divider(
-            height: 1, color: Colors.white.withValues(alpha: 0.04)),
+            height: 1, color: ZipherColors.cardBg),
       );
 
   List<Widget> _memos() {
@@ -1369,7 +1367,7 @@ class TransactionState extends State<TransactionPage> {
         width: double.infinity,
         padding: const EdgeInsets.all(14),
         decoration: BoxDecoration(
-          color: Colors.white.withValues(alpha: 0.04),
+          color: ZipherColors.cardBg,
           borderRadius: BorderRadius.circular(12),
         ),
         child: Column(
@@ -1380,7 +1378,7 @@ class TransactionState extends State<TransactionPage> {
               style: TextStyle(
                 fontSize: 11,
                 fontFamily: 'monospace',
-                color: Colors.white.withValues(alpha: 0.25),
+                color: ZipherColors.text20,
               ),
             ),
             const Gap(4),
@@ -1388,7 +1386,7 @@ class TransactionState extends State<TransactionPage> {
               parseMemoBody(txm.memo),
               style: TextStyle(
                 fontSize: 14,
-                color: Colors.white.withValues(alpha: 0.6),
+                color: ZipherColors.text60,
                 height: 1.4,
               ),
             ),
@@ -1413,7 +1411,7 @@ class _SectionHeader extends StatelessWidget {
       style: TextStyle(
         fontSize: 13,
         fontWeight: FontWeight.w600,
-        color: Colors.white.withValues(alpha: 0.4),
+        color: ZipherColors.text40,
       ),
     );
   }
@@ -1435,7 +1433,7 @@ class _DetailRow extends StatelessWidget {
             label,
             style: TextStyle(
               fontSize: 13,
-              color: Colors.white.withValues(alpha: 0.35),
+              color: ZipherColors.text40,
             ),
           ),
           const Spacer(),
@@ -1463,7 +1461,7 @@ class _BottomAction extends StatelessWidget {
         child: Container(
           padding: const EdgeInsets.symmetric(vertical: 14),
           decoration: BoxDecoration(
-            color: Colors.white.withValues(alpha: 0.04),
+            color: ZipherColors.cardBg,
             borderRadius: BorderRadius.circular(12),
           ),
           child: Row(
@@ -1559,7 +1557,7 @@ class _InvoiceCard extends StatelessWidget {
                     invoice.description,
                     style: TextStyle(
                       fontSize: 12,
-                      color: Colors.white.withValues(alpha: 0.5),
+                      color: ZipherColors.text60,
                     ),
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,

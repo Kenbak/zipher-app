@@ -50,7 +50,7 @@ class _FaucetPageState extends State<FaucetPage> {
                 style: TextStyle(
                   fontSize: 24,
                   fontWeight: FontWeight.w700,
-                  color: Colors.white.withValues(alpha: 0.9),
+                  color: ZipherColors.text90,
                 ),
               ),
               const Gap(8),
@@ -59,7 +59,7 @@ class _FaucetPageState extends State<FaucetPage> {
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   fontSize: 14,
-                  color: Colors.white.withValues(alpha: 0.4),
+                  color: ZipherColors.text40,
                 ),
               ),
               const Gap(40),
@@ -69,13 +69,13 @@ class _FaucetPageState extends State<FaucetPage> {
                 width: 80,
                 height: 80,
                 decoration: BoxDecoration(
-                  color: ZipherColors.orange.withValues(alpha: 0.08),
+                  color: ZipherColors.cyan.withValues(alpha: 0.08),
                   shape: BoxShape.circle,
                 ),
                 child: Icon(
                   Icons.water_drop_rounded,
                   size: 40,
-                  color: ZipherColors.orange,
+                  color: ZipherColors.cyan,
                 ),
               ),
               const Gap(32),
@@ -86,11 +86,9 @@ class _FaucetPageState extends State<FaucetPage> {
                   width: double.infinity,
                   padding: const EdgeInsets.all(16),
                   decoration: BoxDecoration(
-                    color: Colors.white.withValues(alpha: 0.04),
+                    color: ZipherColors.cardBg,
                     borderRadius: BorderRadius.circular(14),
-                    border: Border.all(
-                      color: Colors.white.withValues(alpha: 0.06),
-                    ),
+                    border: Border.all(color: ZipherColors.borderSubtle),
                   ),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -100,7 +98,7 @@ class _FaucetPageState extends State<FaucetPage> {
                         style: TextStyle(
                           fontSize: 12,
                           fontWeight: FontWeight.w500,
-                          color: Colors.white.withValues(alpha: 0.3),
+                          color: ZipherColors.text40,
                         ),
                       ),
                       const Gap(8),
@@ -109,7 +107,7 @@ class _FaucetPageState extends State<FaucetPage> {
                         style: TextStyle(
                           fontSize: 12,
                           fontFamily: 'monospace',
-                          color: Colors.white.withValues(alpha: 0.6),
+                          color: ZipherColors.text60,
                           height: 1.5,
                         ),
                       ),
@@ -151,43 +149,10 @@ class _FaucetPageState extends State<FaucetPage> {
               // Get TAZ button
               SizedBox(
                 width: double.infinity,
-                child: GestureDetector(
-                  onTap: _openFaucet,
-                  child: Container(
-                    padding: const EdgeInsets.symmetric(vertical: 16),
-                    decoration: BoxDecoration(
-                      gradient: LinearGradient(
-                        colors: [
-                          ZipherColors.orange,
-                          ZipherColors.orange.withValues(alpha: 0.8),
-                        ],
-                      ),
-                      borderRadius: BorderRadius.circular(14),
-                      boxShadow: [
-                        BoxShadow(
-                          color: ZipherColors.orange.withValues(alpha: 0.25),
-                          blurRadius: 16,
-                          offset: const Offset(0, 4),
-                        ),
-                      ],
-                    ),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Icon(Icons.water_drop_rounded,
-                            size: 20, color: Colors.white),
-                        const Gap(8),
-                        Text(
-                          'Get TAZ from Faucet',
-                          style: TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.w600,
-                            color: Colors.white,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
+                child: ZipherWidgets.secondaryButton(
+                  label: 'Get TAZ from Faucet',
+                  icon: Icons.water_drop_rounded,
+                  onPressed: _openFaucet,
                 ),
               ),
               const Gap(16),
@@ -200,10 +165,10 @@ class _FaucetPageState extends State<FaucetPage> {
                   child: Container(
                     padding: const EdgeInsets.symmetric(vertical: 14),
                     decoration: BoxDecoration(
-                      color: Colors.white.withValues(alpha: 0.04),
+                      color: ZipherColors.cardBg,
                       borderRadius: BorderRadius.circular(14),
                       border: Border.all(
-                        color: Colors.white.withValues(alpha: 0.06),
+                        color: ZipherColors.borderSubtle,
                       ),
                     ),
                     child: Row(
@@ -251,7 +216,7 @@ class _FaucetPageState extends State<FaucetPage> {
                         'Switch to mainnet in More > Developer to use real ZEC.',
                         style: TextStyle(
                           fontSize: 12,
-                          color: Colors.white.withValues(alpha: 0.35),
+                          color: ZipherColors.text40,
                           height: 1.5,
                         ),
                       ),

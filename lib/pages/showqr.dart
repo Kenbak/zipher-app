@@ -20,7 +20,7 @@ class ShowQRPage extends StatelessWidget {
     return Scaffold(
       backgroundColor: ZipherColors.bg,
       appBar: AppBar(
-        backgroundColor: ZipherColors.surface,
+        backgroundColor: ZipherColors.bg,
         iconTheme: const IconThemeData(color: ZipherColors.cyan),
         title: Text(title, style: const TextStyle(color: ZipherColors.textSecondary)),
         actions: [
@@ -29,11 +29,11 @@ class ShowQRPage extends StatelessWidget {
             Clipboard.setData(ClipboardData(text: text));
             showSnackBar(s.textCopiedToClipboard(title));
           },
-          icon: Icon(Icons.copy),
+          icon: Icon(Icons.copy, color: ZipherColors.text60),
         ),
         IconButton(
           onPressed: () => saveQRImage(text, title),
-          icon: Icon(Icons.save),
+          icon: Icon(Icons.save, color: ZipherColors.text60),
         ),
       ]),
       body: Center(

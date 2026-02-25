@@ -48,12 +48,12 @@ class SwapHistoryState extends State<SwapHistoryPage>
                     width: 36,
                     height: 36,
                     decoration: BoxDecoration(
-                      color: Colors.white.withValues(alpha: 0.06),
+                      color: ZipherColors.cardBgElevated,
                       shape: BoxShape.circle,
                     ),
                     child: Icon(Icons.arrow_back_rounded,
                         size: 18,
-                        color: Colors.white.withValues(alpha: 0.5)),
+                        color: ZipherColors.text60),
                   ),
                 ),
                 const Gap(14),
@@ -62,7 +62,7 @@ class SwapHistoryState extends State<SwapHistoryPage>
                   style: TextStyle(
                     fontSize: 18,
                     fontWeight: FontWeight.w600,
-                    color: Colors.white.withValues(alpha: 0.9),
+                    color: ZipherColors.text90,
                   ),
                 ),
                 const Spacer(),
@@ -72,13 +72,13 @@ class SwapHistoryState extends State<SwapHistoryPage>
                     child: Container(
                       width: 36,
                       height: 36,
-                      decoration: BoxDecoration(
-                        color: Colors.white.withValues(alpha: 0.06),
-                        shape: BoxShape.circle,
-                      ),
-                      child: Icon(Icons.delete_outline_rounded,
-                          size: 18,
-                          color: Colors.white.withValues(alpha: 0.35)),
+                    decoration: BoxDecoration(
+                      color: ZipherColors.cardBgElevated,
+                      shape: BoxShape.circle,
+                    ),
+                    child: Icon(Icons.delete_outline_rounded,
+                        size: 18,
+                        color: ZipherColors.text40),
                     ),
                   ),
               ],
@@ -113,11 +113,11 @@ class SwapHistoryState extends State<SwapHistoryPage>
             width: 56,
             height: 56,
             decoration: BoxDecoration(
-              color: Colors.white.withValues(alpha: 0.04),
+              color: ZipherColors.cardBg,
               shape: BoxShape.circle,
             ),
             child: Icon(Icons.swap_horiz_rounded,
-                size: 26, color: Colors.white.withValues(alpha: 0.12)),
+                size: 26, color: ZipherColors.text10),
           ),
           const Gap(16),
           Text(
@@ -125,7 +125,7 @@ class SwapHistoryState extends State<SwapHistoryPage>
             style: TextStyle(
               fontSize: 15,
               fontWeight: FontWeight.w500,
-              color: Colors.white.withValues(alpha: 0.25),
+              color: ZipherColors.text20,
             ),
           ),
           const Gap(6),
@@ -133,7 +133,7 @@ class SwapHistoryState extends State<SwapHistoryPage>
             'Your swap history will appear here',
             style: TextStyle(
               fontSize: 12,
-              color: Colors.white.withValues(alpha: 0.12),
+              color: ZipherColors.text10,
             ),
           ),
         ],
@@ -151,9 +151,9 @@ class SwapHistoryState extends State<SwapHistoryPage>
     return Container(
       padding: const EdgeInsets.all(14),
       decoration: BoxDecoration(
-        color: Colors.white.withValues(alpha: 0.04),
+        color: ZipherColors.cardBg,
         borderRadius: BorderRadius.circular(14),
-        border: Border.all(color: Colors.white.withValues(alpha: 0.05)),
+        border: Border.all(color: ZipherColors.borderSubtle),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -183,7 +183,7 @@ class SwapHistoryState extends State<SwapHistoryPage>
                 when,
                 style: TextStyle(
                   fontSize: 11,
-                  color: Colors.white.withValues(alpha: 0.2),
+                  color: ZipherColors.text20,
                 ),
               ),
             ],
@@ -204,7 +204,7 @@ class SwapHistoryState extends State<SwapHistoryPage>
                 padding: const EdgeInsets.symmetric(horizontal: 10),
                 child: Icon(Icons.arrow_forward_rounded,
                     size: 16,
-                    color: Colors.white.withValues(alpha: 0.15)),
+                    color: ZipherColors.text10),
               ),
 
               Expanded(child: _tokenColumn(
@@ -219,7 +219,7 @@ class SwapHistoryState extends State<SwapHistoryPage>
 
           if (isNear && swap.depositAddress.isNotEmpty) ...[
             const Gap(12),
-            Divider(height: 1, color: Colors.white.withValues(alpha: 0.04)),
+            Divider(height: 1, color: ZipherColors.cardBg),
             const Gap(10),
             GestureDetector(
               onTap: () => GoRouter.of(context)
@@ -273,7 +273,7 @@ class SwapHistoryState extends State<SwapHistoryPage>
           style: TextStyle(
             fontSize: 10,
             fontWeight: FontWeight.w500,
-            color: Colors.white.withValues(alpha: 0.2),
+            color: ZipherColors.text20,
           ),
         ),
         const Gap(4),
@@ -282,7 +282,7 @@ class SwapHistoryState extends State<SwapHistoryPage>
           style: TextStyle(
             fontSize: 14,
             fontWeight: FontWeight.w600,
-            color: Colors.white.withValues(alpha: 0.85),
+            color: ZipherColors.text90,
           ),
           maxLines: 1,
           overflow: TextOverflow.ellipsis,
@@ -293,7 +293,7 @@ class SwapHistoryState extends State<SwapHistoryPage>
             centerTrim(address, length: 16),
             style: TextStyle(
               fontSize: 11,
-              color: Colors.white.withValues(alpha: 0.15),
+              color: ZipherColors.text10,
             ),
           ),
         ],

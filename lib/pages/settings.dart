@@ -114,13 +114,13 @@ class _SettingsState extends State<SettingsPage> {
             fontSize: 14,
             fontWeight: FontWeight.w600,
             letterSpacing: 1.5,
-            color: Colors.white.withValues(alpha: 0.6),
+            color: ZipherColors.text60,
           ),
         ),
         centerTitle: true,
         leading: IconButton(
           icon: Icon(Icons.arrow_back_rounded,
-              color: Colors.white.withValues(alpha: 0.5)),
+              color: ZipherColors.text60),
           onPressed: () => GoRouter.of(context).pop(),
         ),
         actions: [
@@ -144,7 +144,7 @@ class _SettingsState extends State<SettingsPage> {
               const Gap(8),
               Container(
                 decoration: BoxDecoration(
-                  color: Colors.white.withValues(alpha: 0.05),
+                  color: ZipherColors.cardBg,
                   borderRadius: BorderRadius.circular(14),
                 ),
                 padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -160,10 +160,10 @@ class _SettingsState extends State<SettingsPage> {
                     dropdownColor: ZipherColors.surface,
                     style: TextStyle(
                       fontSize: 14,
-                      color: Colors.white.withValues(alpha: 0.85),
+                      color: ZipherColors.text90,
                     ),
                     icon: Icon(Icons.expand_more_rounded,
-                        color: Colors.white.withValues(alpha: 0.25)),
+                        color: ZipherColors.text20),
                   ),
                 ),
               ),
@@ -177,21 +177,21 @@ class _SettingsState extends State<SettingsPage> {
               const Gap(8),
               Container(
                 decoration: BoxDecoration(
-                  color: Colors.white.withValues(alpha: 0.05),
+                  color: ZipherColors.cardBg,
                   borderRadius: BorderRadius.circular(14),
                 ),
                 child: TextField(
                   controller: TextEditingController(text: appSettings.memo),
                   style: TextStyle(
                     fontSize: 14,
-                    color: Colors.white.withValues(alpha: 0.85),
+                    color: ZipherColors.text90,
                   ),
                   maxLines: 3,
                   decoration: InputDecoration(
                     hintText: 'e.g. Sent from Zipher',
                     hintStyle: TextStyle(
                       fontSize: 14,
-                      color: Colors.white.withValues(alpha: 0.18),
+                      color: ZipherColors.text20,
                     ),
                     filled: false,
                     border: InputBorder.none,
@@ -220,7 +220,7 @@ class _SettingsState extends State<SettingsPage> {
                           Icons.speed_rounded,
                           size: 13,
                           color: _pinging
-                              ? Colors.white.withValues(alpha: 0.1)
+                              ? ZipherColors.text10
                               : ZipherColors.cyan.withValues(alpha: 0.5),
                         ),
                         const Gap(4),
@@ -229,7 +229,7 @@ class _SettingsState extends State<SettingsPage> {
                           style: TextStyle(
                             fontSize: 11,
                             color: _pinging
-                                ? Colors.white.withValues(alpha: 0.1)
+                                ? ZipherColors.text10
                                 : ZipherColors.cyan.withValues(alpha: 0.5),
                           ),
                         ),
@@ -252,7 +252,7 @@ class _SettingsState extends State<SettingsPage> {
                   padding: const EdgeInsets.symmetric(
                       horizontal: 16, vertical: 14),
                   decoration: BoxDecoration(
-                    color: Colors.white.withValues(alpha: 0.05),
+                    color: ZipherColors.cardBg,
                     borderRadius: BorderRadius.circular(14),
                   ),
                   child: Column(
@@ -262,7 +262,7 @@ class _SettingsState extends State<SettingsPage> {
                         'Sync when the app is in the background',
                         style: TextStyle(
                           fontSize: 13,
-                          color: Colors.white.withValues(alpha: 0.4),
+                          color: ZipherColors.text40,
                         ),
                       ),
                       const Gap(12),
@@ -286,7 +286,7 @@ class _SettingsState extends State<SettingsPage> {
               const Gap(8),
               Container(
                 decoration: BoxDecoration(
-                  color: Colors.white.withValues(alpha: 0.05),
+                  color: ZipherColors.cardBg,
                   borderRadius: BorderRadius.circular(14),
                 ),
                 child: Column(
@@ -298,7 +298,7 @@ class _SettingsState extends State<SettingsPage> {
                       value: appSettings.protectSend,
                       onChanged: (v) => setState(() => appSettings.protectSend = v),
                     ),
-                    Divider(height: 1, color: Colors.white.withValues(alpha: 0.04),
+                    Divider(height: 1, color: ZipherColors.cardBg,
                         indent: 52, endIndent: 16),
                     _securityToggle(
                       icon: Icons.shield_rounded,
@@ -329,7 +329,7 @@ class _SettingsState extends State<SettingsPage> {
 
     return Container(
       decoration: BoxDecoration(
-        color: Colors.white.withValues(alpha: 0.05),
+        color: ZipherColors.cardBg,
         borderRadius: BorderRadius.circular(14),
       ),
       child: Column(
@@ -343,7 +343,7 @@ class _SettingsState extends State<SettingsPage> {
               decoration: BoxDecoration(
                 border: Border(
                   top: BorderSide(
-                    color: Colors.white.withValues(alpha: 0.04),
+                    color: ZipherColors.cardBg,
                   ),
                 ),
               ),
@@ -351,13 +351,13 @@ class _SettingsState extends State<SettingsPage> {
                 controller: _customUrlController,
                 style: TextStyle(
                   fontSize: 13,
-                  color: Colors.white.withValues(alpha: 0.85),
+                  color: ZipherColors.text90,
                 ),
                 decoration: InputDecoration(
                   hintText: 'https://your-server:9067',
                   hintStyle: TextStyle(
                     fontSize: 13,
-                    color: Colors.white.withValues(alpha: 0.15),
+                    color: ZipherColors.text20,
                   ),
                   filled: false,
                   border: InputBorder.none,
@@ -385,7 +385,7 @@ class _SettingsState extends State<SettingsPage> {
           height: 12,
           child: CircularProgressIndicator(
             strokeWidth: 1.5,
-            color: Colors.white.withValues(alpha: 0.15),
+            color: ZipherColors.text20,
           ),
         );
       } else if (ping < 0) {
@@ -433,7 +433,7 @@ class _SettingsState extends State<SettingsPage> {
                 size: 18,
                 color: selected
                     ? ZipherColors.cyan.withValues(alpha: 0.8)
-                    : Colors.white.withValues(alpha: 0.15),
+                    : ZipherColors.text20,
               ),
               const Gap(12),
               Expanded(
@@ -447,8 +447,8 @@ class _SettingsState extends State<SettingsPage> {
                         fontWeight:
                             selected ? FontWeight.w600 : FontWeight.w400,
                         color: selected
-                            ? Colors.white.withValues(alpha: 0.85)
-                            : Colors.white.withValues(alpha: 0.45),
+                            ? ZipherColors.text90
+                            : ZipherColors.text40,
                       ),
                     ),
                     if (url != null)
@@ -456,7 +456,7 @@ class _SettingsState extends State<SettingsPage> {
                         url,
                         style: TextStyle(
                           fontSize: 10,
-                          color: Colors.white.withValues(alpha: 0.15),
+                          color: ZipherColors.text20,
                         ),
                         overflow: TextOverflow.ellipsis,
                       ),
@@ -481,7 +481,7 @@ class _SettingsState extends State<SettingsPage> {
         fontSize: 12,
         fontWeight: FontWeight.w600,
         letterSpacing: 0.5,
-        color: Colors.white.withValues(alpha: 0.25),
+        color: ZipherColors.text20,
       ),
     );
   }
@@ -493,7 +493,7 @@ class _SettingsState extends State<SettingsPage> {
         text,
         style: TextStyle(
           fontSize: 11,
-          color: Colors.white.withValues(alpha: 0.15),
+          color: ZipherColors.text20,
         ),
       ),
     );
@@ -509,7 +509,7 @@ class _SettingsState extends State<SettingsPage> {
           decoration: BoxDecoration(
             color: selected
                 ? ZipherColors.cyan.withValues(alpha: 0.12)
-                : Colors.white.withValues(alpha: 0.03),
+                : ZipherColors.cardBg,
             borderRadius: BorderRadius.circular(10),
             border: selected
                 ? Border.all(
@@ -524,7 +524,7 @@ class _SettingsState extends State<SettingsPage> {
                 fontWeight: selected ? FontWeight.w600 : FontWeight.w400,
                 color: selected
                     ? ZipherColors.cyan.withValues(alpha: 0.9)
-                    : Colors.white.withValues(alpha: 0.35),
+                    : ZipherColors.text40,
               ),
             ),
           ),
@@ -547,7 +547,7 @@ class _SettingsState extends State<SettingsPage> {
           Icon(icon, size: 18,
               color: value
                   ? ZipherColors.cyan.withValues(alpha: 0.7)
-                  : Colors.white.withValues(alpha: 0.2)),
+                  : ZipherColors.text20),
           const Gap(14),
           Expanded(
             child: Column(
@@ -556,12 +556,12 @@ class _SettingsState extends State<SettingsPage> {
                 Text(label, style: TextStyle(
                   fontSize: 13,
                   fontWeight: FontWeight.w500,
-                  color: Colors.white.withValues(alpha: 0.85),
+                  color: ZipherColors.text90,
                 )),
                 const Gap(2),
                 Text(subtitle, style: TextStyle(
                   fontSize: 11,
-                  color: Colors.white.withValues(alpha: 0.25),
+                  color: ZipherColors.text20,
                 )),
               ],
             ),
@@ -572,10 +572,6 @@ class _SettingsState extends State<SettingsPage> {
             child: Switch.adaptive(
               value: value,
               onChanged: onChanged,
-              activeColor: ZipherColors.cyan,
-              activeTrackColor: ZipherColors.cyan.withValues(alpha: 0.3),
-              inactiveThumbColor: Colors.white.withValues(alpha: 0.3),
-              inactiveTrackColor: Colors.white.withValues(alpha: 0.08),
             ),
           ),
         ],

@@ -54,7 +54,7 @@ class _RestoreAccountPageState extends State<RestoreAccountPage> {
                     IconButton(
                       onPressed: () => GoRouter.of(context).pop(),
                       icon: Icon(Icons.arrow_back_rounded,
-                          color: Colors.white.withValues(alpha: 0.5),
+                          color: ZipherColors.text60,
                           size: 22),
                     ),
                     const Gap(24),
@@ -64,7 +64,7 @@ class _RestoreAccountPageState extends State<RestoreAccountPage> {
                       style: TextStyle(
                         fontSize: 26,
                         fontWeight: FontWeight.w700,
-                        color: Colors.white.withValues(alpha: 0.9),
+                        color: ZipherColors.text90,
                         letterSpacing: -0.5,
                       ),
                     ),
@@ -73,7 +73,7 @@ class _RestoreAccountPageState extends State<RestoreAccountPage> {
                       'Enter your seed phrase to restore an existing Zcash wallet.',
                       style: TextStyle(
                         fontSize: 14,
-                        color: Colors.white.withValues(alpha: 0.35),
+                        color: ZipherColors.text40,
                         height: 1.4,
                       ),
                     ),
@@ -87,30 +87,30 @@ class _RestoreAccountPageState extends State<RestoreAccountPage> {
                         maxLines: 4,
                         style: TextStyle(
                           fontSize: 15,
-                          color: Colors.white.withValues(alpha: 0.85),
+                          color: ZipherColors.text90,
                           height: 1.5,
                         ),
                         decoration: InputDecoration(
                           hintText: 'word1 word2 word3 ...',
                           hintStyle: TextStyle(
-                            color: Colors.white.withValues(alpha: 0.18),
+                            color: ZipherColors.text20,
                           ),
                           filled: true,
-                          fillColor: Colors.white.withValues(alpha: 0.03),
+                          fillColor: ZipherColors.cardBg,
                           contentPadding: const EdgeInsets.all(16),
                           border: OutlineInputBorder(
                             borderRadius:
                                 BorderRadius.circular(ZipherRadius.md),
                             borderSide: BorderSide(
                                 color:
-                                    Colors.white.withValues(alpha: 0.06)),
+                                    ZipherColors.borderSubtle),
                           ),
                           enabledBorder: OutlineInputBorder(
                             borderRadius:
                                 BorderRadius.circular(ZipherRadius.md),
                             borderSide: BorderSide(
                                 color:
-                                    Colors.white.withValues(alpha: 0.06)),
+                                    ZipherColors.borderSubtle),
                           ),
                           focusedBorder: OutlineInputBorder(
                             borderRadius:
@@ -158,7 +158,7 @@ class _RestoreAccountPageState extends State<RestoreAccountPage> {
                       'Supports 12, 15, 18, 21, or 24 word seed phrases.',
                       style: TextStyle(
                         fontSize: 12,
-                        color: Colors.white.withValues(alpha: 0.2),
+                        color: ZipherColors.text20,
                       ),
                     ),
 
@@ -175,13 +175,13 @@ class _RestoreAccountPageState extends State<RestoreAccountPage> {
                         decoration: BoxDecoration(
                           color: _selectedDate != null
                               ? ZipherColors.cyan.withValues(alpha: 0.04)
-                              : Colors.white.withValues(alpha: 0.03),
+                              : ZipherColors.cardBg,
                           borderRadius:
                               BorderRadius.circular(ZipherRadius.md),
                           border: Border.all(
                             color: _selectedDate != null
                                 ? ZipherColors.cyan.withValues(alpha: 0.15)
-                                : Colors.white.withValues(alpha: 0.06),
+                                : ZipherColors.borderSubtle,
                           ),
                         ),
                         child: Row(
@@ -191,7 +191,7 @@ class _RestoreAccountPageState extends State<RestoreAccountPage> {
                               size: 16,
                               color: _selectedDate != null
                                   ? ZipherColors.cyan.withValues(alpha: 0.7)
-                                  : Colors.white.withValues(alpha: 0.25),
+                                  : ZipherColors.text20,
                             ),
                             const Gap(12),
                             Expanded(
@@ -207,10 +207,8 @@ class _RestoreAccountPageState extends State<RestoreAccountPage> {
                                       fontSize: 14,
                                       fontWeight: FontWeight.w500,
                                       color: _selectedDate != null
-                                          ? Colors.white
-                                              .withValues(alpha: 0.8)
-                                          : Colors.white
-                                              .withValues(alpha: 0.5),
+                                          ? ZipherColors.text90
+                                          : ZipherColors.text60,
                                     ),
                                   ),
                                   if (_selectedDate == null) ...[
@@ -219,8 +217,7 @@ class _RestoreAccountPageState extends State<RestoreAccountPage> {
                                       'Optional — speeds up scanning',
                                       style: TextStyle(
                                         fontSize: 12,
-                                        color: Colors.white
-                                            .withValues(alpha: 0.2),
+                                        color: ZipherColors.text20,
                                       ),
                                     ),
                                   ],
@@ -235,7 +232,7 @@ class _RestoreAccountPageState extends State<RestoreAccountPage> {
                                   Icons.close_rounded,
                                   size: 16,
                                   color:
-                                      Colors.white.withValues(alpha: 0.25),
+                                      ZipherColors.text20,
                                 ),
                               )
                             else
@@ -244,7 +241,7 @@ class _RestoreAccountPageState extends State<RestoreAccountPage> {
                                     ? Icons.keyboard_arrow_up_rounded
                                     : Icons.keyboard_arrow_down_rounded,
                                 size: 18,
-                                color: Colors.white.withValues(alpha: 0.2),
+                                color: ZipherColors.text20,
                               ),
                           ],
                         ),
@@ -291,13 +288,11 @@ class _RestoreAccountPageState extends State<RestoreAccountPage> {
                                 const Gap(8),
                                 Container(
                                   decoration: BoxDecoration(
-                                    color: Colors.white
-                                        .withValues(alpha: 0.03),
+                                    color: ZipherColors.cardBg,
                                     borderRadius: BorderRadius.circular(
                                         ZipherRadius.md),
                                     border: Border.all(
-                                      color: Colors.white
-                                          .withValues(alpha: 0.06),
+                                      color: ZipherColors.borderSubtle,
                                     ),
                                   ),
                                   child: Theme(
@@ -306,8 +301,7 @@ class _RestoreAccountPageState extends State<RestoreAccountPage> {
                                         primary: ZipherColors.cyan,
                                         onPrimary: Colors.white,
                                         surface: ZipherColors.bg,
-                                        onSurface: Colors.white
-                                            .withValues(alpha: 0.7),
+                                        onSurface: ZipherColors.text90,
                                       ),
                                     ),
                                     child: CalendarDatePicker(
@@ -340,7 +334,7 @@ class _RestoreAccountPageState extends State<RestoreAccountPage> {
                           child: Icon(Icons.info_outline_rounded,
                               size: 14,
                               color:
-                                  Colors.white.withValues(alpha: 0.18)),
+                                  ZipherColors.text20),
                         ),
                         const Gap(8),
                         Expanded(
@@ -352,7 +346,7 @@ class _RestoreAccountPageState extends State<RestoreAccountPage> {
                                   'This is thorough but takes longer.',
                             style: TextStyle(
                               fontSize: 12,
-                              color: Colors.white.withValues(alpha: 0.2),
+                              color: ZipherColors.text20,
                               height: 1.4,
                             ),
                           ),
@@ -481,12 +475,12 @@ class _YearChip extends StatelessWidget {
         decoration: BoxDecoration(
           color: selected
               ? ZipherColors.cyan.withValues(alpha: 0.1)
-              : Colors.white.withValues(alpha: 0.03),
+              : ZipherColors.cardBg,
           borderRadius: BorderRadius.circular(8),
           border: Border.all(
             color: selected
                 ? ZipherColors.cyan.withValues(alpha: 0.25)
-                : Colors.white.withValues(alpha: 0.06),
+                : ZipherColors.borderSubtle,
           ),
         ),
         child: Text(
@@ -496,7 +490,7 @@ class _YearChip extends StatelessWidget {
             fontWeight: FontWeight.w500,
             color: selected
                 ? ZipherColors.cyan.withValues(alpha: 0.9)
-                : Colors.white.withValues(alpha: 0.35),
+                : ZipherColors.text40,
           ),
         ),
       ),

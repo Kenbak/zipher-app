@@ -51,13 +51,13 @@ class _ScanQRCodeState extends State<ScanQRCodePage> {
             fontSize: 14,
             fontWeight: FontWeight.w600,
             letterSpacing: 1.5,
-            color: Colors.white.withValues(alpha: 0.6),
+            color: ZipherColors.text60,
           ),
         ),
         centerTitle: true,
         leading: IconButton(
           icon: Icon(Icons.arrow_back_rounded,
-              color: Colors.white.withValues(alpha: 0.5)),
+              color: ZipherColors.text60),
           onPressed: () => GoRouter.of(context).pop(),
         ),
         actions: [
@@ -65,7 +65,7 @@ class _ScanQRCodeState extends State<ScanQRCodePage> {
               onPressed: _open,
               icon: Icon(Icons.photo_library_outlined,
                   size: 20,
-                  color: Colors.white.withValues(alpha: 0.4)),
+                  color: ZipherColors.text40),
               tooltip: 'Open from gallery',
             ),
           IconButton(
@@ -111,7 +111,7 @@ class _ScanQRCodeState extends State<ScanQRCodePage> {
                 color: ZipherColors.bg,
                 border: Border(
                   top: BorderSide(
-                    color: Colors.white.withValues(alpha: 0.04),
+                    color: ZipherColors.borderSubtle,
                   ),
                 ),
               ),
@@ -123,13 +123,13 @@ class _ScanQRCodeState extends State<ScanQRCodePage> {
                     style: TextStyle(
                       fontSize: 13,
                       fontWeight: FontWeight.w500,
-                      color: Colors.white.withValues(alpha: 0.3),
+                      color: ZipherColors.text40,
                     ),
                   ),
                   const Gap(8),
                   Container(
                     decoration: BoxDecoration(
-                      color: Colors.white.withValues(alpha: 0.05),
+                      color: ZipherColors.cardBg,
                       borderRadius: BorderRadius.circular(14),
                     ),
                     child: FormBuilderTextField(
@@ -138,13 +138,13 @@ class _ScanQRCodeState extends State<ScanQRCodePage> {
                       validator: widget.validator,
                       style: TextStyle(
                         fontSize: 14,
-                        color: Colors.white.withValues(alpha: 0.85),
+                        color: ZipherColors.text90,
                       ),
                       decoration: InputDecoration(
                         hintText: s.qr,
                         hintStyle: TextStyle(
                           fontSize: 14,
-                          color: Colors.white.withValues(alpha: 0.18),
+                          color: ZipherColors.text20,
                         ),
                         filled: false,
                         border: InputBorder.none,
@@ -219,7 +219,7 @@ class _MultiQRReaderState extends State<MultiQRReader> {
         LinearProgressIndicator(
           value: value,
           minHeight: 4,
-          backgroundColor: Colors.white.withValues(alpha: 0.05),
+          backgroundColor: ZipherColors.cardBg,
           valueColor: AlwaysStoppedAnimation<Color>(ZipherColors.cyan),
         ),
         Expanded(

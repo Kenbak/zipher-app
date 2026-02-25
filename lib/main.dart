@@ -36,6 +36,7 @@ void main() async {
 Future<void> loadTestnetPref() async {
   final prefs = await SharedPreferences.getInstance();
   isTestnet = prefs.getBool('testnet') ?? false;
+  testnetNotifier.value = isTestnet;
 }
 
 Future<void> restoreSettings() async {

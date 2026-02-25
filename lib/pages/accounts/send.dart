@@ -118,13 +118,13 @@ class _QuickSendState extends State<QuickSendPage> with WithLoadingAnimation {
             fontSize: 14,
             fontWeight: FontWeight.w600,
             letterSpacing: 1.5,
-            color: Colors.white.withValues(alpha: 0.6),
+            color: ZipherColors.text60,
           ),
         ),
         centerTitle: true,
         leading: IconButton(
           icon: Icon(Icons.arrow_back_rounded,
-              color: Colors.white.withValues(alpha: 0.5)),
+              color: ZipherColors.text60),
           onPressed: () => GoRouter.of(context).pop(),
         ),
         actions: [
@@ -136,7 +136,7 @@ class _QuickSendState extends State<QuickSendPage> with WithLoadingAnimation {
                   ? Icons.visibility_outlined
                   : Icons.visibility_off_outlined,
               size: 20,
-              color: Colors.white.withValues(alpha: 0.3),
+              color: ZipherColors.text40,
             ),
           ),
         ],
@@ -203,7 +203,7 @@ class _QuickSendState extends State<QuickSendPage> with WithLoadingAnimation {
                       width: 32,
                       height: 32,
                       decoration: BoxDecoration(
-                        color: Colors.white.withValues(alpha: 0.08),
+                        color: ZipherColors.cardBgElevated,
                         shape: BoxShape.circle,
                       ),
                       child: Center(
@@ -229,7 +229,7 @@ class _QuickSendState extends State<QuickSendPage> with WithLoadingAnimation {
                   style: TextStyle(
                     fontSize: 36,
                     fontWeight: FontWeight.w700,
-                    color: Colors.white.withValues(alpha: 0.5),
+                    color: ZipherColors.text60,
                     letterSpacing: 4,
                   ),
                   textAlign: TextAlign.center,
@@ -239,7 +239,7 @@ class _QuickSendState extends State<QuickSendPage> with WithLoadingAnimation {
             'Spendable:  ${amountToString2(_spendable)} ZEC',
             style: TextStyle(
               fontSize: 13,
-              color: Colors.white.withValues(alpha: 0.3),
+              color: ZipherColors.text40,
             ),
           ),
         ],
@@ -260,7 +260,7 @@ class _QuickSendState extends State<QuickSendPage> with WithLoadingAnimation {
           style: TextStyle(
             fontSize: 14,
             fontWeight: FontWeight.w500,
-            color: Colors.white.withValues(alpha: 0.4),
+            color: ZipherColors.text40,
           ),
         ),
         const Gap(8),
@@ -273,7 +273,7 @@ class _QuickSendState extends State<QuickSendPage> with WithLoadingAnimation {
             return Container(
               height: 52,
               decoration: BoxDecoration(
-                color: Colors.white.withValues(alpha: 0.05),
+                color: ZipherColors.cardBg,
                 borderRadius: BorderRadius.circular(14),
               ),
               child: ContactAutocomplete(
@@ -289,13 +289,13 @@ class _QuickSendState extends State<QuickSendPage> with WithLoadingAnimation {
                         controller: _addressController,
                         style: TextStyle(
                           fontSize: 14,
-                          color: Colors.white.withValues(alpha: 0.85),
+                          color: ZipherColors.text90,
                         ),
                         decoration: InputDecoration(
                           hintText: 'Zcash address or payment URI',
                           hintStyle: TextStyle(
                             fontSize: 14,
-                            color: Colors.white.withValues(alpha: 0.18),
+                            color: ZipherColors.text20,
                           ),
                           filled: false,
                           border: InputBorder.none,
@@ -340,7 +340,7 @@ class _QuickSendState extends State<QuickSendPage> with WithLoadingAnimation {
       child: Padding(
         padding: const EdgeInsets.all(8),
         child: Icon(icon, size: 20,
-            color: Colors.white.withValues(alpha: 0.3)),
+            color: ZipherColors.text40),
       ),
     );
   }
@@ -360,7 +360,7 @@ class _QuickSendState extends State<QuickSendPage> with WithLoadingAnimation {
               style: TextStyle(
                 fontSize: 14,
                 fontWeight: FontWeight.w500,
-                color: Colors.white.withValues(alpha: 0.4),
+                color: ZipherColors.text40,
               ),
             ),
             const Spacer(),
@@ -394,7 +394,7 @@ class _QuickSendState extends State<QuickSendPage> with WithLoadingAnimation {
         Container(
           height: 56,
           decoration: BoxDecoration(
-            color: Colors.white.withValues(alpha: 0.05),
+            color: ZipherColors.cardBg,
             borderRadius: BorderRadius.circular(14),
           ),
           child: TextField(
@@ -404,20 +404,20 @@ class _QuickSendState extends State<QuickSendPage> with WithLoadingAnimation {
             style: TextStyle(
               fontSize: 18,
               fontWeight: FontWeight.w600,
-              color: Colors.white.withValues(alpha: 0.9),
+              color: ZipherColors.text90,
             ),
             decoration: InputDecoration(
               hintText: '0.00',
               hintStyle: TextStyle(
                 fontSize: 18,
                 fontWeight: FontWeight.w600,
-                color: Colors.white.withValues(alpha: 0.15),
+                color: ZipherColors.text20,
               ),
               prefixIcon: Padding(
                 padding: const EdgeInsets.only(left: 14, right: 8),
                 child: Image.asset('assets/zcash_small.png',
                     width: 18, height: 18,
-                    color: Colors.white.withValues(alpha: 0.4),
+                    color: ZipherColors.text40,
                     colorBlendMode: BlendMode.srcIn),
               ),
               prefixIconConstraints:
@@ -426,7 +426,7 @@ class _QuickSendState extends State<QuickSendPage> with WithLoadingAnimation {
               suffixStyle: TextStyle(
                 fontSize: 14,
                 fontWeight: FontWeight.w500,
-                color: Colors.white.withValues(alpha: 0.25),
+                color: ZipherColors.text20,
               ),
               filled: false,
               border: InputBorder.none,
@@ -450,7 +450,7 @@ class _QuickSendState extends State<QuickSendPage> with WithLoadingAnimation {
               '\$${(_amountZat / ZECUNIT * marketPrice.price!).toStringAsFixed(2)} USD',
               style: TextStyle(
                 fontSize: 12,
-                color: Colors.white.withValues(alpha: 0.25),
+                color: ZipherColors.text20,
               ),
             ),
           ),
@@ -471,21 +471,21 @@ class _QuickSendState extends State<QuickSendPage> with WithLoadingAnimation {
       return Container(
         padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
         decoration: BoxDecoration(
-          color: Colors.white.withValues(alpha: 0.05),
+          color: ZipherColors.cardBg,
           borderRadius: BorderRadius.circular(14),
         ),
         child: Row(
           children: [
             Icon(Icons.info_outline_rounded,
                 size: 14,
-                color: Colors.white.withValues(alpha: 0.2)),
+                color: ZipherColors.text20),
             const Gap(10),
             Expanded(
               child: Text(
                 'Transparent address — memos not available',
                 style: TextStyle(
                   fontSize: 13,
-                  color: Colors.white.withValues(alpha: 0.25),
+                  color: ZipherColors.text20,
                 ),
               ),
             ),
@@ -502,13 +502,13 @@ class _QuickSendState extends State<QuickSendPage> with WithLoadingAnimation {
           style: TextStyle(
             fontSize: 14,
             fontWeight: FontWeight.w500,
-            color: Colors.white.withValues(alpha: 0.4),
+            color: ZipherColors.text40,
           ),
         ),
         const Gap(8),
         Container(
           decoration: BoxDecoration(
-            color: Colors.white.withValues(alpha: 0.05),
+            color: ZipherColors.cardBg,
             borderRadius: BorderRadius.circular(14),
           ),
           child: Column(
@@ -521,13 +521,13 @@ class _QuickSendState extends State<QuickSendPage> with WithLoadingAnimation {
                     : MAX_MESSAGE_CHARS_NO_REPLY,
                 style: TextStyle(
                   fontSize: 14,
-                  color: Colors.white.withValues(alpha: 0.8),
+                  color: ZipherColors.text90,
                 ),
                 decoration: InputDecoration(
                   hintText: 'Write encrypted message here...',
                   hintStyle: TextStyle(
                     fontSize: 14,
-                    color: Colors.white.withValues(alpha: 0.15),
+                    color: ZipherColors.text20,
                   ),
                   filled: false,
                   border: InputBorder.none,
@@ -548,7 +548,7 @@ class _QuickSendState extends State<QuickSendPage> with WithLoadingAnimation {
                       fontSize: 11,
                       color: _memoText.length > (_includeReplyTo ? MAX_MESSAGE_CHARS_WITH_REPLY : MAX_MESSAGE_CHARS_NO_REPLY) - 1
                           ? ZipherColors.red.withValues(alpha: 0.7)
-                          : Colors.white.withValues(alpha: 0.2),
+                          : ZipherColors.text20,
                     ),
                   ),
                 ),
@@ -573,7 +573,7 @@ class _QuickSendState extends State<QuickSendPage> with WithLoadingAnimation {
                   size: 14,
                   color: _includeReplyTo
                       ? ZipherColors.purple.withValues(alpha: 0.5)
-                      : Colors.white.withValues(alpha: 0.15),
+                      : ZipherColors.text20,
                 ),
                 const Gap(8),
                 Expanded(
@@ -581,12 +581,12 @@ class _QuickSendState extends State<QuickSendPage> with WithLoadingAnimation {
                     _includeReplyTo
                         ? 'Reply address included'
                         : 'Reply address hidden',
-                    style: TextStyle(
-                      fontSize: 12,
-                      color: _includeReplyTo
+style: TextStyle(
+                          fontSize: 12,
+                          color: _includeReplyTo
                           ? ZipherColors.purple.withValues(alpha: 0.5)
-                          : Colors.white.withValues(alpha: 0.2),
-                    ),
+                          : ZipherColors.text20,
+                        ),
                   ),
                 ),
                 Container(
@@ -595,7 +595,7 @@ class _QuickSendState extends State<QuickSendPage> with WithLoadingAnimation {
                   decoration: BoxDecoration(
                     color: _includeReplyTo
                         ? ZipherColors.purple.withValues(alpha: 0.25)
-                        : Colors.white.withValues(alpha: 0.06),
+                        : ZipherColors.borderSubtle,
                     borderRadius: BorderRadius.circular(9),
                   ),
                   child: AnimatedAlign(
@@ -610,7 +610,7 @@ class _QuickSendState extends State<QuickSendPage> with WithLoadingAnimation {
                       decoration: BoxDecoration(
                         color: _includeReplyTo
                             ? ZipherColors.purple
-                            : Colors.white.withValues(alpha: 0.3),
+                            : ZipherColors.text40,
                         shape: BoxShape.circle,
                       ),
                     ),
@@ -835,10 +835,10 @@ class _QuickSendState extends State<QuickSendPage> with WithLoadingAnimation {
             Expanded(
               child: Text(
                 msg,
-                style: TextStyle(
-                  fontSize: 13,
-                  color: Colors.white.withValues(alpha: 0.85),
-                ),
+style: TextStyle(
+                          fontSize: 13,
+                          color: ZipherColors.text90,
+                        ),
               ),
             ),
           ],

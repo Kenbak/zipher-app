@@ -33,13 +33,13 @@ class AboutPage extends StatelessWidget {
             fontSize: 14,
             fontWeight: FontWeight.w600,
             letterSpacing: 1.5,
-            color: Colors.white.withValues(alpha: 0.6),
+            color: ZipherColors.text60,
           ),
         ),
         centerTitle: true,
         leading: IconButton(
           icon: Icon(Icons.arrow_back_rounded,
-              color: Colors.white.withValues(alpha: 0.5)),
+              color: ZipherColors.text60),
           onPressed: () => GoRouter.of(context).pop(),
         ),
       ),
@@ -61,7 +61,7 @@ class AboutPage extends StatelessWidget {
               style: TextStyle(
                 fontSize: 24,
                 fontWeight: FontWeight.w700,
-                color: Colors.white.withValues(alpha: 0.85),
+                color: ZipherColors.text90,
               ),
             ),
             const Gap(4),
@@ -79,7 +79,7 @@ class AboutPage extends StatelessWidget {
                 'v$packageVersion ($id)',
                 style: TextStyle(
                   fontSize: 11,
-                  color: Colors.white.withValues(alpha: 0.15),
+                  color: ZipherColors.text10,
                 ),
               ),
             ),
@@ -146,7 +146,7 @@ class AboutPage extends StatelessWidget {
             Container(
               padding: const EdgeInsets.all(14),
               decoration: BoxDecoration(
-                color: Colors.white.withValues(alpha: 0.02),
+                color: ZipherColors.cardBg,
                 borderRadius: BorderRadius.circular(14),
               ),
               child: Text(
@@ -154,7 +154,7 @@ class AboutPage extends StatelessWidget {
                 'THE AUTHORS ARE NOT LIABLE FOR ANY DAMAGES ARISING FROM THE USE OF THIS SOFTWARE.',
                 style: TextStyle(
                   fontSize: 10,
-                  color: Colors.white.withValues(alpha: 0.1),
+                  color: ZipherColors.text10,
                   height: 1.5,
                 ),
                 textAlign: TextAlign.center,
@@ -183,24 +183,24 @@ class AboutPage extends StatelessWidget {
         width: double.infinity,
         padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
         decoration: BoxDecoration(
-          color: Colors.white.withValues(alpha: 0.03),
+          color: ZipherColors.cardBg,
           borderRadius: BorderRadius.circular(12),
         ),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(icon, size: 16, color: Colors.white.withValues(alpha: 0.25)),
+            Icon(icon, size: 16, color: ZipherColors.text20),
             const Gap(8),
             Text(
               label,
               style: TextStyle(
                 fontSize: 13,
-                color: Colors.white.withValues(alpha: 0.4),
+                color: ZipherColors.text40,
               ),
             ),
             const Gap(6),
             Icon(Icons.open_in_new_rounded,
-                size: 12, color: Colors.white.withValues(alpha: 0.12)),
+                size: 12, color: ZipherColors.text10),
           ],
         ),
       ),
@@ -243,7 +243,7 @@ class _InfoCard extends StatelessWidget {
                 style: TextStyle(
                   fontSize: 13,
                   fontWeight: FontWeight.w600,
-                  color: Colors.white.withValues(alpha: 0.6),
+                  color: ZipherColors.text60,
                 ),
               ),
             ],
@@ -261,7 +261,7 @@ class _InfoCard extends StatelessWidget {
                       width: 4,
                       height: 4,
                       decoration: BoxDecoration(
-                        color: Colors.white.withValues(alpha: 0.12),
+                        color: ZipherColors.text10,
                         shape: BoxShape.circle,
                       ),
                     ),
@@ -272,7 +272,7 @@ class _InfoCard extends StatelessWidget {
                       item,
                       style: TextStyle(
                         fontSize: 12,
-                        color: Colors.white.withValues(alpha: 0.35),
+                        color: ZipherColors.text40,
                         height: 1.4,
                       ),
                     ),
@@ -318,7 +318,7 @@ class _DisclaimerState extends State<DisclaimerPage> {
               IconButton(
                 onPressed: () => GoRouter.of(context).pop(),
                 icon: Icon(Icons.arrow_back_rounded,
-                    color: Colors.white.withValues(alpha: 0.5), size: 22),
+                    color: ZipherColors.text60, size: 22),
               ),
               const Gap(24),
               // Title
@@ -327,7 +327,7 @@ class _DisclaimerState extends State<DisclaimerPage> {
                 style: TextStyle(
                   fontSize: 26,
                   fontWeight: FontWeight.w700,
-                  color: Colors.white.withValues(alpha: 0.9),
+                  color: ZipherColors.text90,
                   letterSpacing: -0.5,
                 ),
               ),
@@ -338,7 +338,7 @@ class _DisclaimerState extends State<DisclaimerPage> {
                     : 'Before restoring, please acknowledge:',
                 style: TextStyle(
                   fontSize: 14,
-                  color: Colors.white.withValues(alpha: 0.35),
+                  color: ZipherColors.text40,
                   height: 1.4,
                 ),
               ),
@@ -467,12 +467,12 @@ class _DisclaimerTile extends StatelessWidget {
         decoration: BoxDecoration(
           color: accepted
               ? ZipherColors.green.withValues(alpha: 0.05)
-              : Colors.white.withValues(alpha: 0.03),
+              : ZipherColors.cardBg,
           borderRadius: BorderRadius.circular(14),
           border: Border.all(
             color: accepted
                 ? ZipherColors.green.withValues(alpha: 0.2)
-                : Colors.white.withValues(alpha: 0.05),
+                : ZipherColors.borderSubtle,
           ),
         ),
         child: Row(
@@ -484,12 +484,12 @@ class _DisclaimerTile extends StatelessWidget {
               decoration: BoxDecoration(
                 color: accepted
                     ? ZipherColors.green
-                    : Colors.white.withValues(alpha: 0.06),
+                    : ZipherColors.cardBgElevated,
                 borderRadius: BorderRadius.circular(6),
                 border: Border.all(
                   color: accepted
                       ? ZipherColors.green
-                      : Colors.white.withValues(alpha: 0.12),
+                      : ZipherColors.text10,
                 ),
               ),
               child: accepted
@@ -504,8 +504,8 @@ class _DisclaimerTile extends StatelessWidget {
                 style: TextStyle(
                   fontSize: 14,
                   color: accepted
-                      ? Colors.white.withValues(alpha: 0.8)
-                      : Colors.white.withValues(alpha: 0.4),
+                      ? ZipherColors.text90
+                      : ZipherColors.text40,
                   height: 1.4,
                 ),
               ),

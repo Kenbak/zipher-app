@@ -124,7 +124,7 @@ Future<bool> showMessageBox2(BuildContext context, String title, String content,
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(20),
               side: BorderSide(
-                color: Colors.white.withValues(alpha: 0.06),
+                color: ZipherColors.borderSubtle,
               ),
             ),
             child: Padding(
@@ -151,7 +151,7 @@ Future<bool> showMessageBox2(BuildContext context, String title, String content,
                     style: TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.w600,
-                      color: Colors.white.withValues(alpha: 0.85),
+                      color: ZipherColors.text90,
                     ),
                   ),
                   const SizedBox(height: 8),
@@ -160,7 +160,7 @@ Future<bool> showMessageBox2(BuildContext context, String title, String content,
                     textAlign: TextAlign.center,
                     style: TextStyle(
                       fontSize: 13,
-                      color: Colors.white.withValues(alpha: 0.4),
+                      color: ZipherColors.text40,
                       height: 1.4,
                     ),
                   ),
@@ -381,7 +381,7 @@ Future<bool> showConfirmDialog(
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(20),
                   side: BorderSide(
-                    color: Colors.white.withValues(alpha: 0.06),
+                    color: ZipherColors.borderSubtle,
                   ),
                 ),
                 child: Padding(
@@ -410,7 +410,7 @@ Future<bool> showConfirmDialog(
                         style: TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.w600,
-                          color: Colors.white.withValues(alpha: 0.85),
+                          color: ZipherColors.text90,
                         ),
                       ),
                       const SizedBox(height: 8),
@@ -419,7 +419,7 @@ Future<bool> showConfirmDialog(
                         textAlign: TextAlign.center,
                         style: TextStyle(
                           fontSize: 13,
-                          color: Colors.white.withValues(alpha: 0.4),
+                          color: ZipherColors.text40,
                           height: 1.4,
                         ),
                       ),
@@ -435,11 +435,10 @@ Future<bool> showConfirmDialog(
                                     const EdgeInsets.symmetric(vertical: 12),
                                 decoration: BoxDecoration(
                                   color:
-                                      Colors.white.withValues(alpha: 0.04),
+                                      ZipherColors.cardBg,
                                   borderRadius: BorderRadius.circular(12),
                                   border: Border.all(
-                                    color: Colors.white
-                                        .withValues(alpha: 0.05),
+                                    color: ZipherColors.borderSubtle,
                                   ),
                                 ),
                                 child: Center(
@@ -448,8 +447,7 @@ Future<bool> showConfirmDialog(
                                     style: TextStyle(
                                       fontSize: 14,
                                       fontWeight: FontWeight.w500,
-                                      color: Colors.white
-                                          .withValues(alpha: 0.4),
+                                      color: ZipherColors.text40,
                                     ),
                                   ),
                                 ),
@@ -752,7 +750,10 @@ Future<double?> getFxRate(String coin, String fiat) async {
     final rep = await http.get(uri);
     if (rep.statusCode == 200) {
       final json = convert.jsonDecode(rep.body) as Map<String, dynamic>;
-      final p = json[coin][fiat.toLowerCase()];
+      final coinData = json[coin];
+      if (coinData == null) return null;
+      final p = coinData[fiat.toLowerCase()];
+      if (p == null) return null;
       return (p is double) ? p : (p as int).toDouble();
     }
   } catch (e) {
@@ -946,7 +947,7 @@ class _ContactAutocompleteState extends State<ContactAutocomplete> {
                 color: const Color(0xFF1A1A2E),
                 borderRadius: BorderRadius.circular(12),
                 border: Border.all(
-                  color: Colors.white.withValues(alpha: 0.08),
+                  color: ZipherColors.borderSubtle,
                 ),
                 boxShadow: [
                   BoxShadow(
@@ -964,7 +965,7 @@ class _ContactAutocompleteState extends State<ContactAutocomplete> {
                   itemCount: _matches.length,
                   separatorBuilder: (_, __) => Divider(
                     height: 1,
-                    color: Colors.white.withValues(alpha: 0.04),
+                    color: ZipherColors.cardBg,
                   ),
                   itemBuilder: (context, index) {
                     final c = _matches[index];
@@ -990,14 +991,14 @@ class _ContactAutocompleteState extends State<ContactAutocomplete> {
                         style: TextStyle(
                           fontSize: 13,
                           fontWeight: FontWeight.w500,
-                          color: Colors.white.withValues(alpha: 0.8),
+                          color: ZipherColors.text90,
                         ),
                       ),
                       subtitle: Text(
                         centerTrim(c.address!, length: 16),
                         style: TextStyle(
                           fontSize: 10,
-                          color: Colors.white.withValues(alpha: 0.25),
+                          color: ZipherColors.text20,
                         ),
                       ),
                       onTap: () {

@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 
-/// Zipher Design System
-/// Ported from the Zipher web wallet CSS design tokens
+/// Zipher Design System — semantic tokens and shared widgets.
 
 class ZipherColors {
   // Core backgrounds
@@ -22,11 +21,25 @@ class ZipherColors {
   static const Color orangeDark = Color(0xFFCC5529);
   static const Color red = Color(0xFFEF4444);
 
-  // Text colors
+  // Named text colors (static, for themes)
   static const Color textPrimary = Color(0xFFE5E7EB);
   static const Color textSecondary = Color(0xFF9CA3AF);
   static const Color textMuted = Color(0xFF6B7280);
   static const Color textOnBrand = Color(0xFF0A0E27);
+
+  // ── Semantic opacity tokens ─────────────────────────────
+  // Use these instead of scattered Colors.white.withValues(alpha: ...).
+  // 5 tiers for text, 3 for surfaces.
+
+  static final Color text90 = Colors.white.withValues(alpha: 0.9);
+  static final Color text60 = Colors.white.withValues(alpha: 0.6);
+  static final Color text40 = Colors.white.withValues(alpha: 0.4);
+  static final Color text20 = Colors.white.withValues(alpha: 0.2);
+  static final Color text10 = Colors.white.withValues(alpha: 0.1);
+
+  static final Color cardBg = Colors.white.withValues(alpha: 0.04);
+  static final Color cardBgElevated = Colors.white.withValues(alpha: 0.06);
+  static final Color borderSubtle = Colors.white.withValues(alpha: 0.05);
 
   // Gradients
   static const LinearGradient primaryGradient = LinearGradient(
@@ -56,6 +69,9 @@ class ZipherColors {
   static const Color sapling = purple;
   static const Color orchard = green;
   static const Color shielded = purple;
+
+  // Standard page padding
+  static const double pagePadding = 20.0;
 }
 
 class ZipherSpacing {
@@ -103,7 +119,7 @@ class ZipherTheme {
 
       // AppBar
       appBarTheme: const AppBarTheme(
-        backgroundColor: ZipherColors.surface,
+        backgroundColor: ZipherColors.bg,
         foregroundColor: ZipherColors.textPrimary,
         elevation: 0,
         centerTitle: true,
@@ -486,8 +502,109 @@ class ZipherWidgets {
     );
   }
 
-  /// Gradient button (cyan → green)
+  // ── Button tiers ─────────────────────────────────────────
+
+  /// Primary CTA — gradient (cyan → green)
   static Widget gradientButton({
+    required String label,
+    required VoidCallback onPressed,
+    IconData? icon,
+    double? width,
+    bool enabled = true,
+  }) {
+    return Opacity(
+      opacity: enabled ? 1.0 : 0.4,
+      child: Container(
+        width: width,
+        decoration: BoxDecoration(
+          gradient: ZipherColors.primaryGradient,
+          borderRadius: BorderRadius.circular(ZipherRadius.md),
+        ),
+        child: Material(
+          color: Colors.transparent,
+          child: InkWell(
+            onTap: enabled ? onPressed : null,
+            borderRadius: BorderRadius.circular(ZipherRadius.md),
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 14),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  if (icon != null) ...[
+                    Icon(icon, color: ZipherColors.textOnBrand, size: 20),
+                    const SizedBox(width: 8),
+                  ],
+                  Text(
+                    label,
+                    style: const TextStyle(
+                      color: ZipherColors.textOnBrand,
+                      fontSize: 16,
+                      fontWeight: FontWeight.w600,
+                      fontFamily: 'Inter',
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  /// Secondary CTA — cyan tint
+  static Widget secondaryButton({
+    required String label,
+    required VoidCallback onPressed,
+    IconData? icon,
+    double? width,
+    Color color = ZipherColors.cyan,
+    bool enabled = true,
+  }) {
+    return Opacity(
+      opacity: enabled ? 1.0 : 0.4,
+      child: Container(
+        width: width,
+        child: Material(
+          color: Colors.transparent,
+          child: InkWell(
+            onTap: enabled ? onPressed : null,
+            borderRadius: BorderRadius.circular(ZipherRadius.md),
+            child: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 14),
+              decoration: BoxDecoration(
+                color: color.withValues(alpha: 0.12),
+                borderRadius: BorderRadius.circular(ZipherRadius.md),
+              ),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  if (icon != null) ...[
+                    Icon(icon, color: color, size: 20),
+                    const SizedBox(width: 8),
+                  ],
+                  Text(
+                    label,
+                    style: TextStyle(
+                      color: color,
+                      fontSize: 16,
+                      fontWeight: FontWeight.w600,
+                      fontFamily: 'Inter',
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  /// Ghost button — subtle outline
+  static Widget ghostButton({
     required String label,
     required VoidCallback onPressed,
     IconData? icon,
@@ -495,29 +612,30 @@ class ZipherWidgets {
   }) {
     return Container(
       width: width,
-      decoration: BoxDecoration(
-        gradient: ZipherColors.primaryGradient,
-        borderRadius: BorderRadius.circular(ZipherRadius.md),
-      ),
       child: Material(
         color: Colors.transparent,
         child: InkWell(
           onTap: onPressed,
           borderRadius: BorderRadius.circular(ZipherRadius.md),
-          child: Padding(
+          child: Container(
             padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 14),
+            decoration: BoxDecoration(
+              color: ZipherColors.cardBg,
+              borderRadius: BorderRadius.circular(ZipherRadius.md),
+              border: Border.all(color: ZipherColors.borderSubtle),
+            ),
             child: Row(
               mainAxisSize: MainAxisSize.min,
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 if (icon != null) ...[
-                  Icon(icon, color: ZipherColors.textOnBrand, size: 20),
+                  Icon(icon, color: ZipherColors.text60, size: 20),
                   const SizedBox(width: 8),
                 ],
                 Text(
                   label,
-                  style: const TextStyle(
-                    color: ZipherColors.textOnBrand,
+                  style: TextStyle(
+                    color: ZipherColors.text90,
                     fontSize: 16,
                     fontWeight: FontWeight.w600,
                     fontFamily: 'Inter',
@@ -531,7 +649,88 @@ class ZipherWidgets {
     );
   }
 
-  /// Surface card with border
+  // ── Shared structural widgets ────────────────────────────
+
+  /// Standard back button (36×36 circle, consistent across all sub-pages)
+  static Widget backButton(BuildContext context) {
+    return GestureDetector(
+      onTap: () => Navigator.of(context).pop(),
+      child: Container(
+        width: 36,
+        height: 36,
+        decoration: BoxDecoration(
+          color: ZipherColors.cardBgElevated,
+          shape: BoxShape.circle,
+        ),
+        child: Icon(
+          Icons.arrow_back_rounded,
+          size: 18,
+          color: ZipherColors.text60,
+        ),
+      ),
+    );
+  }
+
+  /// Uppercase sub-page header (e.g. "BACKUP", "ABOUT")
+  static Widget pageHeader(
+    BuildContext context,
+    String title, {
+    List<Widget>? actions,
+  }) {
+    return Padding(
+      padding: EdgeInsets.fromLTRB(
+        ZipherColors.pagePadding,
+        MediaQuery.of(context).padding.top + 14,
+        ZipherColors.pagePadding,
+        16,
+      ),
+      child: Row(
+        children: [
+          backButton(context),
+          const SizedBox(width: 14),
+          Text(
+            title.toUpperCase(),
+            style: TextStyle(
+              fontSize: 14,
+              fontWeight: FontWeight.w600,
+              letterSpacing: 1.5,
+              color: ZipherColors.text60,
+            ),
+          ),
+          const Spacer(),
+          if (actions != null) ...actions,
+        ],
+      ),
+    );
+  }
+
+  /// Section label (e.g. "Security & Tools", "General")
+  static Widget sectionLabel(String text) {
+    return Text(
+      text,
+      style: TextStyle(
+        fontSize: 12,
+        fontWeight: FontWeight.w600,
+        letterSpacing: 0.5,
+        color: ZipherColors.text20,
+      ),
+    );
+  }
+
+  /// Card container (standardized bg, radius, border)
+  static Widget card({required Widget child, EdgeInsets? padding}) {
+    return Container(
+      padding: padding,
+      decoration: BoxDecoration(
+        color: ZipherColors.cardBg,
+        borderRadius: BorderRadius.circular(14),
+        border: Border.all(color: ZipherColors.borderSubtle),
+      ),
+      child: child,
+    );
+  }
+
+  /// Surface card with padding
   static Widget surfaceCard({
     required Widget child,
     EdgeInsets? padding,
@@ -547,6 +746,121 @@ class ZipherWidgets {
       child: child,
     );
   }
+
+  /// Empty state (centered icon + title + optional subtitle)
+  static Widget emptyState({
+    required IconData icon,
+    required String title,
+    String? subtitle,
+  }) {
+    return Container(
+      padding: const EdgeInsets.symmetric(vertical: 48),
+      decoration: BoxDecoration(
+        color: ZipherColors.cardBg,
+        borderRadius: BorderRadius.circular(14),
+        border: Border.all(color: ZipherColors.borderSubtle),
+      ),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Container(
+            width: 56,
+            height: 56,
+            decoration: BoxDecoration(
+              color: ZipherColors.cardBg,
+              shape: BoxShape.circle,
+            ),
+            child: Icon(icon, size: 24, color: ZipherColors.text10),
+          ),
+          const SizedBox(height: 12),
+          Text(
+            title,
+            style: TextStyle(
+              fontSize: 14,
+              fontWeight: FontWeight.w500,
+              color: ZipherColors.text20,
+            ),
+          ),
+          if (subtitle != null) ...[
+            const SizedBox(height: 4),
+            Text(
+              subtitle,
+              style: TextStyle(fontSize: 12, color: ZipherColors.text10),
+            ),
+          ],
+        ],
+      ),
+    );
+  }
+
+  /// Error banner
+  static Widget errorBanner(String message, {VoidCallback? onRetry}) {
+    return Container(
+      padding: const EdgeInsets.all(14),
+      decoration: BoxDecoration(
+        color: ZipherColors.red.withValues(alpha: 0.08),
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(
+          color: ZipherColors.red.withValues(alpha: 0.15),
+        ),
+      ),
+      child: Row(
+        children: [
+          Icon(Icons.error_outline_rounded,
+              size: 18, color: ZipherColors.red.withValues(alpha: 0.7)),
+          const SizedBox(width: 10),
+          Expanded(
+            child: Text(
+              message,
+              style: TextStyle(
+                fontSize: 13,
+                color: ZipherColors.red.withValues(alpha: 0.9),
+              ),
+            ),
+          ),
+          if (onRetry != null)
+            GestureDetector(
+              onTap: onRetry,
+              child: Padding(
+                padding: const EdgeInsets.only(left: 8),
+                child: Text(
+                  'Retry',
+                  style: TextStyle(
+                    fontSize: 13,
+                    fontWeight: FontWeight.w600,
+                    color: ZipherColors.red.withValues(alpha: 0.9),
+                  ),
+                ),
+              ),
+            ),
+        ],
+      ),
+    );
+  }
+
+  /// Bottom sheet handle bar
+  static Widget sheetHandle() {
+    return Center(
+      child: Container(
+        margin: const EdgeInsets.only(top: 10, bottom: 6),
+        width: 36,
+        height: 4,
+        decoration: BoxDecoration(
+          color: ZipherColors.cardBgElevated,
+          borderRadius: BorderRadius.circular(2),
+        ),
+      ),
+    );
+  }
+
+  /// Standard bottom sheet decoration
+  static BoxDecoration get sheetDecoration => BoxDecoration(
+        color: ZipherColors.bg,
+        borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
+        border: Border(
+          top: BorderSide(color: ZipherColors.cardBgElevated, width: 0.5),
+        ),
+      );
 
   /// Pool indicator dot
   static Widget poolDot(String pool) {

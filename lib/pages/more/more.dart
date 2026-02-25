@@ -11,6 +11,7 @@ import 'package:warp_api/warp_api.dart';
 
 import '../../accounts.dart';
 import '../../init.dart';
+import '../../services/secure_key_store.dart';
 import '../../zipher_theme.dart';
 import '../../coin/coins.dart';
 import '../../generated/intl/messages.dart';
@@ -51,7 +52,7 @@ class _MorePageState extends State<MorePage> {
                 style: TextStyle(
                   fontSize: 24,
                   fontWeight: FontWeight.w700,
-                  color: Colors.white.withValues(alpha: 0.9),
+                  color: ZipherColors.text90,
                 ),
               ),
               const Gap(24),
@@ -139,10 +140,10 @@ class _MorePageState extends State<MorePage> {
               const Gap(8),
               Container(
                 decoration: BoxDecoration(
-                  color: Colors.white.withValues(alpha: 0.04),
+                  color: ZipherColors.cardBg,
                   borderRadius: BorderRadius.circular(14),
                   border: Border.all(
-                    color: Colors.white.withValues(alpha: 0.05),
+                    color: ZipherColors.borderSubtle,
                   ),
                 ),
                 child: _TestnetToggle(),
@@ -179,7 +180,7 @@ class _MorePageState extends State<MorePage> {
                       style: TextStyle(
                         fontSize: 14,
                         fontWeight: FontWeight.w600,
-                        color: Colors.white.withValues(alpha: 0.12),
+                        color: ZipherColors.text10,
                       ),
                     ),
                     const Gap(2),
@@ -195,7 +196,7 @@ class _MorePageState extends State<MorePage> {
                       'v$packageVersion',
                       style: TextStyle(
                         fontSize: 10,
-                        color: Colors.white.withValues(alpha: 0.06),
+                        color: ZipherColors.text10,
                       ),
                     ),
                   ],
@@ -216,7 +217,7 @@ class _MorePageState extends State<MorePage> {
         fontSize: 12,
         fontWeight: FontWeight.w600,
         letterSpacing: 0.5,
-        color: Colors.white.withValues(alpha: 0.25),
+        color: ZipherColors.text20,
       ),
     );
   }
@@ -224,10 +225,10 @@ class _MorePageState extends State<MorePage> {
   Widget _card(List<_SettingsItem> items) {
     return Container(
       decoration: BoxDecoration(
-        color: Colors.white.withValues(alpha: 0.04),
+        color: ZipherColors.cardBg,
         borderRadius: BorderRadius.circular(14),
         border: Border.all(
-          color: Colors.white.withValues(alpha: 0.05),
+          color: ZipherColors.borderSubtle,
         ),
       ),
       child: Column(
@@ -237,7 +238,7 @@ class _MorePageState extends State<MorePage> {
             if (i < items.length - 1)
               Divider(
                 height: 1,
-                color: Colors.white.withValues(alpha: 0.04),
+                color: ZipherColors.cardBg,
                 indent: 52,
                 endIndent: 16,
               ),
@@ -329,7 +330,7 @@ class _TestnetToggleState extends State<_TestnetToggle> {
                     style: TextStyle(
                       fontSize: 14,
                       fontWeight: FontWeight.w500,
-                      color: Colors.white.withValues(alpha: 0.85),
+                      color: ZipherColors.text90,
                     ),
                   ),
                   const Gap(1),
@@ -341,7 +342,7 @@ class _TestnetToggleState extends State<_TestnetToggle> {
                       fontSize: 11,
                       color: isTestnet
                           ? ZipherColors.orange.withValues(alpha: 0.7)
-                          : Colors.white.withValues(alpha: 0.25),
+                          : ZipherColors.text20,
                     ),
                   ),
                 ],
@@ -386,6 +387,7 @@ class _TestnetToggleState extends State<_TestnetToggle> {
       final prefs = await SharedPreferences.getInstance();
       await prefs.setBool('testnet', enable);
       isTestnet = enable;
+      testnetNotifier.value = enable;
 
       // Initialize the active coin's DB paths
       await initCoins();
@@ -409,6 +411,16 @@ class _TestnetToggleState extends State<_TestnetToggle> {
         // Auto-create a wallet for this network
         final name = enable ? 'Testnet' : 'Main';
         accountId = await WarpApi.newAccount(coin, name, '', 0);
+        if (accountId > 0) {
+          final backup = WarpApi.getBackup(coin, accountId);
+          if (backup.seed != null) {
+            await SecureKeyStore.storeSeed(
+                coin, accountId, backup.seed!, backup.index);
+            WarpApi.loadKeysFromSeed(
+                coin, accountId, backup.seed!, backup.index);
+            WarpApi.clearAccountSecrets(coin, accountId);
+          }
+        }
         try { await WarpApi.skipToLastHeight(coin); } catch (_) {}
       }
 
@@ -478,7 +490,7 @@ class _SettingsItem extends StatelessWidget {
                       style: TextStyle(
                         fontSize: 14,
                         fontWeight: FontWeight.w500,
-                        color: Colors.white.withValues(alpha: 0.85),
+                        color: ZipherColors.text90,
                       ),
                     ),
                     if (subtitle != null) ...[
@@ -487,7 +499,7 @@ class _SettingsItem extends StatelessWidget {
                         subtitle!,
                         style: TextStyle(
                           fontSize: 11,
-                          color: Colors.white.withValues(alpha: 0.25),
+                          color: ZipherColors.text20,
                         ),
                       ),
                     ],
@@ -496,7 +508,7 @@ class _SettingsItem extends StatelessWidget {
               ),
               Icon(Icons.chevron_right_rounded,
                   size: 18,
-                  color: Colors.white.withValues(alpha: 0.12)),
+                  color: ZipherColors.text10),
             ],
           ),
         ),

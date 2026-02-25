@@ -44,13 +44,13 @@ class _BatchBackupState extends State<BatchBackupPage> {
             fontSize: 14,
             fontWeight: FontWeight.w600,
             letterSpacing: 1.5,
-            color: Colors.white.withValues(alpha: 0.6),
+            color: ZipherColors.text60,
           ),
         ),
         centerTitle: true,
         leading: IconButton(
           icon: Icon(Icons.arrow_back_rounded,
-              color: Colors.white.withValues(alpha: 0.5)),
+              color: ZipherColors.text60),
           onPressed: () => GoRouter.of(context).pop(),
         ),
         actions: [
@@ -58,7 +58,7 @@ class _BatchBackupState extends State<BatchBackupPage> {
             onPressed: _generateKey,
             icon: Icon(Icons.key_rounded,
                 size: 20,
-                color: Colors.white.withValues(alpha: 0.4)),
+                color: ZipherColors.text40),
             tooltip: 'Generate encryption key',
           ),
         ],
@@ -107,7 +107,7 @@ class _BatchBackupState extends State<BatchBackupPage> {
             Container(
               padding: const EdgeInsets.all(16),
               decoration: BoxDecoration(
-                color: Colors.white.withValues(alpha: 0.03),
+                color: ZipherColors.cardBg,
                 borderRadius: BorderRadius.circular(14),
               ),
               child: Column(
@@ -117,27 +117,27 @@ class _BatchBackupState extends State<BatchBackupPage> {
                     'Encryption public key',
                     style: TextStyle(
                       fontSize: 12,
-                      color: Colors.white.withValues(alpha: 0.25),
+                      color: ZipherColors.text20,
                     ),
                   ),
                   const Gap(8),
                   Container(
                     decoration: BoxDecoration(
-                      color: Colors.white.withValues(alpha: 0.04),
+                      color: ZipherColors.cardBg,
                       borderRadius: BorderRadius.circular(10),
                     ),
                     child: TextField(
                       controller: _backupKeyController,
                       style: TextStyle(
                         fontSize: 13,
-                        color: Colors.white.withValues(alpha: 0.85),
+                        color: ZipherColors.text90,
                         fontFamily: 'monospace',
                       ),
                       decoration: InputDecoration(
                         hintText: 'Paste public key...',
                         hintStyle: TextStyle(
                           fontSize: 13,
-                          color: Colors.white.withValues(alpha: 0.12),
+                          color: ZipherColors.text10,
                         ),
                         filled: false,
                         border: InputBorder.none,
@@ -187,7 +187,7 @@ class _BatchBackupState extends State<BatchBackupPage> {
             Container(
               padding: const EdgeInsets.all(16),
               decoration: BoxDecoration(
-                color: Colors.white.withValues(alpha: 0.03),
+                color: ZipherColors.cardBg,
                 borderRadius: BorderRadius.circular(14),
               ),
               child: Column(
@@ -197,27 +197,27 @@ class _BatchBackupState extends State<BatchBackupPage> {
                     'Decryption secret key',
                     style: TextStyle(
                       fontSize: 12,
-                      color: Colors.white.withValues(alpha: 0.25),
+                      color: ZipherColors.text20,
                     ),
                   ),
                   const Gap(8),
                   Container(
                     decoration: BoxDecoration(
-                      color: Colors.white.withValues(alpha: 0.04),
+                      color: ZipherColors.cardBg,
                       borderRadius: BorderRadius.circular(10),
                     ),
                     child: TextField(
                       controller: _restoreKeyController,
                       style: TextStyle(
                         fontSize: 13,
-                        color: Colors.white.withValues(alpha: 0.85),
+                        color: ZipherColors.text90,
                         fontFamily: 'monospace',
                       ),
                       decoration: InputDecoration(
                         hintText: 'Paste secret key...',
                         hintStyle: TextStyle(
                           fontSize: 13,
-                          color: Colors.white.withValues(alpha: 0.12),
+                          color: ZipherColors.text10,
                         ),
                         filled: false,
                         border: InputBorder.none,
@@ -273,7 +273,7 @@ class _BatchBackupState extends State<BatchBackupPage> {
         fontSize: 12,
         fontWeight: FontWeight.w600,
         letterSpacing: 0.5,
-        color: Colors.white.withValues(alpha: 0.25),
+        color: ZipherColors.text20,
       ),
     );
   }
@@ -365,13 +365,13 @@ class _KeygenState extends State<KeygenPage> with WithLoadingAnimation {
             fontSize: 14,
             fontWeight: FontWeight.w600,
             letterSpacing: 1.5,
-            color: Colors.white.withValues(alpha: 0.6),
+            color: ZipherColors.text60,
           ),
         ),
         centerTitle: true,
         leading: IconButton(
           icon: Icon(Icons.arrow_back_rounded,
-              color: Colors.white.withValues(alpha: 0.5)),
+              color: ZipherColors.text60),
           onPressed: () => GoRouter.of(context).pop(),
         ),
         actions: [
@@ -379,7 +379,7 @@ class _KeygenState extends State<KeygenPage> with WithLoadingAnimation {
             onPressed: _keygen,
             icon: Icon(Icons.refresh_rounded,
                 size: 20,
-                color: Colors.white.withValues(alpha: 0.4)),
+                color: ZipherColors.text40),
           ),
           IconButton(
             onPressed: _ok,
@@ -435,7 +435,7 @@ class _KeygenState extends State<KeygenPage> with WithLoadingAnimation {
         fontSize: 12,
         fontWeight: FontWeight.w600,
         letterSpacing: 0.5,
-        color: Colors.white.withValues(alpha: 0.25),
+        color: ZipherColors.text20,
       ),
     );
   }
@@ -445,19 +445,19 @@ class _KeygenState extends State<KeygenPage> with WithLoadingAnimation {
       width: double.infinity,
       padding: const EdgeInsets.all(14),
       decoration: BoxDecoration(
-        color: Colors.white.withValues(alpha: 0.03),
+        color: ZipherColors.cardBg,
         borderRadius: BorderRadius.circular(14),
       ),
       child: value == null
           ? Text('Generating...',
               style: TextStyle(
                   fontSize: 12,
-                  color: Colors.white.withValues(alpha: 0.15)))
+                  color: ZipherColors.text10))
           : SelectableText(
               value,
               style: TextStyle(
                 fontSize: 12,
-                color: Colors.white.withValues(alpha: 0.7),
+                color: ZipherColors.text60,
                 fontFamily: 'monospace',
                 height: 1.5,
               ),

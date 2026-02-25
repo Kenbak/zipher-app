@@ -47,13 +47,13 @@ class _SweepState extends State<SweepPage>
             fontSize: 14,
             fontWeight: FontWeight.w600,
             letterSpacing: 1.5,
-            color: Colors.white.withValues(alpha: 0.6),
+            color: ZipherColors.text60,
           ),
         ),
         centerTitle: true,
         leading: IconButton(
           icon: Icon(Icons.arrow_back_rounded,
-              color: Colors.white.withValues(alpha: 0.5)),
+              color: ZipherColors.text60),
           onPressed: () => GoRouter.of(context).pop(),
         ),
       ),
@@ -134,7 +134,7 @@ class _SweepState extends State<SweepPage>
                     'Which account to sweep from. Usually 0 (the first account).',
                     style: TextStyle(
                       fontSize: 11,
-                      color: Colors.white.withValues(alpha: 0.15),
+                      color: ZipherColors.text10,
                     ),
                   ),
                   const Gap(8),
@@ -217,7 +217,7 @@ class _SweepState extends State<SweepPage>
         fontSize: 12,
         fontWeight: FontWeight.w600,
         letterSpacing: 0.5,
-        color: Colors.white.withValues(alpha: 0.25),
+        color: ZipherColors.text20,
       ),
     );
   }
@@ -231,7 +231,7 @@ class _SweepState extends State<SweepPage>
           decoration: BoxDecoration(
             color: selected
                 ? ZipherColors.cyan.withValues(alpha: 0.12)
-                : Colors.white.withValues(alpha: 0.03),
+                : ZipherColors.cardBg,
             borderRadius: BorderRadius.circular(10),
             border: selected
                 ? Border.all(
@@ -246,7 +246,7 @@ class _SweepState extends State<SweepPage>
                 fontWeight: selected ? FontWeight.w600 : FontWeight.w400,
                 color: selected
                     ? ZipherColors.cyan.withValues(alpha: 0.9)
-                    : Colors.white.withValues(alpha: 0.35),
+                    : ZipherColors.text40,
               ),
             ),
           ),
@@ -265,7 +265,7 @@ class _SweepState extends State<SweepPage>
   }) {
     return Container(
       decoration: BoxDecoration(
-        color: Colors.white.withValues(alpha: 0.05),
+        color: ZipherColors.borderSubtle,
         borderRadius: BorderRadius.circular(14),
       ),
       child: FormBuilderTextField(
@@ -276,14 +276,14 @@ class _SweepState extends State<SweepPage>
         validator: validator,
         style: TextStyle(
           fontSize: 13,
-          color: Colors.white.withValues(alpha: 0.85),
+          color: ZipherColors.text90,
           fontFamily: maxLines > 1 ? 'monospace' : null,
         ),
         decoration: InputDecoration(
           hintText: hint,
           hintStyle: TextStyle(
             fontSize: 13,
-            color: Colors.white.withValues(alpha: 0.15),
+            color: ZipherColors.text10,
           ),
           filled: false,
           border: InputBorder.none,

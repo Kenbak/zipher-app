@@ -48,13 +48,13 @@ class _ContactsState extends State<ContactsPage> {
             fontSize: 14,
             fontWeight: FontWeight.w600,
             letterSpacing: 1.5,
-            color: Colors.white.withValues(alpha: 0.6),
+            color: ZipherColors.text60,
           ),
         ),
         centerTitle: true,
         leading: IconButton(
           icon: Icon(Icons.arrow_back_rounded,
-              color: Colors.white.withValues(alpha: 0.5)),
+              color: ZipherColors.text60),
           onPressed: () => GoRouter.of(context).pop(),
         ),
         actions: [
@@ -63,7 +63,7 @@ class _ContactsState extends State<ContactsPage> {
               onPressed: _edit,
               icon: Icon(Icons.edit_rounded,
                   size: 20,
-                  color: Colors.white.withValues(alpha: 0.4)),
+                  color: ZipherColors.text40),
             ),
           if (selected)
             IconButton(
@@ -89,13 +89,13 @@ class _ContactsState extends State<ContactsPage> {
               children: [
                 Icon(Icons.people_outline_rounded,
                     size: 48,
-                    color: Colors.white.withValues(alpha: 0.08)),
+                    color: ZipherColors.cardBgElevated),
                 const Gap(16),
                 Text(
                   'No contacts yet',
                   style: TextStyle(
                     fontSize: 15,
-                    color: Colors.white.withValues(alpha: 0.2),
+                    color: ZipherColors.text20,
                   ),
                 ),
                 const Gap(8),
@@ -103,7 +103,7 @@ class _ContactsState extends State<ContactsPage> {
                   'Tap + to add your first contact',
                   style: TextStyle(
                     fontSize: 13,
-                    color: Colors.white.withValues(alpha: 0.12),
+                    color: ZipherColors.text10,
                   ),
                 ),
               ],
@@ -308,7 +308,7 @@ class _ContactCard extends StatelessWidget {
           decoration: BoxDecoration(
             color: selected
                 ? ZipherColors.cyan.withValues(alpha: 0.08)
-                : Colors.white.withValues(alpha: 0.03),
+                : ZipherColors.cardBg,
             borderRadius: BorderRadius.circular(14),
             border: selected
                 ? Border.all(
@@ -345,7 +345,7 @@ class _ContactCard extends StatelessWidget {
                       style: TextStyle(
                         fontSize: 15,
                         fontWeight: FontWeight.w500,
-                        color: Colors.white.withValues(alpha: 0.85),
+                        color: ZipherColors.text90,
                       ),
                     ),
                     const Gap(2),
@@ -354,7 +354,7 @@ class _ContactCard extends StatelessWidget {
                       style: TextStyle(
                         fontSize: 12,
                         fontFamily: 'monospace',
-                        color: Colors.white.withValues(alpha: 0.25),
+                        color: ZipherColors.text20,
                       ),
                     ),
                   ],
@@ -362,7 +362,7 @@ class _ContactCard extends StatelessWidget {
               ),
               Icon(Icons.chevron_right_rounded,
                   size: 18,
-                  color: Colors.white.withValues(alpha: 0.15)),
+                  color: ZipherColors.text10),
             ],
           ),
         ),
@@ -439,13 +439,13 @@ class _ContactEditState extends State<ContactEditPage> {
             fontSize: 14,
             fontWeight: FontWeight.w600,
             letterSpacing: 1.5,
-            color: Colors.white.withValues(alpha: 0.6),
+            color: ZipherColors.text60,
           ),
         ),
         centerTitle: true,
         leading: IconButton(
           icon: Icon(Icons.arrow_back_rounded,
-              color: Colors.white.withValues(alpha: 0.5)),
+              color: ZipherColors.text60),
           onPressed: () => GoRouter.of(context).pop(),
         ),
         actions: [
@@ -469,13 +469,13 @@ class _ContactEditState extends State<ContactEditPage> {
                 style: TextStyle(
                   fontSize: 14,
                   fontWeight: FontWeight.w500,
-                  color: Colors.white.withValues(alpha: 0.4),
+                  color: ZipherColors.text40,
                 ),
               ),
               const Gap(8),
               Container(
                 decoration: BoxDecoration(
-                  color: Colors.white.withValues(alpha: 0.05),
+                  color: ZipherColors.borderSubtle,
                   borderRadius: BorderRadius.circular(14),
                 ),
                 child: FormBuilderTextField(
@@ -483,13 +483,13 @@ class _ContactEditState extends State<ContactEditPage> {
                   controller: nameController,
                   style: TextStyle(
                     fontSize: 14,
-                    color: Colors.white.withValues(alpha: 0.85),
+                    color: ZipherColors.text90,
                   ),
                   decoration: InputDecoration(
                     hintText: s.name,
                     hintStyle: TextStyle(
                       fontSize: 14,
-                      color: Colors.white.withValues(alpha: 0.18),
+                      color: ZipherColors.text20,
                     ),
                     filled: false,
                     border: InputBorder.none,
@@ -508,13 +508,13 @@ class _ContactEditState extends State<ContactEditPage> {
                 style: TextStyle(
                   fontSize: 14,
                   fontWeight: FontWeight.w500,
-                  color: Colors.white.withValues(alpha: 0.4),
+                  color: ZipherColors.text40,
                 ),
               ),
               const Gap(8),
               Container(
                 decoration: BoxDecoration(
-                  color: Colors.white.withValues(alpha: 0.05),
+                  color: ZipherColors.borderSubtle,
                   borderRadius: BorderRadius.circular(14),
                 ),
                 child: FormBuilderTextField(
@@ -524,13 +524,13 @@ class _ContactEditState extends State<ContactEditPage> {
                   style: TextStyle(
                     fontSize: 13,
                     fontFamily: 'monospace',
-                    color: Colors.white.withValues(alpha: 0.85),
+                    color: ZipherColors.text90,
                   ),
                   decoration: InputDecoration(
                     hintText: s.address,
                     hintStyle: TextStyle(
                       fontSize: 13,
-                      color: Colors.white.withValues(alpha: 0.18),
+                      color: ZipherColors.text20,
                     ),
                     filled: false,
                     border: InputBorder.none,
@@ -592,13 +592,13 @@ class _ContactAddState extends State<ContactAddPage> {
             fontSize: 14,
             fontWeight: FontWeight.w600,
             letterSpacing: 1.5,
-            color: Colors.white.withValues(alpha: 0.6),
+            color: ZipherColors.text60,
           ),
         ),
         centerTitle: true,
         leading: IconButton(
           icon: Icon(Icons.arrow_back_rounded,
-              color: Colors.white.withValues(alpha: 0.5)),
+              color: ZipherColors.text60),
           onPressed: () => GoRouter.of(context).pop(),
         ),
         actions: [
@@ -622,13 +622,13 @@ class _ContactAddState extends State<ContactAddPage> {
                 style: TextStyle(
                   fontSize: 14,
                   fontWeight: FontWeight.w500,
-                  color: Colors.white.withValues(alpha: 0.4),
+                  color: ZipherColors.text40,
                 ),
               ),
               const Gap(8),
               Container(
                 decoration: BoxDecoration(
-                  color: Colors.white.withValues(alpha: 0.05),
+                  color: ZipherColors.borderSubtle,
                   borderRadius: BorderRadius.circular(14),
                 ),
                 child: FormBuilderTextField(
@@ -637,13 +637,13 @@ class _ContactAddState extends State<ContactAddPage> {
                   validator: FormBuilderValidators.required(),
                   style: TextStyle(
                     fontSize: 14,
-                    color: Colors.white.withValues(alpha: 0.85),
+                    color: ZipherColors.text90,
                   ),
                   decoration: InputDecoration(
                     hintText: 'Contact name',
                     hintStyle: TextStyle(
                       fontSize: 14,
-                      color: Colors.white.withValues(alpha: 0.18),
+                      color: ZipherColors.text20,
                     ),
                     filled: false,
                     border: InputBorder.none,
@@ -662,13 +662,13 @@ class _ContactAddState extends State<ContactAddPage> {
                 style: TextStyle(
                   fontSize: 14,
                   fontWeight: FontWeight.w500,
-                  color: Colors.white.withValues(alpha: 0.4),
+                  color: ZipherColors.text40,
                 ),
               ),
               const Gap(8),
               Container(
                 decoration: BoxDecoration(
-                  color: Colors.white.withValues(alpha: 0.05),
+                  color: ZipherColors.borderSubtle,
                   borderRadius: BorderRadius.circular(14),
                 ),
                 child: Row(
@@ -684,13 +684,13 @@ class _ContactAddState extends State<ContactAddPage> {
                         style: TextStyle(
                           fontSize: 13,
                           fontFamily: 'monospace',
-                          color: Colors.white.withValues(alpha: 0.85),
+                          color: ZipherColors.text90,
                         ),
                         decoration: InputDecoration(
                           hintText: 'Zcash address',
                           hintStyle: TextStyle(
                             fontSize: 13,
-                            color: Colors.white.withValues(alpha: 0.18),
+                            color: ZipherColors.text20,
                           ),
                           filled: false,
                           border: InputBorder.none,
@@ -711,12 +711,12 @@ class _ContactAddState extends State<ContactAddPage> {
                           width: 36,
                           height: 36,
                           decoration: BoxDecoration(
-                            color: Colors.white.withValues(alpha: 0.06),
+                            color: ZipherColors.cardBgElevated,
                             borderRadius: BorderRadius.circular(10),
                           ),
                           child: Icon(Icons.qr_code_rounded,
                               size: 18,
-                              color: Colors.white.withValues(alpha: 0.3)),
+                              color: ZipherColors.text40),
                         ),
                       ),
                     ),

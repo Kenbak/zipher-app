@@ -54,20 +54,20 @@ class _MemoInboxPageState extends State<MemoInboxPage> {
                   child: Container(
                     width: 36, height: 36,
                     decoration: BoxDecoration(
-                      color: Colors.white.withValues(alpha: 0.06),
+                      color: ZipherColors.cardBgElevated,
                       shape: BoxShape.circle,
                     ),
                     child: Icon(Icons.arrow_back_rounded, size: 18,
-                        color: Colors.white.withValues(alpha: 0.5)),
+                        color: ZipherColors.text60),
                   ),
                 ),
                 const Gap(14),
                 Icon(Icons.all_inbox_rounded, size: 18,
-                    color: Colors.white.withValues(alpha: 0.35)),
+                    color: ZipherColors.text40),
                 const Gap(10),
                 Text('Memos', style: TextStyle(
                   fontSize: 18, fontWeight: FontWeight.w600,
-                  color: Colors.white.withValues(alpha: 0.9),
+                  color: ZipherColors.text90,
                 )),
               ],
             ),
@@ -175,12 +175,12 @@ class _FilterChip extends StatelessWidget {
         decoration: BoxDecoration(
           color: selected
               ? ZipherColors.purple.withValues(alpha: 0.15)
-              : Colors.white.withValues(alpha: 0.03),
+              : ZipherColors.cardBg,
           borderRadius: BorderRadius.circular(16),
           border: Border.all(
             color: selected
                 ? ZipherColors.purple.withValues(alpha: 0.3)
-                : Colors.white.withValues(alpha: 0.05),
+                : ZipherColors.borderSubtle,
           ),
         ),
         child: Text(
@@ -190,7 +190,7 @@ class _FilterChip extends StatelessWidget {
             fontWeight: selected ? FontWeight.w600 : FontWeight.w400,
             color: selected
                 ? ZipherColors.purple.withValues(alpha: 0.8)
-                : Colors.white.withValues(alpha: 0.3),
+                : ZipherColors.text40,
           ),
         ),
       ),
@@ -227,13 +227,13 @@ class _EmptyState extends StatelessWidget {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Icon(icon, size: 36, color: Colors.white.withValues(alpha: 0.08)),
+          Icon(icon, size: 36, color: ZipherColors.cardBgElevated),
           const Gap(12),
           Text(title, style: TextStyle(
-              fontSize: 14, color: Colors.white.withValues(alpha: 0.2))),
+              fontSize: 14, color: ZipherColors.text20)),
           const Gap(4),
           Text(subtitle, style: TextStyle(
-              fontSize: 12, color: Colors.white.withValues(alpha: 0.1))),
+              fontSize: 12, color: ZipherColors.text10)),
         ],
       ),
     );
@@ -263,14 +263,14 @@ class _MemoCard extends StatelessWidget {
       margin: const EdgeInsets.only(bottom: 8),
       decoration: BoxDecoration(
         color: isSystem
-            ? Colors.white.withValues(alpha: 0.02)
-            : Colors.white.withValues(alpha: 0.04),
+            ? ZipherColors.cardBg
+            : ZipherColors.cardBg,
         borderRadius: BorderRadius.circular(12),
         border: Border(
           left: BorderSide(
             width: 3,
             color: isSystem
-                ? Colors.white.withValues(alpha: 0.06)
+                ? ZipherColors.cardBgElevated
                 : ZipherColors.purple.withValues(alpha: 0.4),
           ),
         ),
@@ -286,7 +286,7 @@ class _MemoCard extends StatelessWidget {
                   padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
                   decoration: BoxDecoration(
                     color: isSystem
-                        ? Colors.white.withValues(alpha: 0.04)
+                        ? ZipherColors.cardBg
                         : ZipherColors.purple.withValues(alpha: 0.1),
                     borderRadius: BorderRadius.circular(4),
                   ),
@@ -297,7 +297,7 @@ class _MemoCard extends StatelessWidget {
                         isSystem ? Icons.settings_rounded : Icons.mail_rounded,
                         size: 10,
                         color: isSystem
-                            ? Colors.white.withValues(alpha: 0.25)
+                            ? ZipherColors.text20
                             : ZipherColors.purple.withValues(alpha: 0.5),
                       ),
                       const Gap(4),
@@ -307,7 +307,7 @@ class _MemoCard extends StatelessWidget {
                           fontSize: 9, fontWeight: FontWeight.w600,
                           letterSpacing: 0.5,
                           color: isSystem
-                              ? Colors.white.withValues(alpha: 0.25)
+                              ? ZipherColors.text20
                               : ZipherColors.purple.withValues(alpha: 0.5),
                         ),
                       ),
@@ -316,7 +316,7 @@ class _MemoCard extends StatelessWidget {
                 ),
                 const Spacer(),
                 Text(time, style: TextStyle(
-                  fontSize: 10, color: Colors.white.withValues(alpha: 0.2),
+                  fontSize: 10, color: ZipherColors.text20,
                 )),
               ],
             ),
@@ -326,8 +326,8 @@ class _MemoCard extends StatelessWidget {
               style: TextStyle(
                 fontSize: 14, height: 1.5,
                 color: isSystem
-                    ? Colors.white.withValues(alpha: 0.35)
-                    : Colors.white.withValues(alpha: 0.8),
+                    ? ZipherColors.text40
+                    : ZipherColors.text90,
                 fontStyle: isSystem ? FontStyle.italic : FontStyle.normal,
               ),
             ),
@@ -361,7 +361,7 @@ class _MemoCard extends StatelessWidget {
                         : txHash,
                     style: TextStyle(
                       fontSize: 9, fontFamily: 'monospace',
-                      color: Colors.white.withValues(alpha: 0.1),
+                      color: ZipherColors.text10,
                     ),
                   ),
                 ],
@@ -404,10 +404,10 @@ class _CardAction extends StatelessWidget {
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Icon(icon, size: 12, color: Colors.white.withValues(alpha: 0.2)),
+          Icon(icon, size: 12, color: ZipherColors.text20),
           const Gap(4),
           Text(label, style: TextStyle(
-            fontSize: 11, color: Colors.white.withValues(alpha: 0.25),
+            fontSize: 11, color: ZipherColors.text20,
           )),
         ],
       ),

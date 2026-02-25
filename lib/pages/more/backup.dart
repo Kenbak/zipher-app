@@ -113,7 +113,7 @@ class _BackupState extends State<BackupPage> with WidgetsBindingObserver {
           elevation: 0,
           leading: IconButton(
             icon: Icon(Icons.arrow_back_rounded,
-                color: Colors.white.withValues(alpha: 0.5)),
+                color: ZipherColors.text60),
             onPressed: () => GoRouter.of(context).pop(),
           ),
         ),
@@ -131,7 +131,7 @@ class _BackupState extends State<BackupPage> with WidgetsBindingObserver {
                   textAlign: TextAlign.center,
                   style: TextStyle(
                     fontSize: 14,
-                    color: Colors.white.withValues(alpha: 0.4),
+                    color: ZipherColors.text40,
                     height: 1.4,
                   ),
                 ),
@@ -178,13 +178,13 @@ class _BackupState extends State<BackupPage> with WidgetsBindingObserver {
             fontSize: 14,
             fontWeight: FontWeight.w600,
             letterSpacing: 1.5,
-            color: Colors.white.withValues(alpha: 0.6),
+            color: ZipherColors.text60,
           ),
         ),
         centerTitle: true,
         leading: IconButton(
           icon: Icon(Icons.arrow_back_rounded,
-              color: Colors.white.withValues(alpha: 0.5)),
+              color: ZipherColors.text60),
           onPressed: () => GoRouter.of(context).pop(),
         ),
       ),
@@ -197,13 +197,13 @@ class _BackupState extends State<BackupPage> with WidgetsBindingObserver {
                   children: [
                     Icon(Icons.shield_rounded,
                         size: 48,
-                        color: Colors.white.withValues(alpha: 0.08)),
+                        color: ZipherColors.cardBgElevated),
                     const Gap(16),
                     Text(
                       'Content hidden for security',
                       style: TextStyle(
                         fontSize: 14,
-                        color: Colors.white.withValues(alpha: 0.15),
+                        color: ZipherColors.text10,
                       ),
                     ),
                   ],
@@ -258,10 +258,10 @@ class _BackupState extends State<BackupPage> with WidgetsBindingObserver {
                   Container(
                     padding: const EdgeInsets.all(14),
                     decoration: BoxDecoration(
-                      color: Colors.white.withValues(alpha: 0.03),
+                      color: ZipherColors.cardBg,
                       borderRadius: BorderRadius.circular(14),
                       border: Border.all(
-                        color: Colors.white.withValues(alpha: 0.05),
+                        color: ZipherColors.borderSubtle,
                       ),
                     ),
                     child: Column(
@@ -271,14 +271,14 @@ class _BackupState extends State<BackupPage> with WidgetsBindingObserver {
                             Icon(Icons.account_circle_outlined,
                                 size: 15,
                                 color:
-                                    Colors.white.withValues(alpha: 0.25)),
+                                    ZipherColors.text20),
                             const Gap(8),
                             Text(
                               'Account',
                               style: TextStyle(
                                 fontSize: 12,
                                 color:
-                                    Colors.white.withValues(alpha: 0.3),
+                                    ZipherColors.text40,
                               ),
                             ),
                             const Spacer(),
@@ -288,7 +288,7 @@ class _BackupState extends State<BackupPage> with WidgetsBindingObserver {
                                 fontSize: 12,
                                 fontWeight: FontWeight.w500,
                                 color:
-                                    Colors.white.withValues(alpha: 0.5),
+                                    ZipherColors.text60,
                               ),
                             ),
                           ],
@@ -298,7 +298,7 @@ class _BackupState extends State<BackupPage> with WidgetsBindingObserver {
                               const EdgeInsets.symmetric(vertical: 8),
                           child: Divider(
                             height: 1,
-                            color: Colors.white.withValues(alpha: 0.04),
+                            color: ZipherColors.cardBg,
                           ),
                         ),
                         Row(
@@ -306,14 +306,14 @@ class _BackupState extends State<BackupPage> with WidgetsBindingObserver {
                             Icon(Icons.backup_rounded,
                                 size: 15,
                                 color:
-                                    Colors.white.withValues(alpha: 0.25)),
+                                    ZipherColors.text20),
                             const Gap(8),
                             Text(
                               'Backup saved',
                               style: TextStyle(
                                 fontSize: 12,
                                 color:
-                                    Colors.white.withValues(alpha: 0.3),
+                                    ZipherColors.text40,
                               ),
                             ),
                             const Spacer(),
@@ -338,7 +338,7 @@ class _BackupState extends State<BackupPage> with WidgetsBindingObserver {
                             child: Divider(
                               height: 1,
                               color:
-                                  Colors.white.withValues(alpha: 0.04),
+                                  ZipherColors.cardBg,
                             ),
                           ),
                           Row(
@@ -433,7 +433,7 @@ class _BackupState extends State<BackupPage> with WidgetsBindingObserver {
                               ? Icons.expand_less_rounded
                               : Icons.expand_more_rounded,
                           size: 18,
-                          color: Colors.white.withValues(alpha: 0.2),
+                          color: ZipherColors.text20,
                         ),
                       ),
                     ),
@@ -448,7 +448,7 @@ class _BackupState extends State<BackupPage> with WidgetsBindingObserver {
                           description:
                               'Can spend transparent (public) funds only.',
                           value: backup.tsk!,
-                          accentColor: Colors.white.withValues(alpha: 0.4),
+                          accentColor: ZipherColors.text40,
                           icon: Icons.key_rounded,
                           revealed: _tskRevealed,
                           onToggleReveal: () =>
@@ -599,7 +599,7 @@ class _BackupState extends State<BackupPage> with WidgetsBindingObserver {
               color: ZipherColors.bg,
               borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
               border: Border(
-                top: BorderSide(color: Colors.white.withValues(alpha: 0.06), width: 0.5),
+                top: BorderSide(color: ZipherColors.cardBgElevated, width: 0.5),
               ),
             ),
             child: SafeArea(
@@ -613,7 +613,7 @@ class _BackupState extends State<BackupPage> with WidgetsBindingObserver {
                     Container(
                       width: 36, height: 4,
                       decoration: BoxDecoration(
-                        color: Colors.white.withValues(alpha: 0.08),
+                        color: ZipherColors.cardBgElevated,
                         borderRadius: BorderRadius.circular(2),
                       ),
                     ),
@@ -623,7 +623,7 @@ class _BackupState extends State<BackupPage> with WidgetsBindingObserver {
                     const Gap(12),
                     Text('Verify Your Seed', style: TextStyle(
                       fontSize: 18, fontWeight: FontWeight.w700,
-                      color: Colors.white.withValues(alpha: 0.9),
+                      color: ZipherColors.text90,
                     )),
                     const Gap(6),
                     Text(
@@ -631,7 +631,7 @@ class _BackupState extends State<BackupPage> with WidgetsBindingObserver {
                       textAlign: TextAlign.center,
                       style: TextStyle(
                         fontSize: 13,
-                        color: Colors.white.withValues(alpha: 0.35),
+                        color: ZipherColors.text40,
                         height: 1.4,
                       ),
                     ),
@@ -640,7 +640,7 @@ class _BackupState extends State<BackupPage> with WidgetsBindingObserver {
                       if (i > 0) const Gap(12),
                       Container(
                         decoration: BoxDecoration(
-                          color: Colors.white.withValues(alpha: 0.05),
+                          color: ZipherColors.borderSubtle,
                           borderRadius: BorderRadius.circular(14),
                         ),
                         child: TextField(
@@ -653,13 +653,13 @@ class _BackupState extends State<BackupPage> with WidgetsBindingObserver {
                           },
                           style: TextStyle(
                             fontSize: 14,
-                            color: Colors.white.withValues(alpha: 0.85),
+                            color: ZipherColors.text90,
                           ),
                           decoration: InputDecoration(
                             labelText: 'Word #${sortedIndices[i] + 1}',
                             labelStyle: TextStyle(
                               fontSize: 13,
-                              color: Colors.white.withValues(alpha: 0.3),
+                              color: ZipherColors.text40,
                             ),
                             filled: false,
                             border: InputBorder.none,
@@ -753,14 +753,14 @@ class _BackupState extends State<BackupPage> with WidgetsBindingObserver {
                 style: TextStyle(
                   fontSize: 13,
                   fontWeight: FontWeight.w600,
-                  color: Colors.white.withValues(alpha: 0.6),
+                  color: ZipherColors.text60,
                 ),
               ),
               Text(
                 subtitle,
                 style: TextStyle(
                   fontSize: 11,
-                  color: Colors.white.withValues(alpha: 0.18),
+                  color: ZipherColors.text20,
                 ),
               ),
             ],
@@ -778,7 +778,7 @@ class _BackupState extends State<BackupPage> with WidgetsBindingObserver {
         fontSize: 11,
         fontWeight: FontWeight.w600,
         letterSpacing: 0.5,
-        color: Colors.white.withValues(alpha: 0.2),
+        color: ZipherColors.text20,
       ),
     );
   }
@@ -842,7 +842,7 @@ class _KeyCard extends StatelessWidget {
                   style: TextStyle(
                     fontSize: 12,
                     fontWeight: FontWeight.w600,
-                    color: Colors.white.withValues(alpha: 0.5),
+                    color: ZipherColors.text60,
                   ),
                 ),
               ),
@@ -874,7 +874,7 @@ class _KeyCard extends StatelessWidget {
             description,
             style: TextStyle(
               fontSize: 11,
-              color: Colors.white.withValues(alpha: 0.18),
+              color: ZipherColors.text20,
               height: 1.4,
             ),
           ),
@@ -887,7 +887,7 @@ class _KeyCard extends StatelessWidget {
                   value,
                   style: TextStyle(
                     fontSize: 12,
-                    color: Colors.white.withValues(alpha: 0.7),
+                    color: ZipherColors.text60,
                     height: 1.5,
                     fontFamily: 'monospace',
                   ),
@@ -898,20 +898,20 @@ class _KeyCard extends StatelessWidget {
                     width: double.infinity,
                     padding: const EdgeInsets.symmetric(vertical: 18),
                     decoration: BoxDecoration(
-                      color: Colors.white.withValues(alpha: 0.03),
+                      color: ZipherColors.cardBg,
                       borderRadius: BorderRadius.circular(10),
                     ),
                     child: Column(
                       children: [
                         Icon(Icons.visibility_off_rounded,
                             size: 18,
-                            color: Colors.white.withValues(alpha: 0.12)),
+                            color: ZipherColors.text10),
                         const Gap(4),
                         Text(
                           'Tap to reveal',
                           style: TextStyle(
                             fontSize: 11,
-                            color: Colors.white.withValues(alpha: 0.12),
+                            color: ZipherColors.text10,
                           ),
                         ),
                       ],
@@ -967,19 +967,19 @@ class _KeyCard extends StatelessWidget {
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
         decoration: BoxDecoration(
-          color: Colors.white.withValues(alpha: 0.04),
+          color: ZipherColors.cardBg,
           borderRadius: BorderRadius.circular(8),
         ),
         child: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Icon(icon, size: 12, color: Colors.white.withValues(alpha: 0.25)),
+            Icon(icon, size: 12, color: ZipherColors.text20),
             const Gap(4),
             Text(
               label,
               style: TextStyle(
                 fontSize: 10,
-                color: Colors.white.withValues(alpha: 0.25),
+                color: ZipherColors.text20,
               ),
             ),
           ],

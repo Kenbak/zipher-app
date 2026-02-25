@@ -613,10 +613,6 @@ class WarpApi {
     return unwrapResultString(warp_api_lib.get_t_addr(coin, id));
   }
 
-  static String getSK(int coin, int id) {
-    return unwrapResultString(warp_api_lib.get_sk(coin, id));
-  }
-
   static void updateAccountName(int coin, int id, String name) {
     warp_api_lib.update_account_name(coin, id, toNative(name));
   }

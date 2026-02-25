@@ -111,7 +111,7 @@ class _NewImportAccountState extends State<NewImportAccountPage>
             fontSize: 14,
             fontWeight: FontWeight.w600,
             letterSpacing: 1.5,
-            color: Colors.white.withValues(alpha: 0.6),
+            color: ZipherColors.text60,
           ),
         ),
         centerTitle: true,
@@ -119,7 +119,7 @@ class _NewImportAccountState extends State<NewImportAccountPage>
             ? null
             : IconButton(
                 icon: Icon(Icons.arrow_back_rounded,
-                    color: Colors.white.withValues(alpha: 0.5)),
+                    color: ZipherColors.text60),
                 onPressed: () => Navigator.of(context).pop(),
               ),
       ),
@@ -157,7 +157,7 @@ class _NewImportAccountState extends State<NewImportAccountPage>
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   fontSize: 13,
-                  color: Colors.white.withValues(alpha: 0.3),
+                  color: ZipherColors.text40,
                 ),
               ),
             ),
@@ -167,10 +167,10 @@ class _NewImportAccountState extends State<NewImportAccountPage>
             if (!widget.first) ...[
               Container(
                 decoration: BoxDecoration(
-                  color: Colors.white.withValues(alpha: 0.04),
+                  color: ZipherColors.cardBg,
                   borderRadius: BorderRadius.circular(12),
                   border: Border.all(
-                    color: Colors.white.withValues(alpha: 0.05),
+                    color: ZipherColors.borderSubtle,
                   ),
                 ),
                 padding: const EdgeInsets.all(4),
@@ -218,10 +218,10 @@ class _NewImportAccountState extends State<NewImportAccountPage>
               const Gap(8),
               Container(
                 decoration: BoxDecoration(
-                  color: Colors.white.withValues(alpha: 0.04),
+                  color: ZipherColors.cardBg,
                   borderRadius: BorderRadius.circular(14),
                   border: Border.all(
-                    color: Colors.white.withValues(alpha: 0.05),
+                    color: ZipherColors.borderSubtle,
                   ),
                 ),
                 child: TextField(
@@ -229,14 +229,14 @@ class _NewImportAccountState extends State<NewImportAccountPage>
                   maxLines: 4,
                   style: TextStyle(
                     fontSize: 14,
-                    color: Colors.white.withValues(alpha: 0.8),
+                    color: ZipherColors.text90,
                     height: 1.5,
                   ),
                   decoration: InputDecoration(
                     hintText: 'Enter your 24-word seed phrase...',
                     hintStyle: TextStyle(
                       fontSize: 13,
-                      color: Colors.white.withValues(alpha: 0.15),
+                      color: ZipherColors.text20,
                     ),
                     filled: false,
                     border: InputBorder.none,
@@ -251,7 +251,7 @@ class _NewImportAccountState extends State<NewImportAccountPage>
                           icon: Icon(
                             Icons.qr_code_scanner_rounded,
                             size: 20,
-                            color: Colors.white.withValues(alpha: 0.2),
+                            color: ZipherColors.text20,
                           ),
                           onPressed: () async {
                             final result = await GoRouter.of(context)
@@ -275,7 +275,7 @@ class _NewImportAccountState extends State<NewImportAccountPage>
                 'Usually 0. Only change if you know what this is.',
                 style: TextStyle(
                   fontSize: 11,
-                  color: Colors.white.withValues(alpha: 0.2),
+                  color: ZipherColors.text20,
                 ),
               ),
               const Gap(8),
@@ -295,7 +295,7 @@ class _NewImportAccountState extends State<NewImportAccountPage>
                 'When was this wallet created? Helps speed up the scan.',
                 style: TextStyle(
                   fontSize: 11,
-                  color: Colors.white.withValues(alpha: 0.2),
+                  color: ZipherColors.text20,
                 ),
               ),
               const Gap(8),
@@ -329,7 +329,7 @@ class _NewImportAccountState extends State<NewImportAccountPage>
                           style: TextStyle(
                             fontSize: 13,
                             fontWeight: FontWeight.w500,
-                            color: Colors.white.withValues(alpha: 0.6),
+                            color: ZipherColors.text60,
                           ),
                         ),
                       ],
@@ -341,7 +341,7 @@ class _NewImportAccountState extends State<NewImportAccountPage>
                       'and balance, but shares the same recovery phrase.',
                       style: TextStyle(
                         fontSize: 11,
-                        color: Colors.white.withValues(alpha: 0.25),
+                        color: ZipherColors.text20,
                         height: 1.4,
                       ),
                     ),
@@ -430,7 +430,7 @@ class _NewImportAccountState extends State<NewImportAccountPage>
                       : 'Will do a full scan from 2018 (slower)',
                   style: TextStyle(
                     fontSize: 11,
-                    color: Colors.white.withValues(alpha: 0.15),
+                    color: ZipherColors.text20,
                   ),
                 ),
               ),
@@ -500,7 +500,7 @@ class _NewImportAccountState extends State<NewImportAccountPage>
           padding: const EdgeInsets.symmetric(vertical: 10),
           decoration: BoxDecoration(
             color: active
-                ? Colors.white.withValues(alpha: 0.06)
+                ? ZipherColors.cardBgElevated
                 : Colors.transparent,
             borderRadius: BorderRadius.circular(9),
           ),
@@ -511,8 +511,8 @@ class _NewImportAccountState extends State<NewImportAccountPage>
                 fontSize: 13,
                 fontWeight: active ? FontWeight.w600 : FontWeight.w400,
                 color: active
-                    ? Colors.white.withValues(alpha: 0.8)
-                    : Colors.white.withValues(alpha: 0.3),
+                    ? ZipherColors.text90
+                    : ZipherColors.text40,
               ),
             ),
           ),
@@ -527,7 +527,7 @@ class _NewImportAccountState extends State<NewImportAccountPage>
       style: TextStyle(
         fontSize: 12,
         fontWeight: FontWeight.w600,
-        color: Colors.white.withValues(alpha: 0.35),
+        color: ZipherColors.text40,
       ),
     );
   }
@@ -543,10 +543,10 @@ class _NewImportAccountState extends State<NewImportAccountPage>
       width: width,
       child: Container(
         decoration: BoxDecoration(
-          color: Colors.white.withValues(alpha: 0.04),
+          color: ZipherColors.cardBg,
           borderRadius: BorderRadius.circular(12),
           border: Border.all(
-            color: Colors.white.withValues(alpha: 0.05),
+            color: ZipherColors.borderSubtle,
           ),
         ),
         child: TextField(
@@ -554,18 +554,18 @@ class _NewImportAccountState extends State<NewImportAccountPage>
           keyboardType: keyboardType,
           style: TextStyle(
             fontSize: 14,
-            color: Colors.white.withValues(alpha: 0.8),
+            color: ZipherColors.text90,
           ),
           decoration: InputDecoration(
             hintText: hint,
             hintStyle: TextStyle(
               fontSize: 13,
-              color: Colors.white.withValues(alpha: 0.15),
+              color: ZipherColors.text20,
             ),
             prefixIcon: Icon(
               icon,
               size: 18,
-              color: Colors.white.withValues(alpha: 0.2),
+              color: ZipherColors.text20,
             ),
             filled: false,
             border: InputBorder.none,
@@ -586,17 +586,17 @@ class _NewImportAccountState extends State<NewImportAccountPage>
             padding:
                 const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
             decoration: BoxDecoration(
-              color: Colors.white.withValues(alpha: 0.04),
+              color: ZipherColors.cardBg,
               borderRadius: BorderRadius.circular(12),
               border: Border.all(
-                color: Colors.white.withValues(alpha: 0.05),
+                color: ZipherColors.borderSubtle,
               ),
             ),
             child: Row(
               children: [
                 Icon(Icons.calendar_today_rounded,
                     size: 16,
-                    color: Colors.white.withValues(alpha: 0.2)),
+                    color: ZipherColors.text20),
                 const Gap(10),
                 Text(
                   _birthdayDate != null
@@ -605,8 +605,8 @@ class _NewImportAccountState extends State<NewImportAccountPage>
                   style: TextStyle(
                     fontSize: 13,
                     color: _birthdayDate != null
-                        ? Colors.white.withValues(alpha: 0.7)
-                        : Colors.white.withValues(alpha: 0.2),
+                        ? ZipherColors.text90
+                        : ZipherColors.text20,
                   ),
                 ),
                 const Spacer(),
@@ -615,7 +615,7 @@ class _NewImportAccountState extends State<NewImportAccountPage>
                     onTap: () => setState(() => _birthdayDate = null),
                     child: Icon(Icons.close_rounded,
                         size: 16,
-                        color: Colors.white.withValues(alpha: 0.2)),
+                        color: ZipherColors.text20),
                   )
                 else
                   Icon(
@@ -623,7 +623,7 @@ class _NewImportAccountState extends State<NewImportAccountPage>
                         ? Icons.expand_less_rounded
                         : Icons.expand_more_rounded,
                     size: 18,
-                    color: Colors.white.withValues(alpha: 0.15),
+                    color: ZipherColors.text20,
                   ),
               ],
             ),
@@ -648,13 +648,13 @@ class _NewImportAccountState extends State<NewImportAccountPage>
                         decoration: BoxDecoration(
                           color: _birthdayDate?.year == y
                               ? ZipherColors.cyan.withValues(alpha: 0.12)
-                              : Colors.white.withValues(alpha: 0.03),
+                              : ZipherColors.cardBg,
                           borderRadius: BorderRadius.circular(8),
                           border: Border.all(
                             color: _birthdayDate?.year == y
                                 ? ZipherColors.cyan
                                     .withValues(alpha: 0.10)
-                                : Colors.white.withValues(alpha: 0.04),
+                                : ZipherColors.borderSubtle,
                           ),
                         ),
                         child: Text(
@@ -664,7 +664,7 @@ class _NewImportAccountState extends State<NewImportAccountPage>
                             fontWeight: FontWeight.w500,
                             color: _birthdayDate?.year == y
                                 ? ZipherColors.cyan
-                                : Colors.white.withValues(alpha: 0.3),
+                                : ZipherColors.text40,
                           ),
                         ),
                       ),
@@ -676,10 +676,10 @@ class _NewImportAccountState extends State<NewImportAccountPage>
           const Gap(8),
           Container(
             decoration: BoxDecoration(
-              color: Colors.white.withValues(alpha: 0.03),
+              color: ZipherColors.cardBg,
               borderRadius: BorderRadius.circular(14),
               border: Border.all(
-                color: Colors.white.withValues(alpha: 0.04),
+                color: ZipherColors.cardBg,
               ),
             ),
             child: Theme(
@@ -688,7 +688,7 @@ class _NewImportAccountState extends State<NewImportAccountPage>
                   primary: ZipherColors.cyan,
                   onPrimary: Colors.white,
                   surface: ZipherColors.surface,
-                  onSurface: Colors.white.withValues(alpha: 0.7),
+                  onSurface: ZipherColors.text90,
                 ),
               ),
               child: CalendarDatePicker(

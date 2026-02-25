@@ -297,14 +297,14 @@ class _HomeState extends State<HomePageInner> {
                                 style: TextStyle(
                                   fontSize: 16,
                                   fontWeight: FontWeight.w600,
-                                  color: Colors.white.withValues(alpha: 0.9),
+                                  color: ZipherColors.text90,
                                 ),
                               ),
                               const Gap(4),
                               Icon(
                                 Icons.expand_more_rounded,
                                 size: 20,
-                                color: Colors.white.withValues(alpha: 0.3),
+                                color: ZipherColors.text40,
                               ),
                             ],
                           ),
@@ -339,13 +339,13 @@ class _HomeState extends State<HomePageInner> {
                             width: 36,
                             height: 36,
                             decoration: BoxDecoration(
-                              color: Colors.white.withValues(alpha: 0.06),
+                              color: ZipherColors.cardBgElevated,
                               shape: BoxShape.circle,
                             ),
                             child: Icon(
                               Icons.qr_code_scanner_rounded,
                               size: 18,
-                              color: Colors.white.withValues(alpha: 0.5),
+                              color: ZipherColors.text60,
                             ),
                           ),
                         ),
@@ -387,8 +387,7 @@ class _HomeState extends State<HomePageInner> {
                                       width: 32,
                                       height: 32,
                                       decoration: BoxDecoration(
-                                        color: Colors.white
-                                            .withValues(alpha: 0.12),
+                                        color: ZipherColors.cardBgElevated,
                                         shape: BoxShape.circle,
                                       ),
                                       child: Center(
@@ -418,8 +417,7 @@ class _HomeState extends State<HomePageInner> {
                                         style: TextStyle(
                                           fontSize: 16,
                                           fontWeight: FontWeight.w500,
-                                          color: Colors.white
-                                              .withValues(alpha: 0.35),
+                                          color: ZipherColors.text40,
                                         ),
                                       ),
                                     ),
@@ -433,8 +431,7 @@ class _HomeState extends State<HomePageInner> {
                               fiatStr,
                               style: TextStyle(
                                 fontSize: 15,
-                                color:
-                                    Colors.white.withValues(alpha: 0.35),
+                                color: ZipherColors.text40,
                               ),
                             ),
                           ],
@@ -444,8 +441,7 @@ class _HomeState extends State<HomePageInner> {
                               'Tap to reveal',
                               style: TextStyle(
                                 fontSize: 12,
-                                color:
-                                    Colors.white.withValues(alpha: 0.2),
+                                color: ZipherColors.text20,
                               ),
                             ),
                           ],
@@ -528,8 +524,7 @@ class _HomeState extends State<HomePageInner> {
                           style: TextStyle(
                             fontSize: 16,
                             fontWeight: FontWeight.w600,
-                            color:
-                                Colors.white.withValues(alpha: 0.9),
+                            color: ZipherColors.text90,
                           ),
                         ),
                         if (recentTxs.isNotEmpty)
@@ -541,8 +536,7 @@ class _HomeState extends State<HomePageInner> {
                               style: TextStyle(
                                 fontSize: 13,
                                 fontWeight: FontWeight.w500,
-                                color: Colors.white
-                                    .withValues(alpha: 0.3),
+                                color: ZipherColors.text40,
                               ),
                             ),
                           ),
@@ -557,34 +551,9 @@ class _HomeState extends State<HomePageInner> {
                     child: Padding(
                       padding:
                           const EdgeInsets.fromLTRB(20, 12, 20, 32),
-                      child: Container(
-                        padding:
-                            const EdgeInsets.symmetric(vertical: 40),
-                        decoration: BoxDecoration(
-                          color:
-                              Colors.white.withValues(alpha: 0.04),
-                          borderRadius: BorderRadius.circular(14),
-                          border: Border.all(
-                            color: Colors.white.withValues(alpha: 0.05),
-                          ),
-                        ),
-                        child: Column(
-                          children: [
-                            Icon(Icons.receipt_long_outlined,
-                                size: 28,
-                                color: Colors.white
-                                    .withValues(alpha: 0.12)),
-                            const Gap(8),
-                            Text(
-                              'No transactions yet',
-                              style: TextStyle(
-                                fontSize: 13,
-                                color: Colors.white
-                                    .withValues(alpha: 0.2),
-                              ),
-                            ),
-                          ],
-                        ),
+                      child: ZipherWidgets.emptyState(
+                        icon: Icons.receipt_long_outlined,
+                        title: 'No transactions yet',
                       ),
                     ),
                   )
@@ -732,10 +701,10 @@ class _BalanceBreakdown extends StatelessWidget {
     return Container(
       clipBehavior: Clip.antiAlias,
       decoration: BoxDecoration(
-        color: Colors.white.withValues(alpha: 0.04),
+        color: ZipherColors.cardBg,
         borderRadius: BorderRadius.circular(14),
         border: Border.all(
-          color: Colors.white.withValues(alpha: 0.06),
+          color: ZipherColors.borderSubtle,
         ),
       ),
       child: Column(
@@ -759,7 +728,7 @@ class _BalanceBreakdown extends StatelessWidget {
                       'Shielded',
                       style: TextStyle(
                         fontSize: 13,
-                        color: Colors.white.withValues(alpha: 0.45),
+                        color: ZipherColors.text40,
                       ),
                     ),
                     const Spacer(),
@@ -770,7 +739,7 @@ class _BalanceBreakdown extends StatelessWidget {
                         fontWeight: FontWeight.w600,
                         color: isFullyShielded
                             ? ZipherColors.purple.withValues(alpha: 0.7)
-                            : Colors.white.withValues(alpha: 0.6),
+                            : ZipherColors.text60,
                       ),
                     ),
                   ],
@@ -781,7 +750,7 @@ class _BalanceBreakdown extends StatelessWidget {
                     padding: const EdgeInsets.symmetric(vertical: 10),
                     child: Divider(
                       height: 1,
-                      color: Colors.white.withValues(alpha: 0.04),
+                      color: ZipherColors.cardBg,
                     ),
                   ),
 
@@ -798,7 +767,7 @@ class _BalanceBreakdown extends StatelessWidget {
                         'Transparent',
                         style: TextStyle(
                           fontSize: 13,
-                          color: Colors.white.withValues(alpha: 0.45),
+                          color: ZipherColors.text40,
                         ),
                       ),
                       const Spacer(),
@@ -1002,23 +971,23 @@ class _ActionButton extends StatelessWidget {
         child: Container(
           padding: const EdgeInsets.symmetric(vertical: 14),
           decoration: BoxDecoration(
-            color: Colors.white.withValues(alpha: 0.05),
+            color: ZipherColors.cardBgElevated,
             borderRadius: BorderRadius.circular(14),
             border: Border.all(
-              color: Colors.white.withValues(alpha: 0.06),
+              color: ZipherColors.borderSubtle,
             ),
           ),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Icon(icon, size: 20, color: Colors.white.withValues(alpha: 0.8)),
+              Icon(icon, size: 20, color: ZipherColors.text60),
               const Gap(8),
               Text(
                 label,
                 style: TextStyle(
                   fontSize: 14,
                   fontWeight: FontWeight.w600,
-                  color: Colors.white.withValues(alpha: 0.85),
+                  color: ZipherColors.text90,
                 ),
               ),
             ],
@@ -1133,7 +1102,7 @@ class _TxRowState extends State<_TxRow> {
             ? ZipherColors.cyan.withValues(alpha: 0.8)
             : isShielding
                 ? ZipherColors.purple.withValues(alpha: 0.7)
-                : Colors.white.withValues(alpha: 0.6);
+                : ZipherColors.text60;
 
     // Fiat
     final price = marketPrice.price;
@@ -1170,10 +1139,10 @@ class _TxRowState extends State<_TxRow> {
             padding:
                 const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
             decoration: BoxDecoration(
-              color: Colors.white.withValues(alpha: 0.04),
+              color: ZipherColors.cardBg,
               borderRadius: BorderRadius.circular(14),
               border: Border.all(
-                color: Colors.white.withValues(alpha: 0.05),
+                color: ZipherColors.borderSubtle,
               ),
             ),
             child: Row(
@@ -1188,7 +1157,7 @@ class _TxRowState extends State<_TxRow> {
                             ? ZipherColors.purple.withValues(alpha: 0.10)
                             : isMessage
                                 ? ZipherColors.purple.withValues(alpha: 0.08)
-                                : Colors.white.withValues(alpha: 0.06),
+                                : ZipherColors.cardBgElevated,
                     shape: BoxShape.circle,
                   ),
                   child: Icon(
@@ -1210,7 +1179,7 @@ class _TxRowState extends State<_TxRow> {
                             ? ZipherColors.purple.withValues(alpha: 0.6)
                             : isMessage
                                 ? ZipherColors.purple.withValues(alpha: 0.5)
-                                : Colors.white.withValues(alpha: 0.4),
+                                : ZipherColors.text40,
                   ),
                 ),
                 const Gap(12),
@@ -1225,7 +1194,7 @@ class _TxRowState extends State<_TxRow> {
                         style: TextStyle(
                           fontSize: 14,
                           fontWeight: FontWeight.w500,
-                          color: Colors.white.withValues(alpha: 0.85),
+                          color: ZipherColors.text90,
                         ),
                       ),
                       const Gap(2),
@@ -1261,7 +1230,7 @@ class _TxRowState extends State<_TxRow> {
                               timeStr,
                               style: TextStyle(
                                 fontSize: 11,
-                                color: Colors.white.withValues(alpha: 0.2),
+                                color: ZipherColors.text20,
                               ),
                             ),
                           ],
@@ -1271,7 +1240,7 @@ class _TxRowState extends State<_TxRow> {
                           timeStr,
                           style: TextStyle(
                             fontSize: 12,
-                            color: Colors.white.withValues(alpha: 0.25),
+                            color: ZipherColors.text20,
                           ),
                         ),
                     ],
@@ -1297,7 +1266,7 @@ class _TxRowState extends State<_TxRow> {
                         fiat,
                         style: TextStyle(
                           fontSize: 11,
-                          color: Colors.white.withValues(alpha: 0.2),
+                          color: ZipherColors.text20,
                         ),
                       ),
                     ],
@@ -1354,7 +1323,7 @@ class _AccountSwitcherSheetState extends State<_AccountSwitcherSheet> {
         borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
         border: Border(
           top: BorderSide(
-            color: Colors.white.withValues(alpha: 0.06),
+            color: ZipherColors.borderSubtle,
             width: 0.5,
           ),
         ),
@@ -1367,7 +1336,7 @@ class _AccountSwitcherSheetState extends State<_AccountSwitcherSheet> {
             width: 36,
             height: 4,
             decoration: BoxDecoration(
-              color: Colors.white.withValues(alpha: 0.08),
+              color: ZipherColors.cardBgElevated,
               borderRadius: BorderRadius.circular(2),
             ),
           ),
@@ -1381,7 +1350,7 @@ class _AccountSwitcherSheetState extends State<_AccountSwitcherSheet> {
                   style: TextStyle(
                     fontSize: 15,
                     fontWeight: FontWeight.w600,
-                    color: Colors.white.withValues(alpha: 0.7),
+                    color: ZipherColors.text60,
                   ),
                 ),
                 const Spacer(),
@@ -1422,7 +1391,7 @@ class _AccountSwitcherSheetState extends State<_AccountSwitcherSheet> {
           const Gap(14),
           Divider(
             height: 1,
-            color: Colors.white.withValues(alpha: 0.04),
+            color: ZipherColors.cardBg,
             indent: 20,
             endIndent: 20,
           ),
@@ -1449,13 +1418,13 @@ class _AccountSwitcherSheetState extends State<_AccountSwitcherSheet> {
                             horizontal: 14, vertical: 12),
                         decoration: BoxDecoration(
                           color: isActive
-                              ? Colors.white.withValues(alpha: 0.05)
-                              : Colors.white.withValues(alpha: 0.02),
+                              ? ZipherColors.cardBgElevated
+                              : ZipherColors.cardBg,
                           borderRadius: BorderRadius.circular(14),
                           border: Border.all(
                             color: isActive
                                 ? ZipherColors.cyan.withValues(alpha: 0.10)
-                                : Colors.white.withValues(alpha: 0.04),
+                                : ZipherColors.borderSubtle,
                           ),
                         ),
                         child: Row(
@@ -1467,7 +1436,7 @@ class _AccountSwitcherSheetState extends State<_AccountSwitcherSheet> {
                                 color: isActive
                                     ? ZipherColors.cyan
                                         .withValues(alpha: 0.10)
-                                    : Colors.white.withValues(alpha: 0.04),
+                                    : ZipherColors.cardBg,
                                 borderRadius: BorderRadius.circular(10),
                               ),
                               child: Center(
@@ -1479,8 +1448,7 @@ class _AccountSwitcherSheetState extends State<_AccountSwitcherSheet> {
                                     color: isActive
                                         ? ZipherColors.cyan
                                             .withValues(alpha: 0.7)
-                                        : Colors.white
-                                            .withValues(alpha: 0.25),
+                                        : ZipherColors.text20,
                                   ),
                                 ),
                               ),
@@ -1494,8 +1462,7 @@ class _AccountSwitcherSheetState extends State<_AccountSwitcherSheet> {
                                       style: TextStyle(
                                         fontSize: 14,
                                         fontWeight: FontWeight.w500,
-                                        color: Colors.white
-                                            .withValues(alpha: 0.85),
+                                        color: ZipherColors.text90,
                                       ),
                                       decoration: InputDecoration(
                                         isDense: true,
@@ -1514,8 +1481,7 @@ class _AccountSwitcherSheetState extends State<_AccountSwitcherSheet> {
                                           style: TextStyle(
                                             fontSize: 14,
                                             fontWeight: FontWeight.w500,
-                                            color: Colors.white
-                                                .withValues(alpha: 0.8),
+                                            color: ZipherColors.text90,
                                           ),
                                         ),
                                         if (isActive)
@@ -1536,7 +1502,7 @@ class _AccountSwitcherSheetState extends State<_AccountSwitcherSheet> {
                               style: TextStyle(
                                 fontSize: 12,
                                 fontWeight: FontWeight.w500,
-                                color: Colors.white.withValues(alpha: 0.3),
+                                color: ZipherColors.text40,
                               ),
                             ),
                             if (isEditing) ...[
@@ -1565,15 +1531,13 @@ class _AccountSwitcherSheetState extends State<_AccountSwitcherSheet> {
                                 child: Container(
                                   padding: const EdgeInsets.all(6),
                                   decoration: BoxDecoration(
-                                    color: Colors.white
-                                        .withValues(alpha: 0.04),
+                                    color: ZipherColors.cardBg,
                                     borderRadius: BorderRadius.circular(8),
                                   ),
                                   child: Icon(
                                     Icons.close_rounded,
                                     size: 16,
-                                    color: Colors.white
-                                        .withValues(alpha: 0.25),
+                                    color: ZipherColors.text20,
                                   ),
                                 ),
                               ),
@@ -1594,7 +1558,7 @@ class _AccountSwitcherSheetState extends State<_AccountSwitcherSheet> {
               'Long press to rename or delete',
               style: TextStyle(
                 fontSize: 10,
-                color: Colors.white.withValues(alpha: 0.15),
+                color: ZipherColors.text10,
               ),
             ),
           ),

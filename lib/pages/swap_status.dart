@@ -43,7 +43,7 @@ class _SwapStatusPageState extends State<SwapStatusPage> {
   @override
   void initState() {
     super.initState();
-    logger.i('[SwapStatus] initState: depositAddr=${widget.depositAddress}');
+    logger.i('[SwapStatus] initState');
     _loadStoredSwap();
     _checkStatus();
     _pollTimer = Timer.periodic(const Duration(seconds: 5), (_) => _checkStatus());
@@ -98,17 +98,17 @@ class _SwapStatusPageState extends State<SwapStatusPage> {
                           child: Container(
                             width: 36, height: 36,
                             decoration: BoxDecoration(
-                              color: Colors.white.withValues(alpha: 0.06),
+                              color: ZipherColors.cardBgElevated,
                               shape: BoxShape.circle,
                             ),
                             child: Icon(Icons.arrow_back_rounded, size: 18,
-                                color: Colors.white.withValues(alpha: 0.5)),
+                                color: ZipherColors.text60),
                           ),
                         ),
                         const Gap(14),
                         Text('Swap Status', style: TextStyle(
                           fontSize: 18, fontWeight: FontWeight.w600,
-                          color: Colors.white.withValues(alpha: 0.9),
+                          color: ZipherColors.text90,
                         )),
                       ],
                     ),
@@ -123,7 +123,7 @@ class _SwapStatusPageState extends State<SwapStatusPage> {
                       _humanLabel(_status?.status ?? 'Loading...'),
                       style: TextStyle(
                         fontSize: 22, fontWeight: FontWeight.w700,
-                        color: Colors.white.withValues(alpha: 0.9),
+                        color: ZipherColors.text90,
                       ),
                     ),
                     const Gap(8),
@@ -132,9 +132,9 @@ class _SwapStatusPageState extends State<SwapStatusPage> {
                     Text(
                       _description(),
                       textAlign: TextAlign.center,
-                      style: TextStyle(
+                        style: TextStyle(
                         fontSize: 13, height: 1.5,
-                        color: Colors.white.withValues(alpha: 0.3),
+                        color: ZipherColors.text40,
                       ),
                     ),
                     const Gap(24),
@@ -180,13 +180,13 @@ class _SwapStatusPageState extends State<SwapStatusPage> {
                             width: 12, height: 12,
                             child: CircularProgressIndicator(
                               strokeWidth: 1.5,
-                              color: Colors.white.withValues(alpha: 0.15),
+                              color: ZipherColors.text10,
                             ),
                           ),
                           const Gap(8),
-                          Text('Checking every 5s...', style: TextStyle(
+                            Text('Checking every 5s...', style: TextStyle(
                             fontSize: 11,
-                            color: Colors.white.withValues(alpha: 0.15),
+                            color: ZipherColors.text10,
                           )),
                         ],
                       ),
@@ -233,9 +233,9 @@ class _SwapStatusPageState extends State<SwapStatusPage> {
       width: double.infinity,
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: Colors.white.withValues(alpha: 0.04),
+        color: ZipherColors.cardBg,
         borderRadius: BorderRadius.circular(14),
-        border: Border.all(color: Colors.white.withValues(alpha: 0.05)),
+        border: Border.all(color: ZipherColors.borderSubtle),
       ),
       child: Row(
         children: [
@@ -248,14 +248,14 @@ class _SwapStatusPageState extends State<SwapStatusPage> {
               children: [
                 Text('Sent', style: TextStyle(
                   fontSize: 11, fontWeight: FontWeight.w500,
-                  color: Colors.white.withValues(alpha: 0.25),
+                  color: ZipherColors.text20,
                 )),
                 const Gap(2),
                 Text(
                   _fromAmt != null ? '$_fromAmt $_from' : _from!,
                   style: TextStyle(
                     fontSize: 14, fontWeight: FontWeight.w600,
-                    color: Colors.white.withValues(alpha: 0.8),
+                    color: ZipherColors.text90,
                   ),
                   maxLines: 1, overflow: TextOverflow.ellipsis,
                 ),
@@ -265,7 +265,7 @@ class _SwapStatusPageState extends State<SwapStatusPage> {
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 8),
             child: Icon(Icons.arrow_forward_rounded, size: 18,
-                color: Colors.white.withValues(alpha: 0.15)),
+                color: ZipherColors.text10),
           ),
           // To side
           Expanded(
@@ -274,7 +274,7 @@ class _SwapStatusPageState extends State<SwapStatusPage> {
               children: [
                 Text('Receiving', style: TextStyle(
                   fontSize: 11, fontWeight: FontWeight.w500,
-                  color: Colors.white.withValues(alpha: 0.25),
+                  color: ZipherColors.text20,
                 )),
                 const Gap(2),
                 Text(
@@ -336,16 +336,16 @@ class _SwapStatusPageState extends State<SwapStatusPage> {
       width: double.infinity,
       padding: const EdgeInsets.all(14),
       decoration: BoxDecoration(
-        color: Colors.white.withValues(alpha: 0.04),
+        color: ZipherColors.cardBg,
         borderRadius: BorderRadius.circular(14),
-        border: Border.all(color: Colors.white.withValues(alpha: 0.05)),
+        border: Border.all(color: ZipherColors.borderSubtle),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(label, style: TextStyle(
             fontSize: 11, fontWeight: FontWeight.w500,
-            color: Colors.white.withValues(alpha: 0.25),
+            color: ZipherColors.text20,
           )),
           const Gap(8),
           Row(
@@ -353,7 +353,7 @@ class _SwapStatusPageState extends State<SwapStatusPage> {
               Expanded(
                 child: Text(value, style: TextStyle(
                   fontSize: 12, fontFamily: 'monospace',
-                  color: Colors.white.withValues(alpha: 0.6),
+                  color: ZipherColors.text60,
                 ), maxLines: 2, overflow: TextOverflow.ellipsis),
               ),
               const Gap(8),
@@ -371,11 +371,11 @@ class _SwapStatusPageState extends State<SwapStatusPage> {
                 child: Container(
                   width: 30, height: 30,
                   decoration: BoxDecoration(
-                    color: Colors.white.withValues(alpha: 0.04),
+                    color: ZipherColors.cardBg,
                     shape: BoxShape.circle,
                   ),
                   child: Icon(Icons.copy_rounded, size: 13,
-                      color: Colors.white.withValues(alpha: 0.25)),
+                      color: ZipherColors.text20),
                 ),
               ),
             ],

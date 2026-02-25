@@ -160,8 +160,7 @@ class _NearSwapPageState extends State<NearSwapPage> with WithLoadingAnimation {
       final refund = _direction == SwapDirection.fromZec ? tAddr : addr;
       final recipient = _direction == SwapDirection.fromZec ? addr : tAddr;
 
-      logger.i('[Swap] getQuote: origin=${_originToken.assetId} dest=${_destToken.assetId} '
-          'amount=$amountBigInt refund=$refund recipient=$recipient slippage=$_slippageBps');
+      logger.i('[Swap] getQuote: origin=${_originToken.symbol} dest=${_destToken.symbol} slippage=$_slippageBps');
 
       final quote = await _nearApi.getQuote(
         dry: false,
@@ -173,8 +172,7 @@ class _NearSwapPageState extends State<NearSwapPage> with WithLoadingAnimation {
         slippageBps: _slippageBps,
       );
 
-      logger.i('[Swap] Quote received: depositAddr=${quote.depositAddress} '
-          'amountIn=${quote.amountIn} amountOut=${quote.amountOut}');
+      logger.i('[Swap] Quote received OK');
 
       if (!mounted) return;
       setState(() => _loadingQuote = false);
@@ -205,13 +203,7 @@ class _NearSwapPageState extends State<NearSwapPage> with WithLoadingAnimation {
       isScrollControlled: true,
       builder: (ctx) {
         return Container(
-          decoration: BoxDecoration(
-            color: ZipherColors.bg,
-            borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
-            border: Border(
-              top: BorderSide(color: Colors.white.withValues(alpha: 0.06), width: 0.5),
-            ),
-          ),
+          decoration: ZipherWidgets.sheetDecoration,
           child: SafeArea(
             top: false,
             child: Padding(
@@ -219,19 +211,12 @@ class _NearSwapPageState extends State<NearSwapPage> with WithLoadingAnimation {
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  const Gap(10),
-                  Container(
-                    width: 36, height: 4,
-                    decoration: BoxDecoration(
-                      color: Colors.white.withValues(alpha: 0.08),
-                      borderRadius: BorderRadius.circular(2),
-                    ),
-                  ),
+                  ZipherWidgets.sheetHandle(),
                   const Gap(20),
 
                   Text('Swap Now', style: TextStyle(
                     fontSize: 20, fontWeight: FontWeight.w700,
-                    color: Colors.white.withValues(alpha: 0.9),
+                    color: ZipherColors.text90,
                   )),
                   const Gap(24),
 
@@ -247,7 +232,7 @@ class _NearSwapPageState extends State<NearSwapPage> with WithLoadingAnimation {
                       Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 10),
                         child: Icon(Icons.arrow_forward_rounded, size: 16,
-                            color: Colors.white.withValues(alpha: 0.2)),
+                            color: ZipherColors.text20),
                       ),
                       Expanded(child: _confirmTokenCard(
                         token: dest,
@@ -263,7 +248,7 @@ class _NearSwapPageState extends State<NearSwapPage> with WithLoadingAnimation {
                   Container(
                     padding: const EdgeInsets.all(14),
                     decoration: BoxDecoration(
-                      color: Colors.white.withValues(alpha: 0.03),
+                      color: ZipherColors.cardBg,
                       borderRadius: BorderRadius.circular(12),
                     ),
                     child: Column(
@@ -296,14 +281,14 @@ class _NearSwapPageState extends State<NearSwapPage> with WithLoadingAnimation {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Icon(Icons.info_outline_rounded, size: 14,
-                              color: Colors.white.withValues(alpha: 0.2)),
+                              color: ZipherColors.text20),
                           const Gap(8),
                           Expanded(
                             child: Text(
                               'You could receive up to \$${slippageUsd.toStringAsFixed(2)} less based on the ${(_slippageBps / 100).toStringAsFixed(1)}% slippage you set.',
                               style: TextStyle(
                                 fontSize: 11,
-                                color: Colors.white.withValues(alpha: 0.3),
+                                color: ZipherColors.text40,
                                 height: 1.4,
                               ),
                             ),
@@ -320,10 +305,8 @@ class _NearSwapPageState extends State<NearSwapPage> with WithLoadingAnimation {
                         final authed = await authBarrier(ctx, dismissable: true);
                         if (!authed) return;
                       }
-                      logger.i('[Swap] Confirm tapped, closing sheet...');
                       Navigator.pop(ctx);
                       await Future.delayed(const Duration(milliseconds: 300));
-                      logger.i('[Swap] Sheet closed, executing swap...');
                       _executeSwap(quote, amountStr);
                     },
                     child: Container(
@@ -369,23 +352,23 @@ class _NearSwapPageState extends State<NearSwapPage> with WithLoadingAnimation {
           const Gap(8),
           Text(token.symbol, style: TextStyle(
             fontSize: 14, fontWeight: FontWeight.w700,
-            color: Colors.white.withValues(alpha: 0.9),
+            color: ZipherColors.text90,
           )),
           Text(_chainDisplayName(token.blockchain), style: TextStyle(
-            fontSize: 10, color: Colors.white.withValues(alpha: 0.3),
+            fontSize: 10, color: ZipherColors.text40,
           )),
           const Gap(8),
           Text(
             amount.toStringAsFixed(amount < 1 ? 6 : 4),
             style: TextStyle(
               fontSize: 18, fontWeight: FontWeight.w600,
-              color: Colors.white.withValues(alpha: 0.85),
+              color: ZipherColors.text90,
             ),
           ),
           Text(
             '\$${usd.toStringAsFixed(2)}',
             style: TextStyle(
-              fontSize: 11, color: Colors.white.withValues(alpha: 0.3),
+              fontSize: 11, color: ZipherColors.text40,
             ),
           ),
         ],
@@ -403,7 +386,7 @@ class _NearSwapPageState extends State<NearSwapPage> with WithLoadingAnimation {
           Text(label, style: TextStyle(
             fontSize: 12,
             fontWeight: bold ? FontWeight.w600 : FontWeight.w400,
-            color: Colors.white.withValues(alpha: bold ? 0.7 : 0.35),
+            color: bold ? ZipherColors.text60 : ZipherColors.text40,
           )),
           Column(
             crossAxisAlignment: CrossAxisAlignment.end,
@@ -411,11 +394,11 @@ class _NearSwapPageState extends State<NearSwapPage> with WithLoadingAnimation {
               Text(value, style: TextStyle(
                 fontSize: 12,
                 fontWeight: bold ? FontWeight.w600 : FontWeight.w500,
-                color: Colors.white.withValues(alpha: bold ? 0.9 : 0.65),
+                color: bold ? ZipherColors.text90 : ZipherColors.text60,
               )),
               if (subtitle != null)
                 Text(subtitle, style: TextStyle(
-                  fontSize: 10, color: Colors.white.withValues(alpha: 0.25),
+                  fontSize: 10, color: ZipherColors.text20,
                 )),
             ],
           ),
@@ -424,7 +407,7 @@ class _NearSwapPageState extends State<NearSwapPage> with WithLoadingAnimation {
     );
   }
 
-  Widget _sheetDivider() => Divider(height: 1, color: Colors.white.withValues(alpha: 0.04));
+  Widget _sheetDivider() => Divider(height: 1, color: ZipherColors.cardBg);
 
   // ─── Execute Swap ────────────────────────────────────────
 
@@ -442,22 +425,18 @@ class _NearSwapPageState extends State<NearSwapPage> with WithLoadingAnimation {
   }
 
   void _executeSwap(NearQuoteResponse quote, String amountStr) async {
-    logger.i('[Swap] _executeSwap: direction=$_direction depositAddr=${quote.depositAddress}');
+    logger.i('[Swap] _executeSwap: direction=$_direction');
     if (_direction == SwapDirection.fromZec) {
       _executeZecSend(quote, amountStr);
     } else {
       try {
-        logger.i('[Swap] intoZec: storing swap...');
         await _storeSwap(quote, amountStr);
-        logger.i('[Swap] intoZec: swap stored OK');
       } catch (e, st) {
         logger.e('[Swap] intoZec store error: $e\n$st');
       }
       try {
-        logger.i('[Swap] intoZec: about to navigate, mounted=$mounted');
         if (mounted) {
           GoRouter.of(context).push('/swap/status', extra: _statusExtra(quote, amountStr));
-          logger.i('[Swap] intoZec: navigation dispatched');
         }
       } catch (e, st) {
         logger.e('[Swap] intoZec nav error: $e\n$st');
@@ -469,45 +448,32 @@ class _NearSwapPageState extends State<NearSwapPage> with WithLoadingAnimation {
     load(() async {
       try {
         final depositAddr = quote.depositAddress;
-        logger.i('[Swap] Starting ZEC send: amount=$amountStr to=$depositAddr');
-
         final amountZat = stringToAmount(amountStr);
-        logger.i('[Swap] Amount in zat: $amountZat');
 
         final recipient = Recipient(RecipientObjectBuilder(
           address: depositAddr,
           amount: amountZat,
         ).toBytes());
 
-        logger.i('[Swap] Calling prepareTx: coin=${aa.coin} id=${aa.id} pools=7');
         final txPlan = await WarpApi.prepareTx(
           aa.coin, aa.id, [recipient], 7,
           coinSettings.replyUa, appSettings.anchorOffset, coinSettings.feeT,
         );
-        logger.i('[Swap] prepareTx OK, plan length=${txPlan.length}');
 
-        logger.i('[Swap] Calling signAndBroadcast...');
         final txIdJson = await WarpApi.signAndBroadcast(aa.coin, aa.id, txPlan);
-        logger.i('[Swap] signAndBroadcast OK: $txIdJson');
         final txId = jsonDecode(txIdJson);
 
-        logger.i('[Swap] Notifying NEAR Intents about deposit...');
         try {
           await _nearApi.submitDeposit(txHash: txId, depositAddress: depositAddr);
-          logger.i('[Swap] NEAR deposit notification sent');
         } catch (e) {
           logger.w('[Swap] NEAR deposit notification failed: $e');
         }
 
-        logger.i('[Swap] Navigating to /swap/status...');
         if (mounted) {
           GoRouter.of(context).push('/swap/status', extra: _statusExtra(quote, amountStr));
-          logger.i('[Swap] Navigation dispatched');
         }
 
-        logger.i('[Swap] Storing swap record...');
         await _storeSwap(quote, amountStr, txId: txId);
-        logger.i('[Swap] Swap record stored OK');
       } on String catch (e) {
         logger.e('[Swap] String error: $e');
         if (mounted) showMessageBox2(context, 'Error', e);
@@ -578,13 +544,13 @@ class _NearSwapPageState extends State<NearSwapPage> with WithLoadingAnimation {
             const Gap(20),
             Text('Could not load tokens', style: TextStyle(
               fontSize: 16, fontWeight: FontWeight.w600,
-              color: Colors.white.withValues(alpha: 0.8),
+              color: ZipherColors.text90,
             )),
             const Gap(8),
             Text(
               _error ?? 'Check your connection and try again.',
               textAlign: TextAlign.center,
-              style: TextStyle(fontSize: 13, color: Colors.white.withValues(alpha: 0.3), height: 1.5),
+              style: TextStyle(fontSize: 13, color: ZipherColors.text40, height: 1.5),
             ),
             const Gap(24),
             GestureDetector(
@@ -625,7 +591,7 @@ class _NearSwapPageState extends State<NearSwapPage> with WithLoadingAnimation {
               children: [
                 Text('Swap', style: TextStyle(
                   fontSize: 24, fontWeight: FontWeight.w700,
-                  color: Colors.white.withValues(alpha: 0.9),
+                  color: ZipherColors.text90,
                 )),
                 const Spacer(),
                 GestureDetector(
@@ -633,11 +599,11 @@ class _NearSwapPageState extends State<NearSwapPage> with WithLoadingAnimation {
                   child: Container(
                     width: 36, height: 36,
                     decoration: BoxDecoration(
-                      color: Colors.white.withValues(alpha: 0.06),
+                      color: ZipherColors.cardBgElevated,
                       shape: BoxShape.circle,
                     ),
                     child: Icon(Icons.history_rounded, size: 18,
-                        color: Colors.white.withValues(alpha: 0.4)),
+                        color: ZipherColors.text40),
                   ),
                 ),
               ],
@@ -656,7 +622,7 @@ class _NearSwapPageState extends State<NearSwapPage> with WithLoadingAnimation {
                 child: Container(
                   width: 36, height: 36,
                   decoration: BoxDecoration(
-                    color: Colors.white.withValues(alpha: 0.05),
+                    color: ZipherColors.cardBg,
                     shape: BoxShape.circle,
                   ),
                   child: Icon(Icons.swap_vert_rounded, size: 18,
@@ -712,13 +678,13 @@ class _NearSwapPageState extends State<NearSwapPage> with WithLoadingAnimation {
           children: [
             Text('From', style: TextStyle(
               fontSize: 14, fontWeight: FontWeight.w500,
-              color: Colors.white.withValues(alpha: 0.4),
+              color: ZipherColors.text40,
             )),
             const Spacer(),
             if (isZecFrom) ...[
               Text(
                 'Spendable: ${amountToString2(_spendableZat)}',
-                style: TextStyle(fontSize: 12, color: Colors.white.withValues(alpha: 0.3)),
+                style: TextStyle(fontSize: 12, color: ZipherColors.text40),
               ),
               const Gap(8),
               GestureDetector(
@@ -749,7 +715,7 @@ class _NearSwapPageState extends State<NearSwapPage> with WithLoadingAnimation {
         Container(
           height: 56,
           decoration: BoxDecoration(
-            color: Colors.white.withValues(alpha: 0.05),
+            color: ZipherColors.cardBg,
             borderRadius: BorderRadius.circular(14),
           ),
           child: Row(
@@ -764,13 +730,13 @@ class _NearSwapPageState extends State<NearSwapPage> with WithLoadingAnimation {
                   keyboardType: const TextInputType.numberWithOptions(decimal: true),
                   style: TextStyle(
                     fontSize: 18, fontWeight: FontWeight.w600,
-                    color: Colors.white.withValues(alpha: 0.9),
+                    color: ZipherColors.text90,
                   ),
                   decoration: InputDecoration(
                     hintText: '0.00',
                     hintStyle: TextStyle(
                       fontSize: 18, fontWeight: FontWeight.w600,
-                      color: Colors.white.withValues(alpha: 0.15),
+                      color: ZipherColors.text10,
                     ),
                     border: InputBorder.none,
                     contentPadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 16),
@@ -787,7 +753,7 @@ class _NearSwapPageState extends State<NearSwapPage> with WithLoadingAnimation {
               alignment: Alignment.centerRight,
               child: Text(
                 '\$${_inputUsd.toStringAsFixed(2)}',
-                style: TextStyle(fontSize: 12, color: Colors.white.withValues(alpha: 0.25)),
+                style: TextStyle(fontSize: 12, color: ZipherColors.text20),
               ),
             ),
           ),
@@ -815,13 +781,13 @@ class _NearSwapPageState extends State<NearSwapPage> with WithLoadingAnimation {
       children: [
         Text('To', style: TextStyle(
           fontSize: 14, fontWeight: FontWeight.w500,
-          color: Colors.white.withValues(alpha: 0.4),
+          color: ZipherColors.text40,
         )),
         const Gap(8),
         Container(
           height: 56,
           decoration: BoxDecoration(
-            color: Colors.white.withValues(alpha: 0.05),
+            color: ZipherColors.cardBg,
             borderRadius: BorderRadius.circular(14),
           ),
           child: Row(
@@ -837,7 +803,7 @@ class _NearSwapPageState extends State<NearSwapPage> with WithLoadingAnimation {
                       : '0.00',
                   style: TextStyle(
                     fontSize: 18, fontWeight: FontWeight.w600,
-                    color: Colors.white.withValues(alpha: _estimatedOutput > 0 ? 0.9 : 0.15),
+                    color: _estimatedOutput > 0 ? ZipherColors.text90 : ZipherColors.text10,
                   ),
                 ),
               ),
@@ -851,7 +817,7 @@ class _NearSwapPageState extends State<NearSwapPage> with WithLoadingAnimation {
               alignment: Alignment.centerRight,
               child: Text(
                 '\$${outputUsd.toStringAsFixed(2)}',
-                style: TextStyle(fontSize: 12, color: Colors.white.withValues(alpha: 0.25)),
+                style: TextStyle(fontSize: 12, color: ZipherColors.text20),
               ),
             ),
           ),
@@ -869,7 +835,7 @@ class _NearSwapPageState extends State<NearSwapPage> with WithLoadingAnimation {
       child: Container(
         padding: const EdgeInsets.fromLTRB(6, 6, 12, 6),
         decoration: BoxDecoration(
-          color: Colors.white.withValues(alpha: isZecSide ? 0.0 : 0.06),
+          color: isZecSide ? Colors.transparent : ZipherColors.cardBgElevated,
           borderRadius: BorderRadius.circular(20),
         ),
         child: Row(
@@ -881,7 +847,7 @@ class _NearSwapPageState extends State<NearSwapPage> with WithLoadingAnimation {
               Container(
                 width: 24, height: 24,
                 decoration: BoxDecoration(
-                  color: Colors.white.withValues(alpha: 0.08),
+                  color: ZipherColors.cardBgElevated,
                   shape: BoxShape.circle,
                 ),
               ),
@@ -890,13 +856,13 @@ class _NearSwapPageState extends State<NearSwapPage> with WithLoadingAnimation {
               token?.symbol ?? '???',
               style: TextStyle(
                 fontSize: 14, fontWeight: FontWeight.w600,
-                color: Colors.white.withValues(alpha: 0.85),
+                color: ZipherColors.text90,
               ),
             ),
             if (!isZecSide) ...[
               const Gap(4),
               Icon(Icons.keyboard_arrow_down_rounded,
-                  size: 16, color: Colors.white.withValues(alpha: 0.25)),
+                  size: 16, color: ZipherColors.text20),
             ],
           ],
         ),
@@ -928,48 +894,35 @@ class _NearSwapPageState extends State<NearSwapPage> with WithLoadingAnimation {
               constraints: BoxConstraints(
                 maxHeight: MediaQuery.of(context).size.height * 0.7,
               ),
-              decoration: BoxDecoration(
-                color: ZipherColors.bg,
-                borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
-                border: Border(
-                  top: BorderSide(color: Colors.white.withValues(alpha: 0.06), width: 0.5),
-                ),
-              ),
+              decoration: ZipherWidgets.sheetDecoration,
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  const Gap(10),
-                  Container(
-                    width: 36, height: 4,
-                    decoration: BoxDecoration(
-                      color: Colors.white.withValues(alpha: 0.08),
-                      borderRadius: BorderRadius.circular(2),
-                    ),
-                  ),
+                  ZipherWidgets.sheetHandle(),
                   const Gap(16),
                   Text('SELECT ASSET', style: TextStyle(
                     fontSize: 14, fontWeight: FontWeight.w600,
                     letterSpacing: 1.2,
-                    color: Colors.white.withValues(alpha: 0.7),
+                    color: ZipherColors.text60,
                   )),
                   const Gap(14),
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 16),
                     child: Container(
                       decoration: BoxDecoration(
-                        color: Colors.white.withValues(alpha: 0.04),
+                        color: ZipherColors.cardBg,
                         borderRadius: BorderRadius.circular(12),
-                        border: Border.all(color: Colors.white.withValues(alpha: 0.06)),
+                        border: Border.all(color: ZipherColors.borderSubtle),
                       ),
                       child: TextField(
                         controller: searchController,
                         onChanged: (_) => setModalState(() {}),
-                        style: TextStyle(fontSize: 14, color: Colors.white.withValues(alpha: 0.85)),
+                        style: TextStyle(fontSize: 14, color: ZipherColors.text90),
                         decoration: InputDecoration(
                           hintText: 'Search by name or ticker...',
-                          hintStyle: TextStyle(color: Colors.white.withValues(alpha: 0.2)),
+                          hintStyle: TextStyle(color: ZipherColors.text20),
                           prefixIcon: Icon(Icons.search_rounded, size: 18,
-                              color: Colors.white.withValues(alpha: 0.2)),
+                              color: ZipherColors.text20),
                           border: InputBorder.none,
                           contentPadding: const EdgeInsets.symmetric(vertical: 12),
                           isDense: true,
@@ -978,7 +931,7 @@ class _NearSwapPageState extends State<NearSwapPage> with WithLoadingAnimation {
                     ),
                   ),
                   const Gap(8),
-                  Divider(height: 1, color: Colors.white.withValues(alpha: 0.04),
+                  Divider(height: 1, color: ZipherColors.cardBg,
                       indent: 20, endIndent: 20),
                   Expanded(
                     child: ListView.builder(
@@ -1002,7 +955,7 @@ class _NearSwapPageState extends State<NearSwapPage> with WithLoadingAnimation {
                                 padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
                                 decoration: BoxDecoration(
                                   color: isSelected
-                                      ? Colors.white.withValues(alpha: 0.05)
+                                      ? ZipherColors.cardBg
                                       : Colors.transparent,
                                   borderRadius: BorderRadius.circular(12),
                                 ),
@@ -1016,18 +969,18 @@ class _NearSwapPageState extends State<NearSwapPage> with WithLoadingAnimation {
                                         children: [
                                           Text(t.symbol, style: TextStyle(
                                             fontSize: 14, fontWeight: FontWeight.w600,
-                                            color: Colors.white.withValues(alpha: 0.9),
+                                            color: ZipherColors.text90,
                                           )),
                                           const Gap(2),
                                           Text(_chainDisplayName(t.blockchain), style: TextStyle(
                                             fontSize: 11,
-                                            color: Colors.white.withValues(alpha: 0.3),
+                                            color: ZipherColors.text40,
                                           )),
                                         ],
                                       ),
                                     ),
                                     Icon(Icons.chevron_right_rounded, size: 18,
-                                        color: Colors.white.withValues(alpha: isSelected ? 0.5 : 0.12)),
+                                        color: isSelected ? ZipherColors.text60 : ZipherColors.text10),
                                   ],
                                 ),
                               ),
@@ -1062,13 +1015,13 @@ class _NearSwapPageState extends State<NearSwapPage> with WithLoadingAnimation {
       children: [
         Text(label, style: TextStyle(
           fontSize: 14, fontWeight: FontWeight.w500,
-          color: Colors.white.withValues(alpha: 0.4),
+          color: ZipherColors.text40,
         )),
         const Gap(8),
         Container(
           height: 52,
           decoration: BoxDecoration(
-            color: Colors.white.withValues(alpha: 0.05),
+            color: ZipherColors.cardBg,
             borderRadius: BorderRadius.circular(14),
           ),
           child: Row(
@@ -1078,13 +1031,13 @@ class _NearSwapPageState extends State<NearSwapPage> with WithLoadingAnimation {
                   controller: _addressController,
                   style: TextStyle(
                     fontSize: 14,
-                    color: Colors.white.withValues(alpha: 0.85),
+                    color: ZipherColors.text90,
                   ),
                   decoration: InputDecoration(
                     hintText: hint,
                     hintStyle: TextStyle(
                       fontSize: 14,
-                      color: Colors.white.withValues(alpha: 0.18),
+                      color: ZipherColors.text20,
                     ),
                     filled: false,
                     border: InputBorder.none,
@@ -1124,7 +1077,7 @@ class _NearSwapPageState extends State<NearSwapPage> with WithLoadingAnimation {
       child: Padding(
         padding: const EdgeInsets.all(8),
         child: Icon(icon, size: 20,
-            color: Colors.white.withValues(alpha: 0.3)),
+            color: ZipherColors.text40),
       ),
     );
   }
@@ -1140,7 +1093,7 @@ class _NearSwapPageState extends State<NearSwapPage> with WithLoadingAnimation {
           children: [
             Text('Slippage tolerance', style: TextStyle(
               fontSize: 12, fontWeight: FontWeight.w500,
-              color: Colors.white.withValues(alpha: 0.3),
+              color: ZipherColors.text40,
             )),
             const Spacer(),
             for (final bps in [50, 100, 200])
@@ -1153,12 +1106,12 @@ class _NearSwapPageState extends State<NearSwapPage> with WithLoadingAnimation {
                     decoration: BoxDecoration(
                       color: _slippageBps == bps
                           ? ZipherColors.cyan.withValues(alpha: 0.10)
-                          : Colors.white.withValues(alpha: 0.04),
+                          : ZipherColors.cardBg,
                       borderRadius: BorderRadius.circular(8),
                       border: Border.all(
                         color: _slippageBps == bps
                             ? ZipherColors.cyan.withValues(alpha: 0.20)
-                            : Colors.white.withValues(alpha: 0.05),
+                            : ZipherColors.borderSubtle,
                       ),
                     ),
                     child: Text(
@@ -1167,7 +1120,7 @@ class _NearSwapPageState extends State<NearSwapPage> with WithLoadingAnimation {
                         fontSize: 12, fontWeight: FontWeight.w600,
                         color: _slippageBps == bps
                             ? ZipherColors.cyan.withValues(alpha: 0.7)
-                            : Colors.white.withValues(alpha: 0.3),
+                            : ZipherColors.text40,
                       ),
                     ),
                   ),
@@ -1181,14 +1134,14 @@ class _NearSwapPageState extends State<NearSwapPage> with WithLoadingAnimation {
             children: [
               Text('Rate', style: TextStyle(
                 fontSize: 12, fontWeight: FontWeight.w500,
-                color: Colors.white.withValues(alpha: 0.3),
+                color: ZipherColors.text40,
               )),
               const Spacer(),
               Text(
                 '1 ${_originToken.symbol} = ${_rate.toStringAsFixed(_rate < 1 ? 6 : 4)} ${_destToken.symbol}',
                 style: TextStyle(
                   fontSize: 12, fontWeight: FontWeight.w500,
-                  color: Colors.white.withValues(alpha: 0.6),
+                  color: ZipherColors.text60,
                 ),
               ),
             ],
@@ -1247,7 +1200,7 @@ class _NearSwapPageState extends State<NearSwapPage> with WithLoadingAnimation {
           decoration: BoxDecoration(
             color: enabled
                 ? ZipherColors.cyan.withValues(alpha: 0.12)
-                : Colors.white.withValues(alpha: 0.04),
+                : ZipherColors.cardBg,
             borderRadius: BorderRadius.circular(14),
           ),
           child: Row(
@@ -1266,7 +1219,7 @@ class _NearSwapPageState extends State<NearSwapPage> with WithLoadingAnimation {
                     size: 20,
                     color: enabled
                         ? ZipherColors.cyan.withValues(alpha: 0.9)
-                        : Colors.white.withValues(alpha: 0.15)),
+                        : ZipherColors.text10),
                 const Gap(10),
                 Text(
                   'Get a quote',
@@ -1274,7 +1227,7 @@ class _NearSwapPageState extends State<NearSwapPage> with WithLoadingAnimation {
                     fontSize: 15, fontWeight: FontWeight.w600,
                     color: enabled
                         ? ZipherColors.cyan.withValues(alpha: 0.9)
-                        : Colors.white.withValues(alpha: 0.15),
+                        : ZipherColors.text10,
                   ),
                 ),
               ],
