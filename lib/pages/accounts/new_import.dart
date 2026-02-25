@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
+import 'package:screen_protector/screen_protector.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:warp_api/data_fb_generated.dart';
 import 'package:warp_api/warp_api.dart';
@@ -36,6 +37,7 @@ class _NewImportAccountState extends State<NewImportAccountPage>
   final _indexController = TextEditingController(text: '0');
   _Mode _mode = _Mode.create;
   bool _loading = false;
+  bool _seedVisible = false;
   String? _error;
   DateTime? _birthdayDate;
   bool _showDatePicker = false;
@@ -214,56 +216,117 @@ class _NewImportAccountState extends State<NewImportAccountPage>
 
             // ── Import fields ──
             if (_mode == _Mode.import_) ...[
-              _label('Seed Phrase'),
-              const Gap(8),
-              Container(
-                decoration: BoxDecoration(
-                  color: ZipherColors.cardBg,
-                  borderRadius: BorderRadius.circular(14),
-                  border: Border.all(
-                    color: ZipherColors.borderSubtle,
-                  ),
-                ),
-                child: TextField(
-                  controller: _keyController,
-                  maxLines: 4,
-                  style: TextStyle(
-                    fontSize: 14,
-                    color: ZipherColors.text90,
-                    height: 1.5,
-                  ),
-                  decoration: InputDecoration(
-                    hintText: 'Enter your 24-word seed phrase...',
-                    hintStyle: TextStyle(
-                      fontSize: 13,
-                      color: ZipherColors.text20,
-                    ),
-                    filled: false,
-                    border: InputBorder.none,
-                    contentPadding: const EdgeInsets.all(14),
-                    suffixIcon: Padding(
-                      padding: const EdgeInsets.only(right: 4, top: 4),
-                      child: Align(
-                        alignment: Alignment.topRight,
-                        widthFactor: 1,
-                        heightFactor: 1,
-                        child: IconButton(
-                          icon: Icon(
-                            Icons.qr_code_scanner_rounded,
-                            size: 20,
+              Row(
+                children: [
+                  _label('Seed Phrase'),
+                  const Spacer(),
+                  GestureDetector(
+                    onTap: () => setState(() => _seedVisible = !_seedVisible),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Icon(
+                          _seedVisible
+                              ? Icons.visibility_off_rounded
+                              : Icons.visibility_rounded,
+                          size: 14,
+                          color: ZipherColors.text20,
+                        ),
+                        const Gap(4),
+                        Text(
+                          _seedVisible ? 'Hide' : 'Show',
+                          style: TextStyle(
+                            fontSize: 11,
                             color: ZipherColors.text20,
                           ),
-                          onPressed: () async {
-                            final result = await GoRouter.of(context)
-                                .push<String>('/account/scan');
-                            if (result != null) {
-                              setState(() => _keyController.text = result);
-                            }
-                          },
                         ),
-                      ),
+                      ],
                     ),
                   ),
+                ],
+              ),
+              const Gap(8),
+              GestureDetector(
+                onTap: _seedVisible
+                    ? null
+                    : () => setState(() => _seedVisible = true),
+                child: Container(
+                  decoration: BoxDecoration(
+                    color: ZipherColors.cardBg,
+                    borderRadius: BorderRadius.circular(14),
+                    border: Border.all(
+                      color: ZipherColors.borderSubtle,
+                    ),
+                  ),
+                  child: _seedVisible
+                      ? TextField(
+                          controller: _keyController,
+                          maxLines: 4,
+                          autocorrect: false,
+                          enableSuggestions: false,
+                          style: TextStyle(
+                            fontSize: 14,
+                            color: ZipherColors.text90,
+                            height: 1.5,
+                          ),
+                          decoration: InputDecoration(
+                            hintText: 'Enter your 24-word seed phrase...',
+                            hintStyle: TextStyle(
+                              fontSize: 13,
+                              color: ZipherColors.text20,
+                            ),
+                            filled: false,
+                            border: InputBorder.none,
+                            contentPadding: const EdgeInsets.all(14),
+                            suffixIcon: Padding(
+                              padding: const EdgeInsets.only(right: 4, top: 4),
+                              child: Align(
+                                alignment: Alignment.topRight,
+                                widthFactor: 1,
+                                heightFactor: 1,
+                                child: IconButton(
+                                  icon: Icon(
+                                    Icons.qr_code_scanner_rounded,
+                                    size: 20,
+                                    color: ZipherColors.text20,
+                                  ),
+                                  onPressed: () async {
+                                    final result = await GoRouter.of(context)
+                                        .push<String>('/account/scan');
+                                    if (result != null) {
+                                      setState(
+                                          () => _keyController.text = result);
+                                    }
+                                  },
+                                ),
+                              ),
+                            ),
+                          ),
+                        )
+                      : Container(
+                          width: double.infinity,
+                          padding: const EdgeInsets.all(14),
+                          constraints: const BoxConstraints(minHeight: 100),
+                          child: _keyController.text.isEmpty
+                              ? Text(
+                                  'Tap to enter your seed phrase...',
+                                  style: TextStyle(
+                                    fontSize: 13,
+                                    color: ZipherColors.text20,
+                                  ),
+                                )
+                              : Text(
+                                  _keyController.text
+                                      .split(RegExp(r'\s+'))
+                                      .map((_) => '••••')
+                                      .join(' '),
+                                  style: TextStyle(
+                                    fontSize: 14,
+                                    color: ZipherColors.text40,
+                                    height: 1.5,
+                                  ),
+                                ),
+                        ),
                 ),
               ),
               const Gap(16),

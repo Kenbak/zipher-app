@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
+import 'package:screen_protector/screen_protector.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:warp_api/warp_api.dart';
 
@@ -21,6 +22,7 @@ class _RestoreAccountPageState extends State<RestoreAccountPage> {
   final _seedController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
   bool _loading = false;
+  bool _seedVisible = false;
   String? _error;
 
   // Wallet birthday
@@ -30,7 +32,14 @@ class _RestoreAccountPageState extends State<RestoreAccountPage> {
   static final _sapling = activationDate; // Oct 2018
 
   @override
+  void initState() {
+    super.initState();
+    ScreenProtector.protectDataLeakageOn();
+  }
+
+  @override
   void dispose() {
+    ScreenProtector.protectDataLeakageOff();
     _seedController.dispose();
     super.dispose();
   }
@@ -80,65 +89,142 @@ class _RestoreAccountPageState extends State<RestoreAccountPage> {
                     const Gap(28),
 
                     // ── Seed input ──
+                    Row(
+                      children: [
+                        Text(
+                          'Seed Phrase',
+                          style: TextStyle(
+                            fontSize: 12,
+                            fontWeight: FontWeight.w600,
+                            color: ZipherColors.text40,
+                          ),
+                        ),
+                        const Spacer(),
+                        GestureDetector(
+                          onTap: () =>
+                              setState(() => _seedVisible = !_seedVisible),
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Icon(
+                                _seedVisible
+                                    ? Icons.visibility_off_rounded
+                                    : Icons.visibility_rounded,
+                                size: 14,
+                                color: ZipherColors.text20,
+                              ),
+                              const Gap(4),
+                              Text(
+                                _seedVisible ? 'Hide' : 'Show',
+                                style: TextStyle(
+                                  fontSize: 11,
+                                  color: ZipherColors.text20,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                    const Gap(8),
                     Form(
                       key: _formKey,
-                      child: TextFormField(
-                        controller: _seedController,
-                        maxLines: 4,
-                        style: TextStyle(
-                          fontSize: 15,
-                          color: ZipherColors.text90,
-                          height: 1.5,
-                        ),
-                        decoration: InputDecoration(
-                          hintText: 'word1 word2 word3 ...',
-                          hintStyle: TextStyle(
-                            color: ZipherColors.text20,
-                          ),
-                          filled: true,
-                          fillColor: ZipherColors.cardBg,
-                          contentPadding: const EdgeInsets.all(16),
-                          border: OutlineInputBorder(
-                            borderRadius:
-                                BorderRadius.circular(ZipherRadius.md),
-                            borderSide: BorderSide(
-                                color:
-                                    ZipherColors.borderSubtle),
-                          ),
-                          enabledBorder: OutlineInputBorder(
-                            borderRadius:
-                                BorderRadius.circular(ZipherRadius.md),
-                            borderSide: BorderSide(
-                                color:
-                                    ZipherColors.borderSubtle),
-                          ),
-                          focusedBorder: OutlineInputBorder(
-                            borderRadius:
-                                BorderRadius.circular(ZipherRadius.md),
-                            borderSide: BorderSide(
-                                color: ZipherColors.cyan
-                                    .withValues(alpha: 0.4)),
-                          ),
-                          errorBorder: OutlineInputBorder(
-                            borderRadius:
-                                BorderRadius.circular(ZipherRadius.md),
-                            borderSide: BorderSide(
-                                color: ZipherColors.red
-                                    .withValues(alpha: 0.5)),
-                          ),
-                          focusedErrorBorder: OutlineInputBorder(
-                            borderRadius:
-                                BorderRadius.circular(ZipherRadius.md),
-                            borderSide: BorderSide(
-                                color: ZipherColors.red
-                                    .withValues(alpha: 0.5)),
-                          ),
-                          errorStyle: TextStyle(
-                            color: ZipherColors.red.withValues(alpha: 0.8),
-                            fontSize: 12,
-                          ),
-                        ),
-                        validator: _validateSeed,
+                      child: GestureDetector(
+                        onTap: _seedVisible
+                            ? null
+                            : () => setState(() => _seedVisible = true),
+                        child: _seedVisible
+                            ? TextFormField(
+                                controller: _seedController,
+                                maxLines: 4,
+                                autocorrect: false,
+                                enableSuggestions: false,
+                                style: TextStyle(
+                                  fontSize: 15,
+                                  color: ZipherColors.text90,
+                                  height: 1.5,
+                                ),
+                                decoration: InputDecoration(
+                                  hintText: 'word1 word2 word3 ...',
+                                  hintStyle: TextStyle(
+                                    color: ZipherColors.text20,
+                                  ),
+                                  filled: true,
+                                  fillColor: ZipherColors.cardBg,
+                                  contentPadding: const EdgeInsets.all(16),
+                                  border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(
+                                        ZipherRadius.md),
+                                    borderSide: BorderSide(
+                                        color: ZipherColors.borderSubtle),
+                                  ),
+                                  enabledBorder: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(
+                                        ZipherRadius.md),
+                                    borderSide: BorderSide(
+                                        color: ZipherColors.borderSubtle),
+                                  ),
+                                  focusedBorder: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(
+                                        ZipherRadius.md),
+                                    borderSide: BorderSide(
+                                        color: ZipherColors.cyan
+                                            .withValues(alpha: 0.4)),
+                                  ),
+                                  errorBorder: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(
+                                        ZipherRadius.md),
+                                    borderSide: BorderSide(
+                                        color: ZipherColors.red
+                                            .withValues(alpha: 0.5)),
+                                  ),
+                                  focusedErrorBorder: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(
+                                        ZipherRadius.md),
+                                    borderSide: BorderSide(
+                                        color: ZipherColors.red
+                                            .withValues(alpha: 0.5)),
+                                  ),
+                                  errorStyle: TextStyle(
+                                    color: ZipherColors.red
+                                        .withValues(alpha: 0.8),
+                                    fontSize: 12,
+                                  ),
+                                ),
+                                validator: _validateSeed,
+                              )
+                            : Container(
+                                width: double.infinity,
+                                padding: const EdgeInsets.all(16),
+                                constraints:
+                                    const BoxConstraints(minHeight: 100),
+                                decoration: BoxDecoration(
+                                  color: ZipherColors.cardBg,
+                                  borderRadius: BorderRadius.circular(
+                                      ZipherRadius.md),
+                                  border: Border.all(
+                                      color: ZipherColors.borderSubtle),
+                                ),
+                                child: _seedController.text.isEmpty
+                                    ? Text(
+                                        'Tap to enter your seed phrase...',
+                                        style: TextStyle(
+                                          fontSize: 14,
+                                          color: ZipherColors.text20,
+                                        ),
+                                      )
+                                    : Text(
+                                        _seedController.text
+                                            .split(RegExp(r'\s+'))
+                                            .map((_) => '••••')
+                                            .join(' '),
+                                        style: TextStyle(
+                                          fontSize: 15,
+                                          color: ZipherColors.text40,
+                                          height: 1.5,
+                                        ),
+                                      ),
+                              ),
                       ),
                     ),
 

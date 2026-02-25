@@ -5,6 +5,7 @@ import 'package:flutter/services.dart';
 import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
+import 'package:screen_protector/screen_protector.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:warp_api/data_fb_generated.dart';
 import 'package:warp_api/warp_api.dart';
@@ -36,8 +37,17 @@ class _BackupState extends State<BackupPage> with WidgetsBindingObserver {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
+    _enableScreenProtection();
     _loadBackup();
     _loadBirthday();
+  }
+
+  Future<void> _enableScreenProtection() async {
+    await ScreenProtector.protectDataLeakageOn();
+  }
+
+  Future<void> _disableScreenProtection() async {
+    await ScreenProtector.protectDataLeakageOff();
   }
 
   String? _keychainSeed;
@@ -86,6 +96,7 @@ class _BackupState extends State<BackupPage> with WidgetsBindingObserver {
 
   @override
   void dispose() {
+    _disableScreenProtection();
     WidgetsBinding.instance.removeObserver(this);
     super.dispose();
   }
@@ -582,155 +593,43 @@ class _BackupState extends State<BackupPage> with WidgetsBindingObserver {
     }
     final sortedIndices = indices.toList()..sort();
 
-    final controllers = List.generate(3, (_) => TextEditingController());
-    final focusNodes = List.generate(3, (_) => FocusNode());
-
-    showModalBottomSheet(
-      context: context,
-      backgroundColor: Colors.transparent,
-      isScrollControlled: true,
-      builder: (ctx) {
-        return Padding(
-          padding: EdgeInsets.only(
-            bottom: MediaQuery.of(ctx).viewInsets.bottom,
-          ),
-          child: Container(
-            decoration: BoxDecoration(
-              color: ZipherColors.bg,
-              borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
-              border: Border(
-                top: BorderSide(color: ZipherColors.cardBgElevated, width: 0.5),
-              ),
-            ),
-            child: SafeArea(
-              top: false,
-              child: Padding(
-                padding: const EdgeInsets.fromLTRB(20, 0, 20, 16),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    const Gap(10),
-                    Container(
-                      width: 36, height: 4,
-                      decoration: BoxDecoration(
-                        color: ZipherColors.cardBgElevated,
-                        borderRadius: BorderRadius.circular(2),
-                      ),
-                    ),
-                    const Gap(20),
-                    Icon(Icons.quiz_rounded, size: 28,
-                        color: ZipherColors.cyan.withValues(alpha: 0.5)),
-                    const Gap(12),
-                    Text('Verify Your Seed', style: TextStyle(
-                      fontSize: 18, fontWeight: FontWeight.w700,
-                      color: ZipherColors.text90,
-                    )),
-                    const Gap(6),
-                    Text(
-                      'Enter the requested words to confirm you saved your seed phrase.',
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                        fontSize: 13,
-                        color: ZipherColors.text40,
-                        height: 1.4,
-                      ),
-                    ),
-                    const Gap(24),
-                    for (int i = 0; i < 3; i++) ...[
-                      if (i > 0) const Gap(12),
-                      Container(
-                        decoration: BoxDecoration(
-                          color: ZipherColors.borderSubtle,
-                          borderRadius: BorderRadius.circular(14),
-                        ),
-                        child: TextField(
-                          controller: controllers[i],
-                          focusNode: focusNodes[i],
-                          autofocus: i == 0,
-                          textInputAction: i < 2 ? TextInputAction.next : TextInputAction.done,
-                          onSubmitted: (_) {
-                            if (i < 2) focusNodes[i + 1].requestFocus();
-                          },
-                          style: TextStyle(
-                            fontSize: 14,
-                            color: ZipherColors.text90,
-                          ),
-                          decoration: InputDecoration(
-                            labelText: 'Word #${sortedIndices[i] + 1}',
-                            labelStyle: TextStyle(
-                              fontSize: 13,
-                              color: ZipherColors.text40,
-                            ),
-                            filled: false,
-                            border: InputBorder.none,
-                            contentPadding: const EdgeInsets.symmetric(
-                                horizontal: 16, vertical: 14),
-                          ),
-                        ),
-                      ),
-                    ],
-                    const Gap(24),
-                    GestureDetector(
-                      onTap: () {
-                        bool allCorrect = true;
-                        for (int i = 0; i < 3; i++) {
-                          if (controllers[i].text.trim().toLowerCase() !=
-                              words[sortedIndices[i]].toLowerCase()) {
-                            allCorrect = false;
-                            break;
-                          }
-                        }
-                        Navigator.pop(ctx);
-                        for (final c in controllers) c.dispose();
-                        for (final f in focusNodes) f.dispose();
-
-                        if (allCorrect) {
-                          setState(() => _verificationPassed = true);
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(
-                              content: const Text('Backup verified successfully!'),
-                              backgroundColor: ZipherColors.green.withValues(alpha: 0.8),
-                              behavior: SnackBarBehavior.floating,
-                              shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(10)),
-                              duration: const Duration(seconds: 2),
-                            ),
-                          );
-                        } else {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(
-                              content: const Text('Incorrect words. Please check your seed phrase and try again.'),
-                              backgroundColor: ZipherColors.red.withValues(alpha: 0.8),
-                              behavior: SnackBarBehavior.floating,
-                              shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(10)),
-                              duration: const Duration(seconds: 3),
-                            ),
-                          );
-                        }
-                      },
-                      child: Container(
-                        width: double.infinity,
-                        padding: const EdgeInsets.symmetric(vertical: 16),
-                        decoration: BoxDecoration(
-                          gradient: ZipherColors.primaryGradient,
-                          borderRadius: BorderRadius.circular(14),
-                        ),
-                        child: Center(
-                          child: Text('Verify', style: TextStyle(
-                            fontSize: 16, fontWeight: FontWeight.w700,
-                            color: ZipherColors.textOnBrand,
-                          )),
-                        ),
-                      ),
-                    ),
-                  ],
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        fullscreenDialog: true,
+        builder: (_) => _SeedVerificationPage(
+          words: words,
+          indices: sortedIndices,
+          onResult: (passed) {
+            if (passed) {
+              setState(() => _verificationPassed = true);
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: const Text('Backup verified successfully!'),
+                  backgroundColor:
+                      ZipherColors.green.withValues(alpha: 0.8),
+                  behavior: SnackBarBehavior.floating,
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10)),
+                  duration: const Duration(seconds: 2),
                 ),
-              ),
-            ),
-          ),
-        );
-      },
+              );
+            } else {
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: const Text(
+                      'Incorrect words. Please check your seed phrase and try again.'),
+                  backgroundColor:
+                      ZipherColors.red.withValues(alpha: 0.8),
+                  behavior: SnackBarBehavior.floating,
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10)),
+                  duration: const Duration(seconds: 3),
+                ),
+              );
+            }
+          },
+        ),
+      ),
     );
   }
 
@@ -983,6 +882,183 @@ class _KeyCard extends StatelessWidget {
               ),
             ),
           ],
+        ),
+      ),
+    );
+  }
+}
+
+// ═══════════════════════════════════════════════════════════
+// FULLSCREEN SEED VERIFICATION PAGE
+// ═══════════════════════════════════════════════════════════
+
+class _SeedVerificationPage extends StatefulWidget {
+  final List<String> words;
+  final List<int> indices;
+  final void Function(bool passed) onResult;
+
+  const _SeedVerificationPage({
+    required this.words,
+    required this.indices,
+    required this.onResult,
+  });
+
+  @override
+  State<_SeedVerificationPage> createState() => _SeedVerificationState();
+}
+
+class _SeedVerificationState extends State<_SeedVerificationPage> {
+  late final List<TextEditingController> _controllers;
+  late final List<FocusNode> _focusNodes;
+
+  @override
+  void initState() {
+    super.initState();
+    _controllers = List.generate(3, (_) => TextEditingController());
+    _focusNodes = List.generate(3, (_) => FocusNode());
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _focusNodes[0].requestFocus();
+    });
+  }
+
+  @override
+  void dispose() {
+    for (final c in _controllers) c.dispose();
+    for (final f in _focusNodes) f.dispose();
+    super.dispose();
+  }
+
+  void _verify() {
+    bool allCorrect = true;
+    for (int i = 0; i < 3; i++) {
+      if (_controllers[i].text.trim().toLowerCase() !=
+          widget.words[widget.indices[i]].toLowerCase()) {
+        allCorrect = false;
+        break;
+      }
+    }
+    Navigator.of(context).pop();
+    widget.onResult(allCorrect);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: ZipherColors.bg,
+      appBar: AppBar(
+        backgroundColor: ZipherColors.bg,
+        elevation: 0,
+        leading: IconButton(
+          icon: Icon(Icons.close_rounded, color: ZipherColors.text60),
+          onPressed: () => Navigator.of(context).pop(),
+        ),
+        title: Text(
+          'VERIFY BACKUP',
+          style: TextStyle(
+            fontSize: 14,
+            fontWeight: FontWeight.w600,
+            letterSpacing: 1.5,
+            color: ZipherColors.text60,
+          ),
+        ),
+        centerTitle: true,
+      ),
+      body: SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 24),
+          child: Column(
+            children: [
+              const Spacer(flex: 2),
+              Icon(Icons.quiz_rounded,
+                  size: 48,
+                  color: ZipherColors.cyan.withValues(alpha: 0.4)),
+              const Gap(20),
+              Text(
+                'Verify Your Seed',
+                style: TextStyle(
+                  fontSize: 22,
+                  fontWeight: FontWeight.w700,
+                  color: ZipherColors.text90,
+                ),
+              ),
+              const Gap(10),
+              Text(
+                'Enter the requested words to confirm\nyou saved your seed phrase correctly.',
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  fontSize: 14,
+                  color: ZipherColors.text40,
+                  height: 1.6,
+                ),
+              ),
+              const Gap(40),
+              for (int i = 0; i < 3; i++) ...[
+                if (i > 0) const Gap(14),
+                Container(
+                  decoration: BoxDecoration(
+                    color: ZipherColors.cardBg,
+                    borderRadius: BorderRadius.circular(14),
+                    border: Border.all(color: ZipherColors.borderSubtle),
+                  ),
+                  child: TextField(
+                    controller: _controllers[i],
+                    focusNode: _focusNodes[i],
+                    autocorrect: false,
+                    enableSuggestions: false,
+                    textInputAction:
+                        i < 2 ? TextInputAction.next : TextInputAction.done,
+                    onSubmitted: (_) {
+                      if (i < 2) {
+                        _focusNodes[i + 1].requestFocus();
+                      } else {
+                        _verify();
+                      }
+                    },
+                    style: TextStyle(
+                      fontSize: 16,
+                      color: ZipherColors.text90,
+                    ),
+                    decoration: InputDecoration(
+                      labelText: 'Word #${widget.indices[i] + 1}',
+                      labelStyle: TextStyle(
+                        fontSize: 14,
+                        color: ZipherColors.text40,
+                      ),
+                      filled: false,
+                      border: InputBorder.none,
+                      contentPadding: const EdgeInsets.symmetric(
+                          horizontal: 18, vertical: 16),
+                    ),
+                  ),
+                ),
+              ],
+              const Spacer(flex: 3),
+              SizedBox(
+                width: double.infinity,
+                child: GestureDetector(
+                  onTap: _verify,
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(vertical: 16),
+                    decoration: BoxDecoration(
+                      gradient: ZipherColors.primaryGradient,
+                      borderRadius: BorderRadius.circular(14),
+                    ),
+                    child: Center(
+                      child: Text(
+                        'Verify',
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w700,
+                          color: ZipherColors.textOnBrand,
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+              const Gap(16),
+            ],
+          ),
         ),
       ),
     );
