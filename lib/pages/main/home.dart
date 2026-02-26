@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:convert';
 import 'dart:ui' as ui;
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
@@ -500,20 +501,12 @@ class _HomeState extends State<HomePageInner> {
                                 .push('/account/pay_uri'),
                           ),
                         ),
-                        const Gap(10),
+                        const Gap(12),
                         Expanded(
                           child: _ActionButton(
                             icon: Icons.send_rounded,
                             label: 'Send',
                             onTap: () => _send(false),
-                          ),
-                        ),
-                        const Gap(10),
-                        Expanded(
-                          child: _ActionButton(
-                            icon: Icons.call_split_rounded,
-                            label: 'Split',
-                            onTap: () => _splitBill(),
                           ),
                         ),
                       ],
@@ -650,14 +643,6 @@ class _HomeState extends State<HomePageInner> {
     GoRouter.of(context).push('/account/quick_send?custom=$c');
   }
 
-  void _splitBill() async {
-    if (appSettings.protectSend) {
-      final authed = await authBarrier(context, dismissable: true);
-      if (!authed) return;
-    }
-    GoRouter.of(context).push('/account/split');
-  }
-
   void _backup() {
     GoRouter.of(context).push('/more/backup');
   }
@@ -672,26 +657,35 @@ class _HomeState extends State<HomePageInner> {
     final amtStr = amountToString2(transparentBal);
     logger.i('[Shield] transparent=$transparentBal ($amtStr ZEC), fee=${coinSettings.feeT.fee}');
 
+    // Immediately show "Shielding..." state
+    setState(() {
+      lastShieldSubmit = DateTime.now();
+    });
+
     try {
       final plan = await WarpApi.transferPools(
         aa.coin,
         aa.id,
-        1, // from: transparent (bitmask: 1=t, 2=sapling, 4=orchard)
-        4, // to: orchard (most private pool)
+        1,
+        4,
         transparentBal,
-        true, // includeFee: deduct fee from amount so everything is swept
+        true,
         'Auto-shield $amtStr ZEC',
         0,
         appSettings.anchorOffset,
         coinSettings.feeT,
       );
       if (!mounted) return;
-      shieldPending = true;
-      GoRouter.of(context)
-          .push('/account/txplan?tab=account&shield=1', extra: plan);
+
+      final txIdJs = await WarpApi.signAndBroadcast(aa.coin, aa.id, plan);
+      final txId = jsonDecode(txIdJs);
+      logger.i('[Shield] Broadcast OK: $txId');
     } on String catch (e) {
       logger.e('[Shield] Error: $e');
       if (!mounted) return;
+      setState(() {
+        lastShieldSubmit = null;
+      });
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text(e), duration: const Duration(seconds: 3)),
       );
@@ -823,20 +817,17 @@ class _BalanceBreakdown extends StatelessWidget {
                           style: TextStyle(
                             fontSize: 13,
                             fontWeight: FontWeight.w600,
-                            color:
-                                ZipherColors.orange.withValues(alpha: 0.7),
+                            color: ZipherColors.text60,
                           ),
                         ),
                         const Gap(10),
-                        // Premium Shield button
                         GestureDetector(
                           onTap: onShield,
                           child: Container(
                             padding: const EdgeInsets.symmetric(
-                                horizontal: 14, vertical: 6),
+                                horizontal: 12, vertical: 6),
                             decoration: BoxDecoration(
-                              color: ZipherColors.purple
-                                  .withValues(alpha: 0.18),
+                              color: ZipherColors.cardBgElevated,
                               borderRadius: BorderRadius.circular(8),
                             ),
                             child: Row(
@@ -853,9 +844,8 @@ class _BalanceBreakdown extends StatelessWidget {
                                   'Shield',
                                   style: TextStyle(
                                     fontSize: 12,
-                                    fontWeight: FontWeight.w700,
-                                    color: ZipherColors.purple
-                                        .withValues(alpha: 0.85),
+                                    fontWeight: FontWeight.w600,
+                                    color: ZipherColors.text60,
                                     letterSpacing: 0.3,
                                   ),
                                 ),

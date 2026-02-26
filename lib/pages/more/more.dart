@@ -63,21 +63,18 @@ class _MorePageState extends State<MorePage> {
               _card([
                 _SettingsItem(
                   icon: Icons.receipt_long_rounded,
-                  iconColor: ZipherColors.cyan,
                   label: 'Activity',
                   subtitle: 'Full transaction history',
                   onTap: () => _nav('/more/history'),
                 ),
                 _SettingsItem(
                   icon: Icons.all_inbox_rounded,
-                  iconColor: ZipherColors.purple,
                   label: 'Memos',
                   subtitle: 'Received transaction memos',
                   onTap: () => _nav('/more/memos'),
                 ),
                 _SettingsItem(
                   icon: Icons.people_outline_rounded,
-                  iconColor: ZipherColors.cyan,
                   label: s.contacts,
                   subtitle: 'Manage saved addresses',
                   onTap: () => _nav('/more/contacts'),
@@ -107,13 +104,6 @@ class _MorePageState extends State<MorePage> {
               _sectionLabel('Security & Tools'),
               const Gap(8),
               _card([
-                _SettingsItem(
-                  icon: Icons.key_rounded,
-                  iconColor: ZipherColors.orange,
-                  label: s.seedKeys,
-                  subtitle: 'Export seed phrase & keys',
-                  onTap: () => _navSecured('/more/backup'),
-                ),
                 _SettingsItem(
                   icon: Icons.cleaning_services_outlined,
                   label: s.sweep,
@@ -154,6 +144,13 @@ class _MorePageState extends State<MorePage> {
               _sectionLabel('Danger Zone'),
               const Gap(8),
               _card([
+                _SettingsItem(
+                  icon: Icons.key_rounded,
+                  iconColor: ZipherColors.orange,
+                  label: s.seedKeys,
+                  subtitle: 'Export seed phrase & keys',
+                  onTap: () => _navSecured('/more/backup'),
+                ),
                 _SettingsItem(
                   icon: Icons.restart_alt_rounded,
                   iconColor: ZipherColors.red,
