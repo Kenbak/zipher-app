@@ -1237,8 +1237,10 @@ class _TxRowState extends State<_TxRow> {
                               ),
                             ),
                             const Gap(5),
-                            Text(
+                            Expanded(child: Text(
                               swapStatusLabel,
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
                               style: TextStyle(
                                 fontSize: 12,
                                 fontWeight: FontWeight.w500,
@@ -1248,7 +1250,7 @@ class _TxRowState extends State<_TxRow> {
                                         ? ZipherColors.red.withValues(alpha: 0.7)
                                         : ZipherColors.orange.withValues(alpha: 0.9),
                               ),
-                            ),
+                            )),
                             const Gap(6),
                             Text(
                               timeStr,

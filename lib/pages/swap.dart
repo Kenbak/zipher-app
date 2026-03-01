@@ -95,6 +95,7 @@ class _NearSwapPageState extends State<NearSwapPage> with WithLoadingAnimation {
       _direction = _direction == SwapDirection.fromZec
           ? SwapDirection.intoZec
           : SwapDirection.fromZec;
+      _addressController.clear();
       _error = null;
     });
     _updateEstimate();
@@ -160,7 +161,8 @@ class _NearSwapPageState extends State<NearSwapPage> with WithLoadingAnimation {
       final refund = _direction == SwapDirection.fromZec ? tAddr : addr;
       final recipient = _direction == SwapDirection.fromZec ? addr : tAddr;
 
-      logger.i('[Swap] getQuote: origin=${_originToken.symbol} dest=${_destToken.symbol} slippage=$_slippageBps');
+      logger.i('[Swap] getQuote: origin=${_originToken.assetId} dest=${_destToken.assetId} '
+          'recipient=$recipient refund=$refund slippage=$_slippageBps');
 
       final quote = await _nearApi.getQuote(
         dry: false,
@@ -1015,7 +1017,12 @@ class _NearSwapPageState extends State<NearSwapPage> with WithLoadingAnimation {
                             child: InkWell(
                               borderRadius: BorderRadius.circular(12),
                               onTap: () {
-                                setState(() { _selectedToken = t; });
+                                final chainChanged = _selectedToken?.blockchain != t.blockchain;
+                                setState(() {
+                                  _selectedToken = t;
+                                  _error = null;
+                                  if (chainChanged) _addressController.clear();
+                                });
                                 Navigator.pop(ctx);
                                 _updateEstimate();
                               },
@@ -1097,6 +1104,7 @@ class _NearSwapPageState extends State<NearSwapPage> with WithLoadingAnimation {
               Expanded(
                 child: TextField(
                   controller: _addressController,
+                  onChanged: (_) => setState(() => _error = null),
                   style: TextStyle(
                     fontSize: 14,
                     color: ZipherColors.text90,
@@ -1119,14 +1127,16 @@ class _NearSwapPageState extends State<NearSwapPage> with WithLoadingAnimation {
               _iconBtn(Icons.content_paste_rounded, () async {
                 final data = await Clipboard.getData(Clipboard.kTextPlain);
                 if (data?.text != null && data!.text!.isNotEmpty) {
-                  _addressController.text = data.text!;
+                  _addressController.text = data.text!.trim();
+                  setState(() => _error = null);
                 }
               }),
               _iconBtn(Icons.qr_code_rounded, () {
                 GoRouter.of(context).push(
                   '/scan',
                   extra: ScanQRContext((code) {
-                    _addressController.text = code;
+                    _addressController.text = code.trim();
+                    setState(() => _error = null);
                     return true;
                   }),
                 );
