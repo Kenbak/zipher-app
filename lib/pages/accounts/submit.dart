@@ -183,7 +183,7 @@ class _SubmitTxState extends State<SubmitTxPage> {
                   const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
               decoration: BoxDecoration(
                 color: ZipherColors.cardBg,
-                borderRadius: BorderRadius.circular(12),
+                borderRadius: BorderRadius.circular(ZipherRadius.md),
               ),
               child: Row(
                 children: [
@@ -218,12 +218,12 @@ class _SubmitTxState extends State<SubmitTxPage> {
               color: Colors.transparent,
               child: InkWell(
                 onTap: _openMempool,
-                borderRadius: BorderRadius.circular(14),
+                borderRadius: BorderRadius.circular(ZipherRadius.lg),
                 child: Container(
                   padding: const EdgeInsets.symmetric(vertical: 14),
                   decoration: BoxDecoration(
                     color: ZipherColors.cardBg,
-                    borderRadius: BorderRadius.circular(14),
+                    borderRadius: BorderRadius.circular(ZipherRadius.lg),
                   ),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -265,12 +265,12 @@ class _SubmitTxState extends State<SubmitTxPage> {
               color: Colors.transparent,
               child: InkWell(
                 onTap: _done,
-                borderRadius: BorderRadius.circular(14),
+                borderRadius: BorderRadius.circular(ZipherRadius.lg),
                 child: Container(
                   padding: const EdgeInsets.symmetric(vertical: 16),
                   decoration: BoxDecoration(
                     color: ZipherColors.cyan.withValues(alpha: 0.12),
-                    borderRadius: BorderRadius.circular(14),
+                    borderRadius: BorderRadius.circular(ZipherRadius.lg),
                   ),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -355,7 +355,7 @@ class _SubmitTxState extends State<SubmitTxPage> {
                 const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
             decoration: BoxDecoration(
               color: ZipherColors.red.withValues(alpha: 0.06),
-              borderRadius: BorderRadius.circular(12),
+              borderRadius: BorderRadius.circular(ZipherRadius.md),
             ),
             child: Text(
               error!,
@@ -375,12 +375,12 @@ class _SubmitTxState extends State<SubmitTxPage> {
               color: Colors.transparent,
               child: InkWell(
                 onTap: _done,
-                borderRadius: BorderRadius.circular(14),
+                borderRadius: BorderRadius.circular(ZipherRadius.lg),
                 child: Container(
                   padding: const EdgeInsets.symmetric(vertical: 16),
                   decoration: BoxDecoration(
                     color: ZipherColors.cardBgElevated,
-                    borderRadius: BorderRadius.circular(14),
+                    borderRadius: BorderRadius.circular(ZipherRadius.lg),
                   ),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,

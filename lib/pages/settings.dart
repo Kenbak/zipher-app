@@ -145,7 +145,7 @@ class _SettingsState extends State<SettingsPage> {
               Container(
                 decoration: BoxDecoration(
                   color: ZipherColors.cardBg,
-                  borderRadius: BorderRadius.circular(14),
+                  borderRadius: BorderRadius.circular(ZipherRadius.lg),
                 ),
                 padding: const EdgeInsets.symmetric(horizontal: 16),
                 child: DropdownButtonHideUnderline(
@@ -178,7 +178,7 @@ class _SettingsState extends State<SettingsPage> {
               Container(
                 decoration: BoxDecoration(
                   color: ZipherColors.cardBg,
-                  borderRadius: BorderRadius.circular(14),
+                  borderRadius: BorderRadius.circular(ZipherRadius.lg),
                 ),
                 child: TextField(
                   controller: TextEditingController(text: appSettings.memo),
@@ -197,7 +197,7 @@ class _SettingsState extends State<SettingsPage> {
                     border: InputBorder.none,
                     enabledBorder: InputBorder.none,
                     focusedBorder: InputBorder.none,
-                    contentPadding: const EdgeInsets.all(16),
+                    contentPadding: const EdgeInsets.all(ZipherSpacing.md),
                   ),
                   onChanged: (v) => appSettings.memo = v,
                 ),
@@ -253,7 +253,7 @@ class _SettingsState extends State<SettingsPage> {
                       horizontal: 16, vertical: 14),
                   decoration: BoxDecoration(
                     color: ZipherColors.cardBg,
-                    borderRadius: BorderRadius.circular(14),
+                    borderRadius: BorderRadius.circular(ZipherRadius.lg),
                   ),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -287,7 +287,7 @@ class _SettingsState extends State<SettingsPage> {
               Container(
                 decoration: BoxDecoration(
                   color: ZipherColors.cardBg,
-                  borderRadius: BorderRadius.circular(14),
+                  borderRadius: BorderRadius.circular(ZipherRadius.lg),
                 ),
                 child: Column(
                   children: [
@@ -330,7 +330,7 @@ class _SettingsState extends State<SettingsPage> {
     return Container(
       decoration: BoxDecoration(
         color: ZipherColors.cardBg,
-        borderRadius: BorderRadius.circular(14),
+        borderRadius: BorderRadius.circular(ZipherRadius.lg),
       ),
       child: Column(
         children: [
@@ -510,7 +510,7 @@ class _SettingsState extends State<SettingsPage> {
             color: selected
                 ? ZipherColors.cyan.withValues(alpha: 0.12)
                 : ZipherColors.cardBg,
-            borderRadius: BorderRadius.circular(10),
+            borderRadius: BorderRadius.circular(ZipherRadius.md),
             border: selected
                 ? Border.all(
                     color: ZipherColors.cyan.withValues(alpha: 0.2))
@@ -593,102 +593,6 @@ class _SettingsState extends State<SettingsPage> {
       aa.currency = appSettings.currency;
     });
     GoRouter.of(context).pop();
-  }
-}
-
-// ═══════════════════════════════════════════════════════════
-// QUICK SEND SETTINGS (kept for router compatibility)
-// ═══════════════════════════════════════════════════════════
-
-class QuickSendSettingsPage extends StatefulWidget {
-  final CustomSendSettings customSendSettings;
-  QuickSendSettingsPage(this.customSendSettings);
-
-  @override
-  State<StatefulWidget> createState() => _QuickSendSettingsState();
-}
-
-class _QuickSendSettingsState extends State<QuickSendSettingsPage> {
-  @override
-  Widget build(BuildContext context) {
-    final s = S.of(context);
-    return Scaffold(
-      backgroundColor: ZipherColors.bg,
-      appBar: AppBar(
-        backgroundColor: ZipherColors.bg,
-        elevation: 0,
-        title: Text(s.customSendSettings),
-      ),
-      body: const Center(child: Text('Deprecated')),
-    );
-  }
-}
-
-// ═══════════════════════════════════════════════════════════
-// SHARED WIDGETS (used by pool.dart, sweep.dart, etc.)
-// ═══════════════════════════════════════════════════════════
-
-class FieldUA extends StatelessWidget {
-  final String name;
-  final String label;
-  late final Set<int> initialValues;
-  final void Function(int?)? onChanged;
-  final bool radio;
-  final bool emptySelectionAllowed;
-  final int pools;
-  final String? Function(int)? validator;
-  FieldUA(
-    int initialValue, {
-    required this.name,
-    required this.label,
-    this.onChanged,
-    this.emptySelectionAllowed = false,
-    required this.radio,
-    this.validator,
-    this.pools = 7,
-  }) : initialValues = PoolBitSet.toSet(initialValue);
-
-  @override
-  Widget build(BuildContext context) {
-    final s = S.of(context);
-    final t = Theme.of(context);
-    final small = t.textTheme.labelMedium!;
-    return FormBuilderField(
-      name: name,
-      initialValue: initialValues,
-      onChanged: (v) => onChanged?.call(PoolBitSet.fromSet(v!)),
-      validator: (v) => validator?.call(PoolBitSet.fromSet(v!)),
-      builder: (field) => InputDecorator(
-          decoration:
-              InputDecoration(label: Text(label), errorText: field.errorText),
-          child: Padding(
-            padding: EdgeInsets.fromLTRB(0, 8, 0, 0),
-            child: SegmentedButton(
-              segments: [
-                if (pools & 1 != 0)
-                  ButtonSegment(
-                      value: 0,
-                      label: Text(s.transparent,
-                          overflow: TextOverflow.ellipsis, style: small)),
-                if (pools & 2 != 0)
-                  ButtonSegment(
-                      value: 1,
-                      label: Text(s.sapling,
-                          overflow: TextOverflow.ellipsis, style: small)),
-                if (aa.hasUA && pools & 4 != 0)
-                  ButtonSegment(
-                      value: 2,
-                      label: Text(s.orchard,
-                          overflow: TextOverflow.ellipsis, style: small)),
-              ],
-              selected: field.value!,
-              onSelectionChanged: (v) => field.didChange(v),
-              multiSelectionEnabled: !radio,
-              emptySelectionAllowed: emptySelectionAllowed,
-              showSelectedIcon: false,
-            ),
-          )),
-    );
   }
 }
 

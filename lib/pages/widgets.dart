@@ -349,67 +349,6 @@ class InputTextQRState extends State<InputTextQR> {
   }
 }
 
-class PoolSelection extends StatefulWidget {
-  final PoolBalanceT balances;
-  final void Function(int? pools)? onChanged;
-  final int initialValue;
-  PoolSelection(this.initialValue,
-      {super.key, required this.balances, this.onChanged});
-  @override
-  State<StatefulWidget> createState() => PoolSelectionState();
-}
-
-class PoolSelectionState extends State<PoolSelection> {
-  final fieldKey =
-      GlobalKey<FormBuilderFieldState<FormBuilderField<Set<int>>, Set<int>>>();
-
-  @override
-  Widget build(BuildContext context) {
-    final t = Theme.of(context);
-    final txtStyle = t.textTheme.labelLarge!;
-
-    final initialPools = PoolBitSet.toSet(widget.initialValue);
-
-    return FormBuilderField(
-      key: fieldKey,
-      name: 'pool_select',
-      initialValue: initialPools.toSet(),
-      onChanged: (v) => widget.onChanged?.call(PoolBitSet.fromSet(v!)),
-      builder: (field) => SegmentedButton<int>(
-        segments: [
-          ButtonSegment(
-              value: 0,
-              label: Text(
-                '${amountToString2(widget.balances.transparent)}',
-                style: txtStyle.apply(color: ZipherColors.cyan),
-              )),
-          ButtonSegment(
-              value: 1,
-              label: Text(
-                '${amountToString2(widget.balances.sapling)}',
-                style: txtStyle.apply(color: ZipherColors.purple),
-              )),
-          if (aa.hasUA)
-            ButtonSegment(
-                value: 2,
-                label: Text(
-                  '${amountToString2(widget.balances.orchard)}',
-                  style: txtStyle.apply(color: ZipherColors.green),
-                )),
-        ],
-        selected: field.value!,
-        onSelectionChanged: (v) => field.didChange(v),
-        multiSelectionEnabled: true,
-        showSelectedIcon: false,
-      ),
-    );
-  }
-
-  void setPools(int p) {
-    fieldKey.currentState!.didChange(PoolBitSet.toSet(p));
-  }
-}
-
 enum AmountSource {
   None,
   External,
@@ -822,52 +761,6 @@ class _AnimatedQRState extends State<AnimatedQR> {
         Text(widget.caption, style: theme.textTheme.titleMedium),
       ],
     ));
-  }
-}
-
-class HorizontalBarChart extends StatelessWidget {
-  final List<double> values;
-  final double height;
-
-  HorizontalBarChart(this.values, {this.height = 32});
-
-  @override
-  Widget build(BuildContext context) {
-    final poolColors = [ZipherColors.cyan, ZipherColors.purple, ZipherColors.green];
-
-    final sum = values.fold<double>(0, ((acc, v) => acc + v));
-    final stacks = values.asMap().entries.map((e) {
-      final i = e.key;
-      final color = i < poolColors.length ? poolColors[i] : ZipherColors.textMuted;
-      final v = NumberFormat.compact().format(values[i]);
-      final flex = sum != 0 ? max((values[i] / sum * 100).round(), 1) : 1;
-      return Flexible(
-          child: Container(
-              child: Center(
-                  child: Text(v,
-                      textAlign: TextAlign.center,
-                      style: const TextStyle(
-                          fontSize: 12,
-                          fontWeight: FontWeight.w600,
-                          color: ZipherColors.textOnBrand))),
-              decoration: BoxDecoration(
-                color: color,
-                borderRadius: i == 0
-                    ? const BorderRadius.horizontal(left: Radius.circular(6))
-                    : i == values.length - 1
-                        ? const BorderRadius.horizontal(right: Radius.circular(6))
-                        : null,
-              ),
-              height: height),
-          flex: flex);
-    }).toList();
-
-    return ClipRRect(
-        borderRadius: BorderRadius.circular(6),
-        child: IntrinsicHeight(
-            child: Row(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: stacks)));
   }
 }
 

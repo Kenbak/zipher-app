@@ -147,7 +147,7 @@ class AboutPage extends StatelessWidget {
               padding: const EdgeInsets.all(14),
               decoration: BoxDecoration(
                 color: ZipherColors.cardBg,
-                borderRadius: BorderRadius.circular(14),
+                borderRadius: BorderRadius.circular(ZipherRadius.lg),
               ),
               child: Text(
                 'THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND. '
@@ -178,13 +178,13 @@ class AboutPage extends StatelessWidget {
       required VoidCallback onTap}) {
     return InkWell(
       onTap: onTap,
-      borderRadius: BorderRadius.circular(12),
+      borderRadius: BorderRadius.circular(ZipherRadius.md),
       child: Container(
         width: double.infinity,
         padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
         decoration: BoxDecoration(
           color: ZipherColors.cardBg,
-          borderRadius: BorderRadius.circular(12),
+          borderRadius: BorderRadius.circular(ZipherRadius.md),
         ),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -225,10 +225,10 @@ class _InfoCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       width: double.infinity,
-      padding: const EdgeInsets.all(16),
+      padding: const EdgeInsets.all(ZipherSpacing.md),
       decoration: BoxDecoration(
         color: iconColor.withValues(alpha: 0.03),
-        borderRadius: BorderRadius.circular(14),
+        borderRadius: BorderRadius.circular(ZipherRadius.lg),
         border: Border.all(color: iconColor.withValues(alpha: 0.06)),
       ),
       child: Column(
@@ -468,7 +468,7 @@ class _DisclaimerTile extends StatelessWidget {
           color: accepted
               ? ZipherColors.green.withValues(alpha: 0.05)
               : ZipherColors.cardBg,
-          borderRadius: BorderRadius.circular(14),
+          borderRadius: BorderRadius.circular(ZipherRadius.lg),
           border: Border.all(
             color: accepted
                 ? ZipherColors.green.withValues(alpha: 0.2)
@@ -485,7 +485,7 @@ class _DisclaimerTile extends StatelessWidget {
                 color: accepted
                     ? ZipherColors.green
                     : ZipherColors.cardBgElevated,
-                borderRadius: BorderRadius.circular(6),
+                borderRadius: BorderRadius.circular(ZipherRadius.sm),
                 border: Border.all(
                   color: accepted
                       ? ZipherColors.green

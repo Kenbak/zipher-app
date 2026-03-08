@@ -129,7 +129,7 @@ class SyncStatusState extends State<SyncStatusWidget>
                       if (syncing && value != null) ...[
                         const SizedBox(height: 8),
                         ClipRRect(
-                          borderRadius: BorderRadius.circular(2),
+                          borderRadius: BorderRadius.circular(ZipherRadius.xxs),
                           child: SizedBox(
                             height: 2,
                             child: LinearProgressIndicator(

@@ -131,7 +131,7 @@ class _AccountManagerState extends State<AccountManagerPage> {
                         color: isSelected
                             ? ZipherColors.cyan.withValues(alpha: 0.06)
                             : ZipherColors.cardBg,
-                        borderRadius: BorderRadius.circular(14),
+                        borderRadius: BorderRadius.circular(ZipherRadius.lg),
                         border: isSelected
                             ? Border.all(
                                 color:
@@ -147,7 +147,7 @@ class _AccountManagerState extends State<AccountManagerPage> {
                             decoration: BoxDecoration(
                               color: _accountColor(a)
                                   .withValues(alpha: 0.1),
-                              borderRadius: BorderRadius.circular(12),
+                              borderRadius: BorderRadius.circular(ZipherRadius.md),
                             ),
                             child: Center(
                               child: _emojiFor(a) != null
@@ -211,7 +211,7 @@ class _AccountManagerState extends State<AccountManagerPage> {
                                           color: ZipherColors.green
                                               .withValues(alpha: 0.1),
                                           borderRadius:
-                                              BorderRadius.circular(4),
+                                              BorderRadius.circular(ZipherRadius.xs),
                                         ),
                                         child: Text(
                                           'Active',
@@ -270,7 +270,7 @@ class _AccountManagerState extends State<AccountManagerPage> {
       padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 1),
       decoration: BoxDecoration(
         color: color.withValues(alpha: 0.08),
-        borderRadius: BorderRadius.circular(4),
+        borderRadius: BorderRadius.circular(ZipherRadius.xs),
       ),
       child: Text(
         label,

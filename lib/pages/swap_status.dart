@@ -174,7 +174,7 @@ class _SwapStatusPageState extends State<SwapStatusPage> {
                         padding: const EdgeInsets.all(12),
                         decoration: BoxDecoration(
                           color: ZipherColors.red.withValues(alpha: 0.06),
-                          borderRadius: BorderRadius.circular(12),
+                          borderRadius: BorderRadius.circular(ZipherRadius.md),
                           border: Border.all(color: ZipherColors.red.withValues(alpha: 0.10)),
                         ),
                         child: Text(_error!, style: TextStyle(
@@ -210,7 +210,7 @@ class _SwapStatusPageState extends State<SwapStatusPage> {
                         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
                         decoration: BoxDecoration(
                           color: ZipherColors.cyan.withValues(alpha: 0.06),
-                          borderRadius: BorderRadius.circular(10),
+                          borderRadius: BorderRadius.circular(ZipherRadius.md),
                           border: Border.all(color: ZipherColors.cyan.withValues(alpha: 0.08)),
                         ),
                         child: Row(
@@ -246,10 +246,10 @@ class _SwapStatusPageState extends State<SwapStatusPage> {
   Widget _swapSummaryCard() {
     return Container(
       width: double.infinity,
-      padding: const EdgeInsets.all(16),
+      padding: const EdgeInsets.all(ZipherSpacing.md),
       decoration: BoxDecoration(
         color: ZipherColors.cardBg,
-        borderRadius: BorderRadius.circular(14),
+        borderRadius: BorderRadius.circular(ZipherRadius.lg),
         border: Border.all(color: ZipherColors.borderSubtle),
       ),
       child: Row(
@@ -360,7 +360,7 @@ class _SwapStatusPageState extends State<SwapStatusPage> {
       padding: const EdgeInsets.all(14),
       decoration: BoxDecoration(
         color: ZipherColors.cardBg,
-        borderRadius: BorderRadius.circular(14),
+        borderRadius: BorderRadius.circular(ZipherRadius.lg),
         border: Border.all(color: ZipherColors.borderSubtle),
       ),
       child: Column(
@@ -422,7 +422,7 @@ class _SwapStatusPageState extends State<SwapStatusPage> {
       padding: const EdgeInsets.all(14),
       decoration: BoxDecoration(
         color: ZipherColors.cardBg,
-        borderRadius: BorderRadius.circular(14),
+        borderRadius: BorderRadius.circular(ZipherRadius.lg),
         border: Border.all(color: ZipherColors.borderSubtle),
       ),
       child: Column(

@@ -7,7 +7,6 @@ import 'pages/faucet.dart';
 import 'pages/swap.dart';
 import 'pages/swap_status.dart';
 import 'pages/more/cold.dart';
-import 'settings.pb.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
@@ -319,12 +318,6 @@ final router = GoRouter(
       },
     ),
     GoRoute(
-      path: '/quick_send_settings',
-      parentNavigatorKey: rootNavigatorKey,
-      builder: (context, state) =>
-          QuickSendSettingsPage(state.extra as CustomSendSettings),
-    ),
-    GoRoute(
       path: '/scan',
       builder: (context, state) => ScanQRCodePage(state.extra as ScanQRContext),
     ),
@@ -432,7 +425,7 @@ class _ScaffoldBar extends State<ScaffoldBar> {
                                     ? ZipherColors.cyan
                                         .withValues(alpha: 0.10)
                                     : Colors.transparent,
-                                borderRadius: BorderRadius.circular(12),
+                                borderRadius: BorderRadius.circular(ZipherRadius.md),
                               ),
                               child: Icon(
                                 isActive ? activeIcons[i] : icons[i],

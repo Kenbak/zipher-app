@@ -72,7 +72,7 @@ class _BatchBackupState extends State<BatchBackupPage> {
               padding: const EdgeInsets.all(14),
               decoration: BoxDecoration(
                 color: ZipherColors.cyan.withValues(alpha: 0.05),
-                borderRadius: BorderRadius.circular(14),
+                borderRadius: BorderRadius.circular(ZipherRadius.lg),
                 border: Border.all(
                   color: ZipherColors.cyan.withValues(alpha: 0.1),
                 ),
@@ -104,10 +104,10 @@ class _BatchBackupState extends State<BatchBackupPage> {
             _sectionLabel('Backup'),
             const Gap(8),
             Container(
-              padding: const EdgeInsets.all(16),
+              padding: const EdgeInsets.all(ZipherSpacing.md),
               decoration: BoxDecoration(
                 color: ZipherColors.cardBg,
-                borderRadius: BorderRadius.circular(14),
+                borderRadius: BorderRadius.circular(ZipherRadius.lg),
               ),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -123,7 +123,7 @@ class _BatchBackupState extends State<BatchBackupPage> {
                   Container(
                     decoration: BoxDecoration(
                       color: ZipherColors.cardBg,
-                      borderRadius: BorderRadius.circular(10),
+                      borderRadius: BorderRadius.circular(ZipherRadius.md),
                     ),
                     child: TextField(
                       controller: _backupKeyController,
@@ -147,13 +147,13 @@ class _BatchBackupState extends State<BatchBackupPage> {
                   const Gap(14),
                   InkWell(
                     onTap: _save,
-                    borderRadius: BorderRadius.circular(10),
+                    borderRadius: BorderRadius.circular(ZipherRadius.md),
                     child: Container(
                       width: double.infinity,
                       padding: const EdgeInsets.symmetric(vertical: 12),
                       decoration: BoxDecoration(
                         color: ZipherColors.cyan.withValues(alpha: 0.1),
-                        borderRadius: BorderRadius.circular(10),
+                        borderRadius: BorderRadius.circular(ZipherRadius.md),
                       ),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.center,
@@ -184,10 +184,10 @@ class _BatchBackupState extends State<BatchBackupPage> {
             _sectionLabel('Restore'),
             const Gap(8),
             Container(
-              padding: const EdgeInsets.all(16),
+              padding: const EdgeInsets.all(ZipherSpacing.md),
               decoration: BoxDecoration(
                 color: ZipherColors.cardBg,
-                borderRadius: BorderRadius.circular(14),
+                borderRadius: BorderRadius.circular(ZipherRadius.lg),
               ),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -203,7 +203,7 @@ class _BatchBackupState extends State<BatchBackupPage> {
                   Container(
                     decoration: BoxDecoration(
                       color: ZipherColors.cardBg,
-                      borderRadius: BorderRadius.circular(10),
+                      borderRadius: BorderRadius.circular(ZipherRadius.md),
                     ),
                     child: TextField(
                       controller: _restoreKeyController,
@@ -227,13 +227,13 @@ class _BatchBackupState extends State<BatchBackupPage> {
                   const Gap(14),
                   InkWell(
                     onTap: _restore,
-                    borderRadius: BorderRadius.circular(10),
+                    borderRadius: BorderRadius.circular(ZipherRadius.md),
                     child: Container(
                       width: double.infinity,
                       padding: const EdgeInsets.symmetric(vertical: 12),
                       decoration: BoxDecoration(
                         color: ZipherColors.purple.withValues(alpha: 0.1),
-                        borderRadius: BorderRadius.circular(10),
+                        borderRadius: BorderRadius.circular(ZipherRadius.md),
                       ),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.center,
@@ -396,7 +396,7 @@ class _KeygenState extends State<KeygenPage> with WithLoadingAnimation {
               padding: const EdgeInsets.all(14),
               decoration: BoxDecoration(
                 color: ZipherColors.cyan.withValues(alpha: 0.05),
-                borderRadius: BorderRadius.circular(14),
+                borderRadius: BorderRadius.circular(ZipherRadius.lg),
               ),
               child: Text(
                 s.keygenHelp,
@@ -443,7 +443,7 @@ class _KeygenState extends State<KeygenPage> with WithLoadingAnimation {
       padding: const EdgeInsets.all(14),
       decoration: BoxDecoration(
         color: ZipherColors.cardBg,
-        borderRadius: BorderRadius.circular(14),
+        borderRadius: BorderRadius.circular(ZipherRadius.lg),
       ),
       child: value == null
           ? Text('Generating...',

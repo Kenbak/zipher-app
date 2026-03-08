@@ -152,7 +152,7 @@ class _RestoreAccountPageState extends State<RestoreAccountPage> {
                                   ),
                                   filled: true,
                                   fillColor: ZipherColors.cardBg,
-                                  contentPadding: const EdgeInsets.all(16),
+                                  contentPadding: const EdgeInsets.all(ZipherSpacing.md),
                                   border: OutlineInputBorder(
                                     borderRadius: BorderRadius.circular(
                                         ZipherRadius.md),
@@ -196,7 +196,7 @@ class _RestoreAccountPageState extends State<RestoreAccountPage> {
                               )
                             : Container(
                                 width: double.infinity,
-                                padding: const EdgeInsets.all(16),
+                                padding: const EdgeInsets.all(ZipherSpacing.md),
                                 constraints:
                                     const BoxConstraints(minHeight: 100),
                                 decoration: BoxDecoration(
@@ -563,7 +563,7 @@ class _YearChip extends StatelessWidget {
           color: selected
               ? ZipherColors.cyan.withValues(alpha: 0.1)
               : ZipherColors.cardBg,
-          borderRadius: BorderRadius.circular(8),
+          borderRadius: BorderRadius.circular(ZipherRadius.sm),
           border: Border.all(
             color: selected
                 ? ZipherColors.cyan.withValues(alpha: 0.25)

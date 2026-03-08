@@ -90,7 +90,7 @@ class _TxPlanState extends State<TxPlanPage> with WithLoadingAnimation {
                             horizontal: 14, vertical: 12),
                         decoration: BoxDecoration(
                           color: ZipherColors.cardBg,
-                          borderRadius: BorderRadius.circular(14),
+                          borderRadius: BorderRadius.circular(ZipherRadius.lg),
                           border: Border.all(
                             color: ZipherColors.borderSubtle,
                           ),
@@ -144,7 +144,7 @@ class _TxPlanState extends State<TxPlanPage> with WithLoadingAnimation {
                             horizontal: 14, vertical: 12),
                         decoration: BoxDecoration(
                           color: ZipherColors.orange.withValues(alpha: 0.08),
-                          borderRadius: BorderRadius.circular(12),
+                          borderRadius: BorderRadius.circular(ZipherRadius.md),
                         ),
                         child: Row(
                           children: [
@@ -313,7 +313,7 @@ class _TxPlanState extends State<TxPlanPage> with WithLoadingAnimation {
         padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 14),
         decoration: BoxDecoration(
           color: ZipherColors.cardBg,
-          borderRadius: BorderRadius.circular(14),
+          borderRadius: BorderRadius.circular(ZipherRadius.lg),
         ),
         child: Row(
           children: [
@@ -401,7 +401,7 @@ class _TxPlanState extends State<TxPlanPage> with WithLoadingAnimation {
         padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 14),
         decoration: BoxDecoration(
           color: ZipherColors.purple.withValues(alpha: 0.05),
-          borderRadius: BorderRadius.circular(14),
+          borderRadius: BorderRadius.circular(ZipherRadius.lg),
           border: Border.all(
             color: ZipherColors.purple.withValues(alpha: 0.08),
           ),
@@ -460,7 +460,7 @@ class _TxPlanState extends State<TxPlanPage> with WithLoadingAnimation {
       padding: const EdgeInsets.all(14),
       decoration: BoxDecoration(
         color: ZipherColors.cardBg,
-        borderRadius: BorderRadius.circular(14),
+        borderRadius: BorderRadius.circular(ZipherRadius.lg),
       ),
       child: Column(
         children: [
@@ -581,12 +581,12 @@ class _TxPlanState extends State<TxPlanPage> with WithLoadingAnimation {
                 opacity: canSend ? 1.0 : 0.4,
                 child: InkWell(
                   onTap: () => _sendOrSign(context),
-                  borderRadius: BorderRadius.circular(14),
+                  borderRadius: BorderRadius.circular(ZipherRadius.lg),
                   child: Container(
                     padding: const EdgeInsets.symmetric(vertical: 16),
                     decoration: BoxDecoration(
                       color: accent.withValues(alpha: 0.12),
-                      borderRadius: BorderRadius.circular(14),
+                      borderRadius: BorderRadius.circular(ZipherRadius.lg),
                     ),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
@@ -717,7 +717,7 @@ Widget? privacyToString(BuildContext context, int privacyLevel,
     ZipherColors.cyan,
     ZipherColors.purple,
     ZipherColors.purple,
-    ZipherColors.green,
+    ZipherColors.orchard,
   ];
   return getColoredButton(context, m, colors[privacyLevel],
       canSend: canSend, onSend: onSend);

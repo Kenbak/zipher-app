@@ -131,7 +131,7 @@ class _ContactsState extends State<ContactsPage> {
                         horizontal: 14, vertical: 12),
                     decoration: BoxDecoration(
                       color: ZipherColors.purple.withValues(alpha: 0.06),
-                      borderRadius: BorderRadius.circular(14),
+                      borderRadius: BorderRadius.circular(ZipherRadius.lg),
                     ),
                     child: Row(
                       children: [
@@ -326,14 +326,14 @@ class _ContactCard extends StatelessWidget {
       child: InkWell(
         onTap: onPress,
         onLongPress: onLongPress,
-        borderRadius: BorderRadius.circular(14),
+        borderRadius: BorderRadius.circular(ZipherRadius.lg),
         child: Container(
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
           decoration: BoxDecoration(
             color: selected
                 ? ZipherColors.cyan.withValues(alpha: 0.08)
                 : ZipherColors.cardBg,
-            borderRadius: BorderRadius.circular(14),
+            borderRadius: BorderRadius.circular(ZipherRadius.lg),
             border: selected
                 ? Border.all(
                     color: ZipherColors.cyan.withValues(alpha: 0.15))
@@ -367,7 +367,7 @@ class _ContactCard extends StatelessWidget {
                                 horizontal: 6, vertical: 2),
                             decoration: BoxDecoration(
                               color: ZipherColors.cardBgElevated,
-                              borderRadius: BorderRadius.circular(6),
+                              borderRadius: BorderRadius.circular(ZipherRadius.sm),
                             ),
                             child: Text(
                               chain.symbol,
@@ -520,7 +520,7 @@ class _ContactEditState extends State<ContactEditPage> {
               Container(
                 decoration: BoxDecoration(
                   color: ZipherColors.borderSubtle,
-                  borderRadius: BorderRadius.circular(14),
+                  borderRadius: BorderRadius.circular(ZipherRadius.lg),
                 ),
                 child: FormBuilderTextField(
                   name: 'name',
@@ -573,7 +573,7 @@ class _ContactEditState extends State<ContactEditPage> {
               Container(
                 decoration: BoxDecoration(
                   color: ZipherColors.borderSubtle,
-                  borderRadius: BorderRadius.circular(14),
+                  borderRadius: BorderRadius.circular(ZipherRadius.lg),
                 ),
                 child: FormBuilderTextField(
                   name: 'address',
@@ -696,7 +696,7 @@ class _ContactAddState extends State<ContactAddPage> {
               Container(
                 decoration: BoxDecoration(
                   color: ZipherColors.borderSubtle,
-                  borderRadius: BorderRadius.circular(14),
+                  borderRadius: BorderRadius.circular(ZipherRadius.lg),
                 ),
                 child: FormBuilderTextField(
                   name: 'name',
@@ -750,7 +750,7 @@ class _ContactAddState extends State<ContactAddPage> {
               Container(
                 decoration: BoxDecoration(
                   color: ZipherColors.borderSubtle,
-                  borderRadius: BorderRadius.circular(14),
+                  borderRadius: BorderRadius.circular(ZipherRadius.lg),
                 ),
                 child: Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -795,7 +795,7 @@ class _ContactAddState extends State<ContactAddPage> {
                           height: 36,
                           decoration: BoxDecoration(
                             color: ZipherColors.cardBgElevated,
-                            borderRadius: BorderRadius.circular(10),
+                            borderRadius: BorderRadius.circular(ZipherRadius.md),
                           ),
                           child: Icon(Icons.qr_code_rounded,
                               size: 18,
@@ -850,7 +850,7 @@ class _ChainSelector extends StatelessWidget {
         padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
         decoration: BoxDecoration(
           color: ZipherColors.borderSubtle,
-          borderRadius: BorderRadius.circular(14),
+          borderRadius: BorderRadius.circular(ZipherRadius.lg),
         ),
         child: Row(
           children: [
@@ -940,7 +940,7 @@ class _ChainPickerSheetState extends State<_ChainPickerSheet> {
             height: 4,
             decoration: BoxDecoration(
               color: ZipherColors.text10,
-              borderRadius: BorderRadius.circular(2),
+              borderRadius: BorderRadius.circular(ZipherRadius.xxs),
             ),
           ),
           Padding(
@@ -948,7 +948,7 @@ class _ChainPickerSheetState extends State<_ChainPickerSheet> {
             child: Container(
               decoration: BoxDecoration(
                 color: ZipherColors.borderSubtle,
-                borderRadius: BorderRadius.circular(12),
+                borderRadius: BorderRadius.circular(ZipherRadius.md),
               ),
               child: TextField(
                 onChanged: (v) => setState(() => _search = v),
@@ -984,7 +984,7 @@ class _ChainPickerSheetState extends State<_ChainPickerSheet> {
                   color: Colors.transparent,
                   child: InkWell(
                     onTap: () => widget.onSelected(chain),
-                    borderRadius: BorderRadius.circular(12),
+                    borderRadius: BorderRadius.circular(ZipherRadius.md),
                     child: Padding(
                       padding: const EdgeInsets.symmetric(
                           horizontal: 12, vertical: 10),

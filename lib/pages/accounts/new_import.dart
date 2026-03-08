@@ -136,7 +136,7 @@ class _NewImportAccountState extends State<NewImportAccountPage>
                 height: 64,
                 decoration: BoxDecoration(
                   color: _modeColor.withValues(alpha: 0.08),
-                  borderRadius: BorderRadius.circular(20),
+                  borderRadius: BorderRadius.circular(ZipherRadius.xl),
                   border: Border.all(
                     color: _modeColor.withValues(alpha: 0.08),
                   ),
@@ -167,12 +167,12 @@ class _NewImportAccountState extends State<NewImportAccountPage>
               Container(
                 decoration: BoxDecoration(
                   color: ZipherColors.cardBg,
-                  borderRadius: BorderRadius.circular(12),
+                  borderRadius: BorderRadius.circular(ZipherRadius.md),
                   border: Border.all(
                     color: ZipherColors.borderSubtle,
                   ),
                 ),
-                padding: const EdgeInsets.all(4),
+                padding: const EdgeInsets.all(ZipherSpacing.xs),
                 child: Row(
                   children: [
                     _buildTab('New', _mode == _Mode.create, () {
@@ -250,7 +250,7 @@ class _NewImportAccountState extends State<NewImportAccountPage>
                 child: Container(
                   decoration: BoxDecoration(
                     color: ZipherColors.cardBg,
-                    borderRadius: BorderRadius.circular(14),
+                    borderRadius: BorderRadius.circular(ZipherRadius.lg),
                     border: Border.all(
                       color: ZipherColors.borderSubtle,
                     ),
@@ -369,7 +369,7 @@ class _NewImportAccountState extends State<NewImportAccountPage>
                 padding: const EdgeInsets.all(14),
                 decoration: BoxDecoration(
                   color: ZipherColors.purple.withValues(alpha: 0.05),
-                  borderRadius: BorderRadius.circular(14),
+                  borderRadius: BorderRadius.circular(ZipherRadius.lg),
                   border: Border.all(
                     color: ZipherColors.purple.withValues(alpha: 0.08),
                   ),
@@ -417,7 +417,7 @@ class _NewImportAccountState extends State<NewImportAccountPage>
                 padding: const EdgeInsets.all(12),
                 decoration: BoxDecoration(
                   color: ZipherColors.red.withValues(alpha: 0.06),
-                  borderRadius: BorderRadius.circular(10),
+                  borderRadius: BorderRadius.circular(ZipherRadius.md),
                   border: Border.all(
                     color: ZipherColors.red.withValues(alpha: 0.1),
                   ),
@@ -453,7 +453,7 @@ class _NewImportAccountState extends State<NewImportAccountPage>
                   padding: const EdgeInsets.symmetric(vertical: 16),
                   decoration: BoxDecoration(
                     color: _modeColor.withValues(alpha: 0.12),
-                    borderRadius: BorderRadius.circular(14),
+                    borderRadius: BorderRadius.circular(ZipherRadius.lg),
                     border: Border.all(
                       color: _modeColor.withValues(alpha: 0.10),
                     ),
@@ -562,7 +562,7 @@ class _NewImportAccountState extends State<NewImportAccountPage>
             color: active
                 ? ZipherColors.cardBgElevated
                 : Colors.transparent,
-            borderRadius: BorderRadius.circular(9),
+            borderRadius: BorderRadius.circular(ZipherRadius.sm),
           ),
           child: Center(
             child: Text(
@@ -604,7 +604,7 @@ class _NewImportAccountState extends State<NewImportAccountPage>
       child: Container(
         decoration: BoxDecoration(
           color: ZipherColors.cardBg,
-          borderRadius: BorderRadius.circular(12),
+          borderRadius: BorderRadius.circular(ZipherRadius.md),
           border: Border.all(
             color: ZipherColors.borderSubtle,
           ),
@@ -647,7 +647,7 @@ class _NewImportAccountState extends State<NewImportAccountPage>
                 const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
             decoration: BoxDecoration(
               color: ZipherColors.cardBg,
-              borderRadius: BorderRadius.circular(12),
+              borderRadius: BorderRadius.circular(ZipherRadius.md),
               border: Border.all(
                 color: ZipherColors.borderSubtle,
               ),
@@ -709,7 +709,7 @@ class _NewImportAccountState extends State<NewImportAccountPage>
                           color: _birthdayDate?.year == y
                               ? ZipherColors.cyan.withValues(alpha: 0.12)
                               : ZipherColors.cardBg,
-                          borderRadius: BorderRadius.circular(8),
+                          borderRadius: BorderRadius.circular(ZipherRadius.sm),
                           border: Border.all(
                             color: _birthdayDate?.year == y
                                 ? ZipherColors.cyan
@@ -737,7 +737,7 @@ class _NewImportAccountState extends State<NewImportAccountPage>
           Container(
             decoration: BoxDecoration(
               color: ZipherColors.cardBg,
-              borderRadius: BorderRadius.circular(14),
+              borderRadius: BorderRadius.circular(ZipherRadius.lg),
               border: Border.all(
                 color: ZipherColors.cardBg,
               ),

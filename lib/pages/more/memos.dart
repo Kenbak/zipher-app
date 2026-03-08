@@ -176,7 +176,7 @@ class _FilterChip extends StatelessWidget {
           color: selected
               ? ZipherColors.purple.withValues(alpha: 0.15)
               : ZipherColors.cardBg,
-          borderRadius: BorderRadius.circular(16),
+          borderRadius: BorderRadius.circular(ZipherRadius.lg),
           border: Border.all(
             color: selected
                 ? ZipherColors.purple.withValues(alpha: 0.3)
@@ -265,7 +265,7 @@ class _MemoCard extends StatelessWidget {
         color: isSystem
             ? ZipherColors.cardBg
             : ZipherColors.cardBg,
-        borderRadius: BorderRadius.circular(12),
+        borderRadius: BorderRadius.circular(ZipherRadius.md),
         border: Border(
           left: BorderSide(
             width: 3,
@@ -288,7 +288,7 @@ class _MemoCard extends StatelessWidget {
                     color: isSystem
                         ? ZipherColors.cardBg
                         : ZipherColors.purple.withValues(alpha: 0.1),
-                    borderRadius: BorderRadius.circular(4),
+                    borderRadius: BorderRadius.circular(ZipherRadius.xs),
                   ),
                   child: Row(
                     mainAxisSize: MainAxisSize.min,
@@ -343,7 +343,7 @@ class _MemoCard extends StatelessWidget {
                       backgroundColor: ZipherColors.surface,
                       behavior: SnackBarBehavior.floating,
                       shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10)),
+                          borderRadius: BorderRadius.circular(ZipherRadius.md)),
                       duration: const Duration(seconds: 1),
                     ));
                   },

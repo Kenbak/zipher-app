@@ -273,7 +273,7 @@ class _QuickSendState extends State<QuickSendPage> with WithLoadingAnimation {
               height: 52,
               decoration: BoxDecoration(
                 color: ZipherColors.cardBg,
-                borderRadius: BorderRadius.circular(14),
+                borderRadius: BorderRadius.circular(ZipherRadius.lg),
               ),
               child: ContactAutocomplete(
                 controller: _addressController,
@@ -337,7 +337,7 @@ class _QuickSendState extends State<QuickSendPage> with WithLoadingAnimation {
     return GestureDetector(
       onTap: onTap,
       child: Padding(
-        padding: const EdgeInsets.all(8),
+        padding: const EdgeInsets.all(ZipherSpacing.sm),
         child: Icon(icon, size: 20,
             color: ZipherColors.text40),
       ),
@@ -375,7 +375,7 @@ class _QuickSendState extends State<QuickSendPage> with WithLoadingAnimation {
                 padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
                 decoration: BoxDecoration(
                   color: ZipherColors.cyan.withValues(alpha: 0.08),
-                  borderRadius: BorderRadius.circular(6),
+                  borderRadius: BorderRadius.circular(ZipherRadius.sm),
                 ),
                 child: Text(
                   'MAX',
@@ -394,7 +394,7 @@ class _QuickSendState extends State<QuickSendPage> with WithLoadingAnimation {
           height: 56,
           decoration: BoxDecoration(
             color: ZipherColors.cardBg,
-            borderRadius: BorderRadius.circular(14),
+            borderRadius: BorderRadius.circular(ZipherRadius.lg),
           ),
           child: TextField(
             controller: _amountController,
@@ -471,7 +471,7 @@ class _QuickSendState extends State<QuickSendPage> with WithLoadingAnimation {
         padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
         decoration: BoxDecoration(
           color: ZipherColors.cardBg,
-          borderRadius: BorderRadius.circular(14),
+          borderRadius: BorderRadius.circular(ZipherRadius.lg),
         ),
         child: Row(
           children: [
@@ -508,7 +508,7 @@ class _QuickSendState extends State<QuickSendPage> with WithLoadingAnimation {
         Container(
           decoration: BoxDecoration(
             color: ZipherColors.cardBg,
-            borderRadius: BorderRadius.circular(14),
+            borderRadius: BorderRadius.circular(ZipherRadius.lg),
           ),
           child: Column(
             children: [
@@ -595,7 +595,7 @@ class _QuickSendState extends State<QuickSendPage> with WithLoadingAnimation {
                     color: _includeReplyTo
                         ? ZipherColors.purple.withValues(alpha: 0.25)
                         : ZipherColors.borderSubtle,
-                    borderRadius: BorderRadius.circular(9),
+                    borderRadius: BorderRadius.circular(ZipherRadius.sm),
                   ),
                   child: AnimatedAlign(
                     duration: const Duration(milliseconds: 150),
@@ -671,12 +671,12 @@ class _QuickSendState extends State<QuickSendPage> with WithLoadingAnimation {
             color: Colors.transparent,
             child: InkWell(
               onTap: _review,
-              borderRadius: BorderRadius.circular(14),
+              borderRadius: BorderRadius.circular(ZipherRadius.lg),
               child: Container(
                 padding: const EdgeInsets.symmetric(vertical: 16),
                 decoration: BoxDecoration(
                   color: ZipherColors.cyan.withValues(alpha: 0.12),
-                  borderRadius: BorderRadius.circular(14),
+                  borderRadius: BorderRadius.circular(ZipherRadius.lg),
                 ),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -856,7 +856,7 @@ style: TextStyle(
         backgroundColor: ZipherColors.surface,
         behavior: SnackBarBehavior.floating,
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(12),
+          borderRadius: BorderRadius.circular(ZipherRadius.md),
           side: BorderSide(
             color: ZipherColors.red.withValues(alpha: 0.15),
           ),

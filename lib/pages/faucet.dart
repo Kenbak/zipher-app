@@ -84,10 +84,10 @@ class _FaucetPageState extends State<FaucetPage> {
               if (_address != null) ...[
                 Container(
                   width: double.infinity,
-                  padding: const EdgeInsets.all(16),
+                  padding: const EdgeInsets.all(ZipherSpacing.md),
                   decoration: BoxDecoration(
                     color: ZipherColors.cardBg,
-                    borderRadius: BorderRadius.circular(14),
+                    borderRadius: BorderRadius.circular(ZipherRadius.lg),
                     border: Border.all(color: ZipherColors.borderSubtle),
                   ),
                   child: Column(
@@ -166,7 +166,7 @@ class _FaucetPageState extends State<FaucetPage> {
                     padding: const EdgeInsets.symmetric(vertical: 14),
                     decoration: BoxDecoration(
                       color: ZipherColors.cardBg,
-                      borderRadius: BorderRadius.circular(14),
+                      borderRadius: BorderRadius.circular(ZipherRadius.lg),
                       border: Border.all(
                         color: ZipherColors.borderSubtle,
                       ),
@@ -195,10 +195,10 @@ class _FaucetPageState extends State<FaucetPage> {
 
               // Info text
               Container(
-                padding: const EdgeInsets.all(16),
+                padding: const EdgeInsets.all(ZipherSpacing.md),
                 decoration: BoxDecoration(
                   color: ZipherColors.orange.withValues(alpha: 0.04),
-                  borderRadius: BorderRadius.circular(14),
+                  borderRadius: BorderRadius.circular(ZipherRadius.lg),
                   border: Border.all(
                     color: ZipherColors.orange.withValues(alpha: 0.08),
                   ),

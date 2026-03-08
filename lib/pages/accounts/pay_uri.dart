@@ -112,12 +112,12 @@ class _PaymentURIState extends State<PaymentURIPage> {
                   color: Colors.transparent,
                   child: InkWell(
                     onTap: () => _openRequestPayment(shielded),
-                    borderRadius: BorderRadius.circular(14),
+                    borderRadius: BorderRadius.circular(ZipherRadius.lg),
                     child: Container(
                       padding: const EdgeInsets.symmetric(vertical: 16),
                       decoration: BoxDecoration(
                         color: ZipherColors.cyan.withValues(alpha: 0.12),
-                        borderRadius: BorderRadius.circular(14),
+                        borderRadius: BorderRadius.circular(ZipherRadius.lg),
                       ),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.center,
@@ -237,10 +237,10 @@ class _AddressCard extends StatelessWidget {
     final textAlpha = primary ? 0.9 : 0.5;
 
     return Container(
-      padding: const EdgeInsets.all(16),
+      padding: const EdgeInsets.all(ZipherSpacing.md),
       decoration: BoxDecoration(
         color: accentColor.withValues(alpha: primary ? 0.06 : 0.03),
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: BorderRadius.circular(ZipherRadius.lg),
         border: Border.all(
           color: accentColor.withValues(alpha: primary ? 0.12 : 0.06),
         ),
@@ -329,7 +329,7 @@ class _SmallIconBtn extends StatelessWidget {
         height: 32,
         decoration: BoxDecoration(
           color: ZipherColors.cardBgElevated,
-          borderRadius: BorderRadius.circular(8),
+          borderRadius: BorderRadius.circular(ZipherRadius.sm),
         ),
         child: Icon(icon,
             size: 16, color: alpha > 0.7 ? ZipherColors.text60 : ZipherColors.text40),
@@ -360,7 +360,7 @@ class _QRSheet extends StatelessWidget {
               height: 4,
               decoration: BoxDecoration(
                 color: ZipherColors.text20,
-                borderRadius: BorderRadius.circular(2),
+                borderRadius: BorderRadius.circular(ZipherRadius.xxs),
               ),
             ),
             const Gap(16),
@@ -375,7 +375,7 @@ class _QRSheet extends StatelessWidget {
             const Gap(16),
             // QR Code
             ClipRRect(
-              borderRadius: BorderRadius.circular(14),
+              borderRadius: BorderRadius.circular(ZipherRadius.lg),
               child: QrImage(
                 data: data,
                 version: QrVersions.auto,
@@ -504,7 +504,7 @@ class _RequestPaymentSheetState extends State<_RequestPaymentSheet> {
               height: 4,
               decoration: BoxDecoration(
                 color: ZipherColors.text20,
-                borderRadius: BorderRadius.circular(2),
+                borderRadius: BorderRadius.circular(ZipherRadius.xxs),
               ),
             ),
             const Gap(16),
@@ -620,7 +620,7 @@ class _RequestPaymentSheetState extends State<_RequestPaymentSheet> {
             filled: true,
             fillColor: ZipherColors.cardBg,
             border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(12),
+              borderRadius: BorderRadius.circular(ZipherRadius.md),
               borderSide: BorderSide.none,
             ),
             contentPadding:
@@ -646,7 +646,7 @@ class _RequestPaymentSheetState extends State<_RequestPaymentSheet> {
             filled: true,
             fillColor: ZipherColors.cardBg,
             border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(12),
+              borderRadius: BorderRadius.circular(ZipherRadius.md),
               borderSide: BorderSide.none,
             ),
           ),
@@ -717,7 +717,7 @@ class _RequestPaymentSheetState extends State<_RequestPaymentSheet> {
             padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
             decoration: BoxDecoration(
               color: ZipherColors.purple.withValues(alpha: 0.1),
-              borderRadius: BorderRadius.circular(6),
+              borderRadius: BorderRadius.circular(ZipherRadius.sm),
             ),
             child: Row(
               mainAxisSize: MainAxisSize.min,
@@ -753,7 +753,7 @@ class _RequestPaymentSheetState extends State<_RequestPaymentSheet> {
         const Gap(16),
         // QR code
         ClipRRect(
-          borderRadius: BorderRadius.circular(14),
+          borderRadius: BorderRadius.circular(ZipherRadius.lg),
           child: QrImage(
             data: _paymentURI,
             version: QrVersions.auto,
@@ -824,12 +824,12 @@ class _SheetButton extends StatelessWidget {
       color: Colors.transparent,
       child: InkWell(
         onTap: onTap,
-        borderRadius: BorderRadius.circular(12),
+        borderRadius: BorderRadius.circular(ZipherRadius.md),
         child: Container(
           padding: const EdgeInsets.symmetric(vertical: 14),
           decoration: BoxDecoration(
             color: color.withValues(alpha: bgAlpha),
-            borderRadius: BorderRadius.circular(12),
+            borderRadius: BorderRadius.circular(ZipherRadius.md),
           ),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,

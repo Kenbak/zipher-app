@@ -83,7 +83,7 @@ class _WelcomePageState extends State<WelcomePage>
                     builder: (context, child) {
                       return Container(
                         decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(28),
+                          borderRadius: BorderRadius.circular(ZipherRadius.xxl),
                           boxShadow: [
                             BoxShadow(
                               color: ZipherColors.cyan.withValues(
@@ -97,7 +97,7 @@ class _WelcomePageState extends State<WelcomePage>
                       );
                     },
                     child: ClipRRect(
-                      borderRadius: BorderRadius.circular(28),
+                      borderRadius: BorderRadius.circular(ZipherRadius.xxl),
                       child:
                           Image.asset('assets/zipher_logo.png', height: 88),
                     ),

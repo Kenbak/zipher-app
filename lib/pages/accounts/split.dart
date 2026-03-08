@@ -405,7 +405,7 @@ class _SplitBillState extends State<SplitBillPage> with WithLoadingAnimation {
                       const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
                   decoration: BoxDecoration(
                     color: ZipherColors.cyan.withValues(alpha: 0.08),
-                    borderRadius: BorderRadius.circular(6),
+                    borderRadius: BorderRadius.circular(ZipherRadius.sm),
                   ),
                   child: Row(
                     mainAxisSize: MainAxisSize.min,
@@ -435,7 +435,7 @@ class _SplitBillState extends State<SplitBillPage> with WithLoadingAnimation {
           height: 56,
           decoration: BoxDecoration(
             color: ZipherColors.cardBg,
-            borderRadius: BorderRadius.circular(14),
+            borderRadius: BorderRadius.circular(ZipherRadius.lg),
           ),
           child: TextField(
             controller: _totalController,
@@ -531,10 +531,10 @@ class _SplitBillState extends State<SplitBillPage> with WithLoadingAnimation {
 
   Widget _buildSplitMode() {
     return Container(
-      padding: const EdgeInsets.all(4),
+      padding: const EdgeInsets.all(ZipherSpacing.xs),
       decoration: BoxDecoration(
         color: ZipherColors.cardBg,
-        borderRadius: BorderRadius.circular(14),
+        borderRadius: BorderRadius.circular(ZipherRadius.lg),
       ),
       child: Row(
         children: [
@@ -562,7 +562,7 @@ class _SplitBillState extends State<SplitBillPage> with WithLoadingAnimation {
             color: active
                 ? ZipherColors.cyan.withValues(alpha: 0.12)
                 : Colors.transparent,
-            borderRadius: BorderRadius.circular(12),
+            borderRadius: BorderRadius.circular(ZipherRadius.md),
           ),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -615,12 +615,12 @@ class _SplitBillState extends State<SplitBillPage> with WithLoadingAnimation {
             color: Colors.transparent,
             child: InkWell(
               onTap: _addRecipient,
-              borderRadius: BorderRadius.circular(14),
+              borderRadius: BorderRadius.circular(ZipherRadius.lg),
               child: Container(
                 padding: const EdgeInsets.symmetric(vertical: 14),
                 decoration: BoxDecoration(
                   color: ZipherColors.cardBg,
-                  borderRadius: BorderRadius.circular(14),
+                  borderRadius: BorderRadius.circular(ZipherRadius.lg),
                   border: Border.all(
                     color: ZipherColors.cyan.withValues(alpha: 0.12),
                   ),
@@ -658,7 +658,7 @@ class _SplitBillState extends State<SplitBillPage> with WithLoadingAnimation {
       padding: const EdgeInsets.all(14),
       decoration: BoxDecoration(
         color: ZipherColors.cardBg,
-        borderRadius: BorderRadius.circular(14),
+        borderRadius: BorderRadius.circular(ZipherRadius.lg),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -746,7 +746,7 @@ class _SplitBillState extends State<SplitBillPage> with WithLoadingAnimation {
               height: 52,
               decoration: BoxDecoration(
                 color: ZipherColors.cardBgElevated,
-                borderRadius: BorderRadius.circular(14),
+                borderRadius: BorderRadius.circular(ZipherRadius.lg),
               ),
               child: Row(
                 children: [
@@ -797,7 +797,7 @@ class _SplitBillState extends State<SplitBillPage> with WithLoadingAnimation {
                   const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
               decoration: BoxDecoration(
                 color: ZipherColors.cardBgElevated,
-                borderRadius: BorderRadius.circular(14),
+                borderRadius: BorderRadius.circular(ZipherRadius.lg),
               ),
               child: Text(
                 _truncateAddr(r.addressController.text),
@@ -815,7 +815,7 @@ class _SplitBillState extends State<SplitBillPage> with WithLoadingAnimation {
               height: 52,
               decoration: BoxDecoration(
                 color: ZipherColors.cardBgElevated,
-                borderRadius: BorderRadius.circular(14),
+                borderRadius: BorderRadius.circular(ZipherRadius.lg),
               ),
               child: TextField(
                 controller: r.amountController,
@@ -927,7 +927,7 @@ class _SplitBillState extends State<SplitBillPage> with WithLoadingAnimation {
     return GestureDetector(
       onTap: onTap,
       child: Padding(
-        padding: const EdgeInsets.all(8),
+        padding: const EdgeInsets.all(ZipherSpacing.sm),
         child: Icon(icon, size: 20, color: ZipherColors.text40),
       ),
     );
@@ -968,7 +968,7 @@ class _SplitBillState extends State<SplitBillPage> with WithLoadingAnimation {
             Container(
               decoration: BoxDecoration(
                 color: ZipherColors.cardBg,
-                borderRadius: BorderRadius.circular(14),
+                borderRadius: BorderRadius.circular(ZipherRadius.lg),
               ),
               child: TextField(
                 controller: controller,
@@ -985,7 +985,7 @@ class _SplitBillState extends State<SplitBillPage> with WithLoadingAnimation {
                   border: InputBorder.none,
                   enabledBorder: InputBorder.none,
                   focusedBorder: InputBorder.none,
-                  contentPadding: const EdgeInsets.all(16),
+                  contentPadding: const EdgeInsets.all(ZipherSpacing.md),
                 counterStyle:
                     TextStyle(fontSize: 11, color: ZipherColors.text40),
                 ),
@@ -1002,12 +1002,12 @@ class _SplitBillState extends State<SplitBillPage> with WithLoadingAnimation {
                     Navigator.of(ctx).pop();
                     setState(() {});
                   },
-                  borderRadius: BorderRadius.circular(14),
+                  borderRadius: BorderRadius.circular(ZipherRadius.lg),
                   child: Container(
                     padding: const EdgeInsets.symmetric(vertical: 16),
                     decoration: BoxDecoration(
                       color: ZipherColors.cyan.withValues(alpha: 0.12),
-                      borderRadius: BorderRadius.circular(14),
+                      borderRadius: BorderRadius.circular(ZipherRadius.lg),
                     ),
                     child: Center(
                       child: Text(
@@ -1045,7 +1045,7 @@ class _SplitBillState extends State<SplitBillPage> with WithLoadingAnimation {
       padding: const EdgeInsets.all(14),
       decoration: BoxDecoration(
         color: ZipherColors.cardBg,
-        borderRadius: BorderRadius.circular(14),
+        borderRadius: BorderRadius.circular(ZipherRadius.lg),
       ),
       child: Column(
         children: [
@@ -1097,7 +1097,7 @@ class _SplitBillState extends State<SplitBillPage> with WithLoadingAnimation {
                   horizontal: 12, vertical: 8),
               decoration: BoxDecoration(
                 color: ZipherColors.orange.withValues(alpha: 0.06),
-                borderRadius: BorderRadius.circular(10),
+                borderRadius: BorderRadius.circular(ZipherRadius.md),
                 border: Border.all(
                   color: ZipherColors.orange.withValues(alpha: 0.12),
                 ),
@@ -1131,7 +1131,7 @@ class _SplitBillState extends State<SplitBillPage> with WithLoadingAnimation {
                   horizontal: 12, vertical: 8),
               decoration: BoxDecoration(
                 color: ZipherColors.cardBgElevated,
-                borderRadius: BorderRadius.circular(10),
+                borderRadius: BorderRadius.circular(ZipherRadius.md),
               ),
               child: Row(
                 children: [
@@ -1200,12 +1200,12 @@ class _SplitBillState extends State<SplitBillPage> with WithLoadingAnimation {
             color: Colors.transparent,
             child: InkWell(
               onTap: _review,
-              borderRadius: BorderRadius.circular(14),
+              borderRadius: BorderRadius.circular(ZipherRadius.lg),
               child: Container(
                 padding: const EdgeInsets.symmetric(vertical: 16),
                 decoration: BoxDecoration(
                   color: ZipherColors.cyan.withValues(alpha: 0.12),
-                  borderRadius: BorderRadius.circular(14),
+                  borderRadius: BorderRadius.circular(ZipherRadius.lg),
                 ),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -1320,7 +1320,7 @@ class _SplitBillState extends State<SplitBillPage> with WithLoadingAnimation {
         backgroundColor: ZipherColors.surface,
         behavior: SnackBarBehavior.floating,
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(12),
+          borderRadius: BorderRadius.circular(ZipherRadius.md),
           side: BorderSide(
             color: ZipherColors.red.withValues(alpha: 0.15),
           ),

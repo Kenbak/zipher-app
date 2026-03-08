@@ -251,7 +251,7 @@ class _NearSwapPageState extends State<NearSwapPage> with WithLoadingAnimation {
                     padding: const EdgeInsets.all(14),
                     decoration: BoxDecoration(
                       color: ZipherColors.cardBg,
-                      borderRadius: BorderRadius.circular(12),
+                      borderRadius: BorderRadius.circular(ZipherRadius.md),
                     ),
                     child: Column(
                       children: [
@@ -288,7 +288,7 @@ class _NearSwapPageState extends State<NearSwapPage> with WithLoadingAnimation {
                       padding: const EdgeInsets.all(14),
                       decoration: BoxDecoration(
                         color: ZipherColors.cardBg,
-                        borderRadius: BorderRadius.circular(12),
+                        borderRadius: BorderRadius.circular(ZipherRadius.md),
                         border: Border.all(color: ZipherColors.borderSubtle),
                       ),
                       child: Column(
@@ -382,7 +382,7 @@ class _NearSwapPageState extends State<NearSwapPage> with WithLoadingAnimation {
                       padding: const EdgeInsets.symmetric(vertical: 16),
                       decoration: BoxDecoration(
                         color: ZipherColors.cyan.withValues(alpha: 0.12),
-                        borderRadius: BorderRadius.circular(14),
+                        borderRadius: BorderRadius.circular(ZipherRadius.lg),
                       ),
                       child: Center(
                         child: Text('Confirm', style: TextStyle(
@@ -411,7 +411,7 @@ class _NearSwapPageState extends State<NearSwapPage> with WithLoadingAnimation {
       padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 12),
       decoration: BoxDecoration(
         color: color.withValues(alpha: 0.06),
-        borderRadius: BorderRadius.circular(14),
+        borderRadius: BorderRadius.circular(ZipherRadius.lg),
         border: Border.all(color: color.withValues(alpha: 0.10)),
       ),
       child: Column(
@@ -632,7 +632,7 @@ class _NearSwapPageState extends State<NearSwapPage> with WithLoadingAnimation {
                 padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 10),
                 decoration: BoxDecoration(
                   color: ZipherColors.cyan.withValues(alpha: 0.10),
-                  borderRadius: BorderRadius.circular(10),
+                  borderRadius: BorderRadius.circular(ZipherRadius.md),
                   border: Border.all(color: ZipherColors.cyan.withValues(alpha: 0.15)),
                 ),
                 child: Text('Retry', style: TextStyle(
@@ -770,7 +770,7 @@ class _NearSwapPageState extends State<NearSwapPage> with WithLoadingAnimation {
                   padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
                   decoration: BoxDecoration(
                     color: ZipherColors.cyan.withValues(alpha: 0.08),
-                    borderRadius: BorderRadius.circular(6),
+                    borderRadius: BorderRadius.circular(ZipherRadius.sm),
                   ),
                   child: Text('MAX', style: TextStyle(
                     fontSize: 11, fontWeight: FontWeight.w600,
@@ -786,7 +786,7 @@ class _NearSwapPageState extends State<NearSwapPage> with WithLoadingAnimation {
           height: 56,
           decoration: BoxDecoration(
             color: ZipherColors.cardBg,
-            borderRadius: BorderRadius.circular(14),
+            borderRadius: BorderRadius.circular(ZipherRadius.lg),
           ),
           child: Row(
             children: [
@@ -858,7 +858,7 @@ class _NearSwapPageState extends State<NearSwapPage> with WithLoadingAnimation {
           height: 56,
           decoration: BoxDecoration(
             color: ZipherColors.cardBg,
-            borderRadius: BorderRadius.circular(14),
+            borderRadius: BorderRadius.circular(ZipherRadius.lg),
           ),
           child: Row(
             children: [
@@ -906,7 +906,7 @@ class _NearSwapPageState extends State<NearSwapPage> with WithLoadingAnimation {
         padding: const EdgeInsets.fromLTRB(6, 6, 12, 6),
         decoration: BoxDecoration(
           color: isZecSide ? Colors.transparent : ZipherColors.cardBgElevated,
-          borderRadius: BorderRadius.circular(20),
+          borderRadius: BorderRadius.circular(ZipherRadius.xl),
         ),
         child: Row(
           mainAxisSize: MainAxisSize.min,
@@ -981,7 +981,7 @@ class _NearSwapPageState extends State<NearSwapPage> with WithLoadingAnimation {
                     child: Container(
                       decoration: BoxDecoration(
                         color: ZipherColors.cardBg,
-                        borderRadius: BorderRadius.circular(12),
+                        borderRadius: BorderRadius.circular(ZipherRadius.md),
                         border: Border.all(color: ZipherColors.borderSubtle),
                       ),
                       child: TextField(
@@ -1015,7 +1015,7 @@ class _NearSwapPageState extends State<NearSwapPage> with WithLoadingAnimation {
                           child: Material(
                             color: Colors.transparent,
                             child: InkWell(
-                              borderRadius: BorderRadius.circular(12),
+                              borderRadius: BorderRadius.circular(ZipherRadius.md),
                               onTap: () {
                                 final chainChanged = _selectedToken?.blockchain != t.blockchain;
                                 setState(() {
@@ -1032,7 +1032,7 @@ class _NearSwapPageState extends State<NearSwapPage> with WithLoadingAnimation {
                                   color: isSelected
                                       ? ZipherColors.cardBg
                                       : Colors.transparent,
-                                  borderRadius: BorderRadius.circular(12),
+                                  borderRadius: BorderRadius.circular(ZipherRadius.md),
                                 ),
                                 child: Row(
                                   children: [
@@ -1097,7 +1097,7 @@ class _NearSwapPageState extends State<NearSwapPage> with WithLoadingAnimation {
           height: 52,
           decoration: BoxDecoration(
             color: ZipherColors.cardBg,
-            borderRadius: BorderRadius.circular(14),
+            borderRadius: BorderRadius.circular(ZipherRadius.lg),
           ),
           child: Row(
             children: [
@@ -1153,7 +1153,7 @@ class _NearSwapPageState extends State<NearSwapPage> with WithLoadingAnimation {
     return GestureDetector(
       onTap: onTap,
       child: Padding(
-        padding: const EdgeInsets.all(8),
+        padding: const EdgeInsets.all(ZipherSpacing.sm),
         child: Icon(icon, size: 20,
             color: ZipherColors.text40),
       ),
@@ -1185,7 +1185,7 @@ class _NearSwapPageState extends State<NearSwapPage> with WithLoadingAnimation {
                       color: _slippageBps == bps
                           ? ZipherColors.cyan.withValues(alpha: 0.10)
                           : ZipherColors.cardBg,
-                      borderRadius: BorderRadius.circular(8),
+                      borderRadius: BorderRadius.circular(ZipherRadius.sm),
                       border: Border.all(
                         color: _slippageBps == bps
                             ? ZipherColors.cyan.withValues(alpha: 0.20)
@@ -1238,7 +1238,7 @@ class _NearSwapPageState extends State<NearSwapPage> with WithLoadingAnimation {
       padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
         color: ZipherColors.red.withValues(alpha: 0.06),
-        borderRadius: BorderRadius.circular(12),
+        borderRadius: BorderRadius.circular(ZipherRadius.md),
         border: Border.all(color: ZipherColors.red.withValues(alpha: 0.10)),
       ),
       child: Row(
@@ -1271,7 +1271,7 @@ class _NearSwapPageState extends State<NearSwapPage> with WithLoadingAnimation {
       color: Colors.transparent,
       child: InkWell(
         onTap: enabled ? _getQuote : null,
-        borderRadius: BorderRadius.circular(14),
+        borderRadius: BorderRadius.circular(ZipherRadius.lg),
         child: Container(
           width: double.infinity,
           padding: const EdgeInsets.symmetric(vertical: 16),
@@ -1279,7 +1279,7 @@ class _NearSwapPageState extends State<NearSwapPage> with WithLoadingAnimation {
             color: enabled
                 ? ZipherColors.cyan.withValues(alpha: 0.12)
                 : ZipherColors.cardBg,
-            borderRadius: BorderRadius.circular(14),
+            borderRadius: BorderRadius.circular(ZipherRadius.lg),
           ),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,

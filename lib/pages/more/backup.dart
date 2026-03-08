@@ -236,7 +236,7 @@ class _BackupState extends State<BackupPage> with WidgetsBindingObserver {
                     padding: const EdgeInsets.all(14),
                     decoration: BoxDecoration(
                       color: ZipherColors.orange.withValues(alpha: 0.08),
-                      borderRadius: BorderRadius.circular(14),
+                      borderRadius: BorderRadius.circular(ZipherRadius.lg),
                       border: Border.all(
                         color:
                             ZipherColors.orange.withValues(alpha: 0.15),
@@ -274,7 +274,7 @@ class _BackupState extends State<BackupPage> with WidgetsBindingObserver {
                     padding: const EdgeInsets.all(14),
                     decoration: BoxDecoration(
                       color: ZipherColors.cardBg,
-                      borderRadius: BorderRadius.circular(14),
+                      borderRadius: BorderRadius.circular(ZipherRadius.lg),
                       border: Border.all(
                         color: ZipherColors.borderSubtle,
                       ),
@@ -527,13 +527,13 @@ class _BackupState extends State<BackupPage> with WidgetsBindingObserver {
                             child: InkWell(
                               onTap: () => _startVerification(
                                   (_keychainSeed ?? backup.seed)!),
-                              borderRadius: BorderRadius.circular(14),
+                              borderRadius: BorderRadius.circular(ZipherRadius.lg),
                               child: Container(
                                 width: double.infinity,
                                 padding: const EdgeInsets.symmetric(vertical: 14),
                                 decoration: BoxDecoration(
                                   color: ZipherColors.cyan.withValues(alpha: 0.12),
-                                  borderRadius: BorderRadius.circular(14),
+                                  borderRadius: BorderRadius.circular(ZipherRadius.lg),
                                 ),
                                 child: Row(
                                   mainAxisAlignment: MainAxisAlignment.center,
@@ -560,7 +560,7 @@ class _BackupState extends State<BackupPage> with WidgetsBindingObserver {
                             padding: const EdgeInsets.symmetric(vertical: 14),
                             decoration: BoxDecoration(
                               color: ZipherColors.green.withValues(alpha: 0.08),
-                              borderRadius: BorderRadius.circular(14),
+                              borderRadius: BorderRadius.circular(ZipherRadius.lg),
                               border: Border.all(
                                 color: ZipherColors.green.withValues(alpha: 0.15),
                               ),
@@ -619,7 +619,7 @@ class _BackupState extends State<BackupPage> with WidgetsBindingObserver {
                       ZipherColors.green.withValues(alpha: 0.8),
                   behavior: SnackBarBehavior.floating,
                   shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10)),
+                      borderRadius: BorderRadius.circular(ZipherRadius.md)),
                   duration: const Duration(seconds: 2),
                 ),
               );
@@ -632,7 +632,7 @@ class _BackupState extends State<BackupPage> with WidgetsBindingObserver {
                       ZipherColors.red.withValues(alpha: 0.8),
                   behavior: SnackBarBehavior.floating,
                   shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10)),
+                      borderRadius: BorderRadius.circular(ZipherRadius.md)),
                   duration: const Duration(seconds: 3),
                 ),
               );
@@ -720,7 +720,7 @@ class _KeyCard extends StatelessWidget {
       padding: const EdgeInsets.all(14),
       decoration: BoxDecoration(
         color: accentColor.withValues(alpha: 0.03),
-        borderRadius: BorderRadius.circular(14),
+        borderRadius: BorderRadius.circular(ZipherRadius.lg),
         border: Border.all(
           color: accentColor.withValues(alpha: 0.08),
         ),
@@ -749,7 +749,7 @@ class _KeyCard extends StatelessWidget {
                       const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
                   decoration: BoxDecoration(
                     color: ZipherColors.green.withValues(alpha: 0.08),
-                    borderRadius: BorderRadius.circular(4),
+                    borderRadius: BorderRadius.circular(ZipherRadius.xs),
                   ),
                   child: Text(
                     'READ-ONLY',
@@ -796,7 +796,7 @@ class _KeyCard extends StatelessWidget {
                     padding: const EdgeInsets.symmetric(vertical: 18),
                     decoration: BoxDecoration(
                       color: ZipherColors.cardBg,
-                      borderRadius: BorderRadius.circular(10),
+                      borderRadius: BorderRadius.circular(ZipherRadius.md),
                     ),
                     child: Column(
                       children: [
@@ -865,7 +865,7 @@ class _KeyCard extends StatelessWidget {
         padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
         decoration: BoxDecoration(
           color: ZipherColors.cardBg,
-          borderRadius: BorderRadius.circular(8),
+          borderRadius: BorderRadius.circular(ZipherRadius.sm),
         ),
         child: Row(
           mainAxisSize: MainAxisSize.min,
@@ -998,7 +998,7 @@ class _SeedVerificationState extends State<_SeedVerificationPage> {
                 Container(
                   decoration: BoxDecoration(
                     color: ZipherColors.cardBg,
-                    borderRadius: BorderRadius.circular(14),
+                    borderRadius: BorderRadius.circular(ZipherRadius.lg),
                     border: Border.all(color: ZipherColors.borderSubtle),
                   ),
                   child: TextField(
@@ -1040,12 +1040,12 @@ class _SeedVerificationState extends State<_SeedVerificationPage> {
                   color: Colors.transparent,
                   child: InkWell(
                     onTap: _verify,
-                    borderRadius: BorderRadius.circular(14),
+                    borderRadius: BorderRadius.circular(ZipherRadius.lg),
                     child: Container(
                       padding: const EdgeInsets.symmetric(vertical: 16),
                       decoration: BoxDecoration(
                         color: ZipherColors.cyan.withValues(alpha: 0.12),
-                        borderRadius: BorderRadius.circular(14),
+                        borderRadius: BorderRadius.circular(ZipherRadius.lg),
                       ),
                       child: Center(
                         child: Text(

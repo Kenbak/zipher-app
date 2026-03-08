@@ -129,7 +129,7 @@ class _MorePageState extends State<MorePage> {
               Container(
                 decoration: BoxDecoration(
                   color: ZipherColors.cardBg,
-                  borderRadius: BorderRadius.circular(14),
+                  borderRadius: BorderRadius.circular(ZipherRadius.lg),
                   border: Border.all(
                     color: ZipherColors.borderSubtle,
                   ),
@@ -221,7 +221,7 @@ class _MorePageState extends State<MorePage> {
     return Container(
       decoration: BoxDecoration(
         color: ZipherColors.cardBg,
-        borderRadius: BorderRadius.circular(14),
+        borderRadius: BorderRadius.circular(ZipherRadius.lg),
         border: Border.all(
           color: ZipherColors.borderSubtle,
         ),
@@ -309,7 +309,7 @@ class _TestnetToggleState extends State<_TestnetToggle> {
               height: 32,
               decoration: BoxDecoration(
                 color: ZipherColors.orange.withValues(alpha: 0.1),
-                borderRadius: BorderRadius.circular(8),
+                borderRadius: BorderRadius.circular(ZipherRadius.sm),
               ),
               child: Icon(Icons.science_outlined,
                   size: 16, color: ZipherColors.orange),
@@ -470,7 +470,7 @@ class _SettingsItem extends StatelessWidget {
                 height: 32,
                 decoration: BoxDecoration(
                   color: iconColor.withValues(alpha: 0.1),
-                  borderRadius: BorderRadius.circular(8),
+                  borderRadius: BorderRadius.circular(ZipherRadius.sm),
                 ),
                 child: Icon(icon, size: 16, color: iconColor),
               ),

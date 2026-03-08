@@ -122,7 +122,7 @@ Future<bool> showMessageBox2(BuildContext context, String title, String content,
       builder: (context) => Dialog(
             backgroundColor: ZipherColors.surface,
             shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(20),
+              borderRadius: BorderRadius.circular(ZipherRadius.xl),
               side: BorderSide(
                 color: ZipherColors.borderSubtle,
               ),
@@ -174,7 +174,7 @@ Future<bool> showMessageBox2(BuildContext context, String title, String content,
                           padding: const EdgeInsets.symmetric(vertical: 12),
                           decoration: BoxDecoration(
                             color: ZipherColors.cyan.withValues(alpha: 0.10),
-                            borderRadius: BorderRadius.circular(12),
+                            borderRadius: BorderRadius.circular(ZipherRadius.md),
                           ),
                           child: Center(
                             child: Text(
@@ -379,7 +379,7 @@ Future<bool> showConfirmDialog(
           builder: (context) => Dialog(
                 backgroundColor: ZipherColors.surface,
                 shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(20),
+                  borderRadius: BorderRadius.circular(ZipherRadius.xl),
                   side: BorderSide(
                     color: ZipherColors.borderSubtle,
                   ),
@@ -436,7 +436,7 @@ Future<bool> showConfirmDialog(
                                 decoration: BoxDecoration(
                                   color:
                                       ZipherColors.cardBg,
-                                  borderRadius: BorderRadius.circular(12),
+                                  borderRadius: BorderRadius.circular(ZipherRadius.md),
                                   border: Border.all(
                                     color: ZipherColors.borderSubtle,
                                   ),
@@ -465,7 +465,7 @@ Future<bool> showConfirmDialog(
                                 decoration: BoxDecoration(
                                   color:
                                       accentColor.withValues(alpha: 0.12),
-                                  borderRadius: BorderRadius.circular(12),
+                                  borderRadius: BorderRadius.circular(ZipherRadius.md),
                                 ),
                                 child: Center(
                                   child: Text(
@@ -949,7 +949,7 @@ class _ContactAutocompleteState extends State<ContactAutocomplete> {
               constraints: const BoxConstraints(maxHeight: 180),
               decoration: BoxDecoration(
                 color: const Color(0xFF1A1A2E),
-                borderRadius: BorderRadius.circular(12),
+                borderRadius: BorderRadius.circular(ZipherRadius.md),
                 border: Border.all(
                   color: ZipherColors.borderSubtle,
                 ),
@@ -962,7 +962,7 @@ class _ContactAutocompleteState extends State<ContactAutocomplete> {
                 ],
               ),
               child: ClipRRect(
-                borderRadius: BorderRadius.circular(12),
+                borderRadius: BorderRadius.circular(ZipherRadius.md),
                 child: ListView.separated(
                   padding: EdgeInsets.zero,
                   shrinkWrap: true,

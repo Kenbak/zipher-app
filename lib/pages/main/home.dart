@@ -281,7 +281,7 @@ class _HomeState extends State<HomePageInner> {
                           height: 32,
                           decoration: BoxDecoration(
                             color: ZipherColors.cyan.withValues(alpha: 0.10),
-                            borderRadius: BorderRadius.circular(10),
+                            borderRadius: BorderRadius.circular(ZipherRadius.md),
                           ),
                           child: Center(
                             child: _accountEmoji != null
@@ -619,7 +619,7 @@ class _HomeState extends State<HomePageInner> {
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
         decoration: BoxDecoration(
           color: ZipherColors.orange.withValues(alpha: 0.08),
-          borderRadius: BorderRadius.circular(12),
+          borderRadius: BorderRadius.circular(ZipherRadius.md),
         ),
         child: Row(
           children: [
@@ -735,7 +735,7 @@ class _BalanceBreakdown extends StatelessWidget {
       clipBehavior: Clip.antiAlias,
       decoration: BoxDecoration(
         color: ZipherColors.cardBg,
-        borderRadius: BorderRadius.circular(14),
+        borderRadius: BorderRadius.circular(ZipherRadius.lg),
         border: Border.all(
           color: ZipherColors.borderSubtle,
         ),
@@ -837,7 +837,7 @@ class _BalanceBreakdown extends StatelessWidget {
                                 horizontal: 12, vertical: 6),
                             decoration: BoxDecoration(
                               color: ZipherColors.cardBgElevated,
-                              borderRadius: BorderRadius.circular(8),
+                              borderRadius: BorderRadius.circular(ZipherRadius.sm),
                             ),
                             child: Row(
                               mainAxisSize: MainAxisSize.min,
@@ -991,12 +991,12 @@ class _ActionButton extends StatelessWidget {
       color: Colors.transparent,
       child: InkWell(
         onTap: onTap,
-        borderRadius: BorderRadius.circular(14),
+        borderRadius: BorderRadius.circular(ZipherRadius.lg),
         child: Container(
           padding: const EdgeInsets.symmetric(vertical: 14),
           decoration: BoxDecoration(
             color: ZipherColors.cardBgElevated,
-            borderRadius: BorderRadius.circular(14),
+            borderRadius: BorderRadius.circular(ZipherRadius.lg),
             border: Border.all(
               color: ZipherColors.borderSubtle,
             ),
@@ -1146,9 +1146,9 @@ class _TxRowState extends State<_TxRow> {
       padding: const EdgeInsets.symmetric(vertical: 3),
       child: Material(
         color: Colors.transparent,
-        borderRadius: BorderRadius.circular(14),
+        borderRadius: BorderRadius.circular(ZipherRadius.lg),
         child: InkWell(
-          borderRadius: BorderRadius.circular(14),
+          borderRadius: BorderRadius.circular(ZipherRadius.lg),
           onTap: () {
             if (isSwapDeposit && swapInfo!.provider == 'near_intents') {
               GoRouter.of(context).push('/swap/status', extra: {
@@ -1167,7 +1167,7 @@ class _TxRowState extends State<_TxRow> {
                 const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
             decoration: BoxDecoration(
               color: ZipherColors.cardBg,
-              borderRadius: BorderRadius.circular(14),
+              borderRadius: BorderRadius.circular(ZipherRadius.lg),
               border: Border.all(
                 color: ZipherColors.borderSubtle,
               ),
@@ -1374,7 +1374,7 @@ class _AccountSwitcherSheetState extends State<_AccountSwitcherSheet> {
             height: 4,
             decoration: BoxDecoration(
               color: ZipherColors.cardBgElevated,
-              borderRadius: BorderRadius.circular(2),
+              borderRadius: BorderRadius.circular(ZipherRadius.xxs),
             ),
           ),
           const Gap(16),
@@ -1398,7 +1398,7 @@ class _AccountSwitcherSheetState extends State<_AccountSwitcherSheet> {
                         horizontal: 12, vertical: 6),
                     decoration: BoxDecoration(
                       color: ZipherColors.cyan.withValues(alpha: 0.08),
-                      borderRadius: BorderRadius.circular(10),
+                      borderRadius: BorderRadius.circular(ZipherRadius.md),
                       border: Border.all(
                         color: ZipherColors.cyan.withValues(alpha: 0.08),
                       ),
@@ -1449,7 +1449,7 @@ class _AccountSwitcherSheetState extends State<_AccountSwitcherSheet> {
                     child: InkWell(
                       onTap: isEditing ? null : () => _switchTo(a),
                       onLongPress: () => _startEditing(index, a),
-                      borderRadius: BorderRadius.circular(14),
+                      borderRadius: BorderRadius.circular(ZipherRadius.lg),
                       child: Container(
                         padding: const EdgeInsets.symmetric(
                             horizontal: 14, vertical: 12),
@@ -1457,7 +1457,7 @@ class _AccountSwitcherSheetState extends State<_AccountSwitcherSheet> {
                           color: isActive
                               ? ZipherColors.cardBgElevated
                               : ZipherColors.cardBg,
-                          borderRadius: BorderRadius.circular(14),
+                          borderRadius: BorderRadius.circular(ZipherRadius.lg),
                           border: Border.all(
                             color: isActive
                                 ? ZipherColors.cyan.withValues(alpha: 0.10)
@@ -1478,7 +1478,7 @@ class _AccountSwitcherSheetState extends State<_AccountSwitcherSheet> {
                                       ? ZipherColors.cyan
                                           .withValues(alpha: 0.10)
                                       : ZipherColors.cardBg,
-                                  borderRadius: BorderRadius.circular(10),
+                                  borderRadius: BorderRadius.circular(ZipherRadius.md),
                                   border: isEditing
                                       ? Border.all(
                                           color: ZipherColors.cyan
@@ -1516,7 +1516,7 @@ class _AccountSwitcherSheetState extends State<_AccountSwitcherSheet> {
                                       decoration: BoxDecoration(
                                         color: ZipherColors.borderSubtle,
                                         borderRadius:
-                                            BorderRadius.circular(10),
+                                            BorderRadius.circular(ZipherRadius.md),
                                       ),
                                       child: TextField(
                                         controller: _nameController,
@@ -1582,7 +1582,7 @@ class _AccountSwitcherSheetState extends State<_AccountSwitcherSheet> {
                                   decoration: BoxDecoration(
                                     color: ZipherColors.red
                                         .withValues(alpha: 0.08),
-                                    borderRadius: BorderRadius.circular(8),
+                                    borderRadius: BorderRadius.circular(ZipherRadius.sm),
                                   ),
                                   child: Icon(
                                     Icons.delete_outline_rounded,
@@ -1600,7 +1600,7 @@ class _AccountSwitcherSheetState extends State<_AccountSwitcherSheet> {
                                   padding: const EdgeInsets.all(6),
                                   decoration: BoxDecoration(
                                     color: ZipherColors.cardBg,
-                                    borderRadius: BorderRadius.circular(8),
+                                    borderRadius: BorderRadius.circular(ZipherRadius.sm),
                                   ),
                                   child: Icon(
                                     Icons.close_rounded,
@@ -1766,7 +1766,7 @@ class _EmojiPickerSheet extends StatelessWidget {
             height: 4,
             decoration: BoxDecoration(
               color: ZipherColors.text10,
-              borderRadius: BorderRadius.circular(2),
+              borderRadius: BorderRadius.circular(ZipherRadius.xxs),
             ),
           ),
           const Gap(16),
@@ -1788,7 +1788,7 @@ class _EmojiPickerSheet extends StatelessWidget {
                       const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
                   decoration: BoxDecoration(
                     color: ZipherColors.cardBg,
-                    borderRadius: BorderRadius.circular(8),
+                    borderRadius: BorderRadius.circular(ZipherRadius.sm),
                   ),
                   child: Text(
                     'Remove',
@@ -1817,7 +1817,7 @@ class _EmojiPickerSheet extends StatelessWidget {
                 child: Container(
                   decoration: BoxDecoration(
                     color: ZipherColors.cardBg,
-                    borderRadius: BorderRadius.circular(10),
+                    borderRadius: BorderRadius.circular(ZipherRadius.md),
                   ),
                   child: Center(
                     child: Text(

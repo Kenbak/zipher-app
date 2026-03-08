@@ -630,12 +630,12 @@ class _TxRowState extends State<_TxRow> {
           padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 14),
           decoration: BoxDecoration(
             color: ZipherColors.cardBg,
-            borderRadius: BorderRadius.circular(14),
+            borderRadius: BorderRadius.circular(ZipherRadius.lg),
             border: Border.all(color: ZipherColors.borderSubtle),
           ),
           foregroundDecoration: isMessage
               ? BoxDecoration(
-                  borderRadius: BorderRadius.circular(14),
+                  borderRadius: BorderRadius.circular(ZipherRadius.lg),
                   border: Border(
                     left: BorderSide(
                       width: 2.5,
@@ -661,7 +661,7 @@ class _TxRowState extends State<_TxRow> {
                               : isMessage
                                   ? ZipherColors.purple.withValues(alpha: 0.08)
                                   : ZipherColors.cardBgElevated,
-                      borderRadius: BorderRadius.circular(6),
+                      borderRadius: BorderRadius.circular(ZipherRadius.sm),
                     ),
                     child: Row(
                       mainAxisSize: MainAxisSize.min,
@@ -711,7 +711,7 @@ class _TxRowState extends State<_TxRow> {
                             : (swapStatus?.isFailed == true || swapStatus?.isRefunded == true)
                                 ? ZipherColors.red.withValues(alpha: 0.10)
                                 : ZipherColors.orange.withValues(alpha: 0.10),
-                        borderRadius: BorderRadius.circular(6),
+                        borderRadius: BorderRadius.circular(ZipherRadius.sm),
                       ),
                       child: Row(
                         mainAxisSize: MainAxisSize.min,
@@ -1126,7 +1126,7 @@ class TransactionState extends State<TransactionPage> {
                             horizontal: 10, vertical: 4),
                         decoration: BoxDecoration(
                           color: ZipherColors.cardBg,
-                          borderRadius: BorderRadius.circular(20),
+                          borderRadius: BorderRadius.circular(ZipherRadius.xl),
                         ),
                         child: Text(
                           fiat,
@@ -1160,7 +1160,7 @@ class TransactionState extends State<TransactionPage> {
                       const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
                   decoration: BoxDecoration(
                     color: ZipherColors.cardBg,
-                    borderRadius: BorderRadius.circular(12),
+                    borderRadius: BorderRadius.circular(ZipherRadius.md),
                   ),
                   child: Text(
                     parseMemoBody(_effectiveMemo!),
@@ -1209,7 +1209,7 @@ class TransactionState extends State<TransactionPage> {
       padding: const EdgeInsets.all(14),
       decoration: BoxDecoration(
         color: ZipherColors.cardBg,
-        borderRadius: BorderRadius.circular(12),
+        borderRadius: BorderRadius.circular(ZipherRadius.md),
       ),
       child: Column(
         children: [
@@ -1367,7 +1367,7 @@ class TransactionState extends State<TransactionPage> {
         padding: const EdgeInsets.all(14),
         decoration: BoxDecoration(
           color: ZipherColors.cardBg,
-          borderRadius: BorderRadius.circular(12),
+          borderRadius: BorderRadius.circular(ZipherRadius.md),
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -1456,12 +1456,12 @@ class _BottomAction extends StatelessWidget {
       color: Colors.transparent,
       child: InkWell(
         onTap: onTap,
-        borderRadius: BorderRadius.circular(12),
+        borderRadius: BorderRadius.circular(ZipherRadius.md),
         child: Container(
           padding: const EdgeInsets.symmetric(vertical: 14),
           decoration: BoxDecoration(
             color: ZipherColors.cardBg,
-            borderRadius: BorderRadius.circular(12),
+            borderRadius: BorderRadius.circular(ZipherRadius.md),
           ),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -1497,7 +1497,7 @@ class _InvoiceCard extends StatelessWidget {
       padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
         color: ZipherColors.purple.withValues(alpha: 0.06),
-        borderRadius: BorderRadius.circular(12),
+        borderRadius: BorderRadius.circular(ZipherRadius.md),
         border:
             Border.all(color: ZipherColors.purple.withValues(alpha: 0.12)),
       ),
@@ -1508,7 +1508,7 @@ class _InvoiceCard extends StatelessWidget {
             height: 28,
             decoration: BoxDecoration(
               color: ZipherColors.purple.withValues(alpha: 0.12),
-              borderRadius: BorderRadius.circular(6),
+              borderRadius: BorderRadius.circular(ZipherRadius.sm),
             ),
             child: Icon(Icons.receipt_outlined,
                 size: 15,
@@ -1535,7 +1535,7 @@ class _InvoiceCard extends StatelessWidget {
                           horizontal: 5, vertical: 1),
                       decoration: BoxDecoration(
                         color: ZipherColors.purple.withValues(alpha: 0.1),
-                        borderRadius: BorderRadius.circular(3),
+                        borderRadius: BorderRadius.circular(ZipherRadius.xs),
                       ),
                       child: Text(
                         '#${invoice.reference}',

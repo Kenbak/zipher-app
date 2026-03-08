@@ -72,7 +72,7 @@ class _RescanState extends State<RescanPage> with WithLoadingAnimation {
                   padding: const EdgeInsets.all(14),
                   decoration: BoxDecoration(
                     color: ZipherColors.cyan.withValues(alpha: 0.05),
-                    borderRadius: BorderRadius.circular(14),
+                    borderRadius: BorderRadius.circular(ZipherRadius.lg),
                     border: Border.all(
                       color: ZipherColors.cyan.withValues(alpha: 0.1),
                     ),
@@ -142,7 +142,7 @@ class _RescanState extends State<RescanPage> with WithLoadingAnimation {
                         horizontal: 16, vertical: 14),
                     decoration: BoxDecoration(
                       color: ZipherColors.cardBg,
-                      borderRadius: BorderRadius.circular(14),
+                      borderRadius: BorderRadius.circular(ZipherRadius.lg),
                     ),
                     child: Row(
                       children: [
@@ -180,7 +180,7 @@ class _RescanState extends State<RescanPage> with WithLoadingAnimation {
                   Container(
                     decoration: BoxDecoration(
                       color: ZipherColors.cardBg,
-                      borderRadius: BorderRadius.circular(14),
+                      borderRadius: BorderRadius.circular(ZipherRadius.lg),
                     ),
                     child: Theme(
                       data: ThemeData.dark().copyWith(
@@ -236,7 +236,7 @@ class _RescanState extends State<RescanPage> with WithLoadingAnimation {
                   Container(
                     decoration: BoxDecoration(
                       color: ZipherColors.cardBg,
-                      borderRadius: BorderRadius.circular(14),
+                      borderRadius: BorderRadius.circular(ZipherRadius.lg),
                     ),
                     child: FormBuilderTextField(
                       name: 'height',
@@ -256,7 +256,7 @@ class _RescanState extends State<RescanPage> with WithLoadingAnimation {
                         border: InputBorder.none,
                         enabledBorder: InputBorder.none,
                         focusedBorder: InputBorder.none,
-                        contentPadding: const EdgeInsets.all(16),
+                        contentPadding: const EdgeInsets.all(ZipherSpacing.md),
                       ),
                     ),
                   ),
@@ -267,13 +267,13 @@ class _RescanState extends State<RescanPage> with WithLoadingAnimation {
                 // Rescan button
                 InkWell(
                   onTap: _rescan,
-                  borderRadius: BorderRadius.circular(14),
+                  borderRadius: BorderRadius.circular(ZipherRadius.lg),
                   child: Container(
                     width: double.infinity,
                     padding: const EdgeInsets.symmetric(vertical: 16),
                     decoration: BoxDecoration(
                       color: ZipherColors.cyan.withValues(alpha: 0.12),
-                      borderRadius: BorderRadius.circular(14),
+                      borderRadius: BorderRadius.circular(ZipherRadius.lg),
                     ),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
@@ -311,7 +311,7 @@ class _RescanState extends State<RescanPage> with WithLoadingAnimation {
     return Container(
       decoration: BoxDecoration(
         color: ZipherColors.cardBg,
-        borderRadius: BorderRadius.circular(14),
+        borderRadius: BorderRadius.circular(ZipherRadius.lg),
       ),
       child: Column(
         children: [

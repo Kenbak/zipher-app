@@ -93,7 +93,7 @@ class _ScanQRCodeState extends State<ScanQRCodePage> {
                       width: 240,
                       height: 240,
                       decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(20),
+                        borderRadius: BorderRadius.circular(ZipherRadius.xl),
                         border: Border.all(
                           color: ZipherColors.cyan.withValues(alpha: 0.4),
                           width: 2,
@@ -130,7 +130,7 @@ class _ScanQRCodeState extends State<ScanQRCodePage> {
                   Container(
                     decoration: BoxDecoration(
                       color: ZipherColors.cardBg,
-                      borderRadius: BorderRadius.circular(14),
+                      borderRadius: BorderRadius.circular(ZipherRadius.lg),
                     ),
                     child: FormBuilderTextField(
                       name: 'qr',

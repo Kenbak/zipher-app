@@ -141,7 +141,7 @@ class TableListKeyMetadata extends TableListItemMetadata<KeyPackT> {
     return GestureDetector(
       onTap: () => setState?.call(() => selection = !selected ? index : null),
       child: Card(
-          margin: EdgeInsets.all(8),
+          margin: EdgeInsets.all(ZipherSpacing.sm),
           child: selected
               ? Column(
                   children: [

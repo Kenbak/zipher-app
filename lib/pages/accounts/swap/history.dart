@@ -152,7 +152,7 @@ class SwapHistoryState extends State<SwapHistoryPage>
       padding: const EdgeInsets.all(14),
       decoration: BoxDecoration(
         color: ZipherColors.cardBg,
-        borderRadius: BorderRadius.circular(14),
+        borderRadius: BorderRadius.circular(ZipherRadius.lg),
         border: Border.all(color: ZipherColors.borderSubtle),
       ),
       child: Column(
@@ -166,7 +166,7 @@ class SwapHistoryState extends State<SwapHistoryPage>
                     const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
                 decoration: BoxDecoration(
                   color: ZipherColors.cyan.withValues(alpha: 0.08),
-                  borderRadius: BorderRadius.circular(6),
+                  borderRadius: BorderRadius.circular(ZipherRadius.sm),
                 ),
                 child: Text(
                   isNear ? 'NEAR Intents' : swap.provider,
